@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { 
   TrendingUp, TrendingDown, ArrowRight, ShieldCheck, 
   ShieldAlert, AlertTriangle, CheckCircle2, QrCode, CreditCard, 
-  ShoppingBag, Users, ArrowUpRight, Clock, ChevronRight, Eye
+  ShoppingBag, Users, ArrowUpRight, Clock, ChevronRight, Eye, Sparkles
 } from 'lucide-react';
 import { 
   COMMERCE_TRANSACTIONS, 
@@ -10,69 +10,87 @@ import {
   REQUIRES_ATTENTION 
 } from '../data/mockScenarios';
 
-export default function DashboardView({ onSelectTransaction, onNavigateView }) {
+export default function DashboardView({ 
+  onSelectTransaction, 
+  onNavigateView,
+  onSelectProduct
+}) {
   const [timeRange, setTimeRange] = useState('7d');
 
   const kpiMetrics = [
     {
+      id: "revenue",
       label: "Total Revenue",
       value: "₹24.82L",
       fullValue: "₹24,82,450.00",
       change: "+12.4%",
       isPositive: true,
-      subtext: "vs. prev 30 days"
+      subtext: "vs. prev 30 days",
+      targetView: "analytics"
     },
     {
+      id: "transactions",
       label: "Transactions",
       value: "18,429",
       fullValue: "18,429",
       change: "+8.2%",
       isPositive: true,
-      subtext: "UPI & POS volume"
+      subtext: "UPI & POS volume",
+      targetView: "transactions"
     },
     {
+      id: "payments",
       label: "Success Rate",
       value: "97.8%",
       fullValue: "97.8%",
       change: "+0.4%",
       isPositive: true,
-      subtext: "Industry: 94.2%"
+      subtext: "Industry: 94.2%",
+      targetView: "payments"
     },
     {
+      id: "orders",
       label: "Retail Orders",
       value: "6,842",
       fullValue: "6,842",
       change: "+15.1%",
       isPositive: true,
-      subtext: "Avg: ₹362.00"
+      subtext: "Avg: ₹362.00",
+      targetView: "orders"
     },
     {
+      id: "risk",
       label: "Risk Interceptions",
       value: "24 Blocks",
       fullValue: "₹1,42,800 saved",
       change: "₹1.42L saved",
       isPositive: true,
       highlight: true,
-      subtext: "100% on-device defense"
+      subtext: "100% on-device defense",
+      targetView: "risk-hub"
     }
   ];
 
   return (
     <div className="space-y-5 sm:space-y-6">
       
-      {/* LEVEL 1: Business Health KPIs (Responsive 2-col on mobile, 5-col on desktop) */}
+      {/* LEVEL 1: Dynamic Interactive Business Health KPIs */}
       <div className="grid grid-cols-2 lg:grid-cols-5 gap-2.5 sm:gap-4">
-        {kpiMetrics.map((kpi, idx) => (
+        {kpiMetrics.map((kpi) => (
           <div 
-            key={idx}
-            className={`p-3 sm:p-4 rounded-xl bg-white border card-shadow transition ${
+            key={kpi.id}
+            onClick={() => onNavigateView(kpi.targetView)}
+            className={`p-3 sm:p-4 rounded-xl bg-white border card-shadow transition cursor-pointer hover:border-blue-300 hover:shadow-md group ${
               kpi.highlight 
                 ? 'col-span-2 lg:col-span-1 border-blue-200 bg-gradient-to-b from-blue-50/40 to-white' 
                 : 'border-slate-200'
             }`}
           >
-            <div className="text-[11px] sm:text-xs font-medium text-slate-500 truncate">{kpi.label}</div>
-            <div className="text-lg sm:text-xl font-bold text-slate-900 mt-0.5 sm:mt-1 font-mono tracking-tight">
+            <div className="flex items-center justify-between">
+              <span className="text-[11px] sm:text-xs font-medium text-slate-500 truncate">{kpi.label}</span>
+              <ArrowUpRight className="w-3.5 h-3.5 text-slate-300 group-hover:text-blue-600 transition shrink-0" />
+            </div>
+            <div className="text-lg sm:text-xl font-bold text-slate-900 mt-0.5 sm:mt-1 font-mono tracking-tight group-hover:text-blue-700 transition">
               {kpi.value}
             </div>
             <div className="flex flex-wrap items-center gap-1 sm:gap-1.5 mt-1.5 text-[11px] sm:text-xs">
@@ -129,8 +147,9 @@ export default function DashboardView({ onSelectTransaction, onNavigateView }) {
                     </div>
                     <div className="w-full bg-slate-100 rounded-t-md relative overflow-hidden h-32 sm:h-36 flex items-end">
                       <div 
-                        className="w-full bg-blue-600 group-hover:bg-blue-700 transition rounded-t-md"
+                        className="w-full bg-blue-600 group-hover:bg-blue-700 transition rounded-t-md cursor-pointer"
                         style={{ height: `${heightPct}%` }}
+                        onClick={() => onNavigateView('analytics')}
                       />
                     </div>
                     <span className="text-[10px] sm:text-[11px] font-medium text-slate-600">{item.label}</span>
@@ -143,10 +162,10 @@ export default function DashboardView({ onSelectTransaction, onNavigateView }) {
           <div className="pt-2 border-t border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-1 text-xs text-slate-500 font-medium">
             <span>Weekly Avg: <strong className="text-slate-900 font-mono">₹3,54,635 / day</strong></span>
             <button 
-              onClick={() => onNavigateView('payments')}
+              onClick={() => onNavigateView('analytics')}
               className="text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1 cursor-pointer"
             >
-              <span>View Settlement Breakdown</span>
+              <span>Explore Analytics Hub</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </button>
           </div>
@@ -160,7 +179,10 @@ export default function DashboardView({ onSelectTransaction, onNavigateView }) {
           </div>
 
           <div className="space-y-3 text-xs">
-            <div>
+            <div 
+              onClick={() => onNavigateView('transactions')}
+              className="p-1 rounded-lg hover:bg-slate-50 transition cursor-pointer"
+            >
               <div className="flex justify-between font-medium mb-1 text-slate-700">
                 <span>UPI Dynamic QR</span>
                 <span className="font-mono font-bold text-slate-900">62.4% (₹15.4L)</span>
@@ -170,7 +192,10 @@ export default function DashboardView({ onSelectTransaction, onNavigateView }) {
               </div>
             </div>
 
-            <div>
+            <div 
+              onClick={() => onNavigateView('transactions')}
+              className="p-1 rounded-lg hover:bg-slate-50 transition cursor-pointer"
+            >
               <div className="flex justify-between font-medium mb-1 text-slate-700">
                 <span>UPI Intent / Collect</span>
                 <span className="font-mono font-bold text-slate-900">23.8% (₹5.9L)</span>
@@ -180,7 +205,10 @@ export default function DashboardView({ onSelectTransaction, onNavigateView }) {
               </div>
             </div>
 
-            <div>
+            <div 
+              onClick={() => onNavigateView('transactions')}
+              className="p-1 rounded-lg hover:bg-slate-50 transition cursor-pointer"
+            >
               <div className="flex justify-between font-medium mb-1 text-slate-700">
                 <span>Debit / Credit Cards</span>
                 <span className="font-mono font-bold text-slate-900">9.8% (₹2.4L)</span>
@@ -190,7 +218,10 @@ export default function DashboardView({ onSelectTransaction, onNavigateView }) {
               </div>
             </div>
 
-            <div>
+            <div 
+              onClick={() => onNavigateView('transactions')}
+              className="p-1 rounded-lg hover:bg-slate-50 transition cursor-pointer"
+            >
               <div className="flex justify-between font-medium mb-1 text-slate-700">
                 <span>NetBanking / B2B</span>
                 <span className="font-mono font-bold text-slate-900">4.0% (₹1.0L)</span>
@@ -202,7 +233,10 @@ export default function DashboardView({ onSelectTransaction, onNavigateView }) {
           </div>
 
           {/* On-Device Security Summary Callout */}
-          <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1">
+          <div 
+            onClick={() => onNavigateView('risk-hub')}
+            className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-1 hover:bg-blue-50/40 hover:border-blue-300 transition cursor-pointer"
+          >
             <div className="font-semibold text-slate-900 flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
               <span>Zero-Chargeback Guarantee</span>
@@ -252,7 +286,13 @@ export default function DashboardView({ onSelectTransaction, onNavigateView }) {
               </div>
 
               <button
-                onClick={() => onNavigateView(item.tab)}
+                onClick={() => {
+                  if (item.tab === 'inventory' && onSelectProduct) {
+                    onSelectProduct({ id: "PRD_002", name: "Coorg Single Origin Arabica Beans", sku: "COF-CRG-02", price: 650.00, inventory: 18, maxStock: 100, reorderThreshold: 25, category: "Beverages & Pantry" });
+                  } else {
+                    onNavigateView(item.tab);
+                  }
+                }}
                 className="w-fit text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1 cursor-pointer pt-1"
               >
                 <span>{item.action}</span>
@@ -268,13 +308,13 @@ export default function DashboardView({ onSelectTransaction, onNavigateView }) {
         <div className="flex items-center justify-between border-b border-slate-100 pb-3">
           <div>
             <h2 className="text-sm font-bold text-slate-900 m-0">Recent Payment Activity</h2>
-            <p className="text-xs text-slate-500 m-0">Live transaction stream with on-device risk assessment.</p>
+            <p className="text-xs text-slate-500 m-0">Click any transaction to open the inspector drawer.</p>
           </div>
           <button
             onClick={() => onNavigateView('transactions')}
             className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-1 cursor-pointer"
           >
-            <span>View All</span>
+            <span>View All Ledger</span>
             <ArrowRight className="w-3.5 h-3.5" />
           </button>
         </div>
@@ -338,7 +378,7 @@ export default function DashboardView({ onSelectTransaction, onNavigateView }) {
                         e.stopPropagation();
                         onSelectTransaction(txn);
                       }}
-                      className="px-2 py-1 rounded bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-slate-600 text-[11px] font-semibold transition cursor-pointer"
+                      className="px-2.5 py-1 rounded bg-slate-100 hover:bg-blue-50 hover:text-blue-600 text-slate-600 text-[11px] font-semibold transition cursor-pointer"
                     >
                       Inspect
                     </button>

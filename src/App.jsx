@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { 
   LayoutDashboard, ArrowLeftRight, ShieldAlert, 
-  ShoppingBag, Menu, FileCheck, Layers, FileText
+  ShoppingBag, Menu, FileCheck, Layers, FileText, 
+  BarChart3, CreditCard
 } from 'lucide-react';
 import Sidebar from './components/Sidebar';
 import Header from './components/Header';
@@ -10,29 +11,73 @@ import TransactionsView from './components/TransactionsView';
 import PaymentsView from './components/PaymentsView';
 import CommerceView from './components/CommerceView';
 import RiskSecurityView from './components/RiskSecurityView';
+import AnalyticsView from './components/AnalyticsView';
 import ReportsView from './components/ReportsView';
 import TransactionDetailDrawer from './components/TransactionDetailDrawer';
+import OrderDetailDrawer from './components/OrderDetailDrawer';
+import CustomerDetailDrawer from './components/CustomerDetailDrawer';
+import ProductDetailDrawer from './components/ProductDetailDrawer';
+import GlobalSearchModal from './components/GlobalSearchModal';
+import NotificationsDropdown from './components/NotificationsDropdown';
 import ArchitectureModal from './components/ArchitectureModal';
 import PitchDeckModal from './components/PitchDeckModal';
+import { COMMERCE_CUSTOMERS, COMMERCE_TRANSACTIONS, COMMERCE_ORDERS, COMMERCE_PRODUCTS } from './data/mockScenarios';
 
 export default function App() {
   const [currentView, setCurrentView] = useState('dashboard');
+  
+  // Drawer states for interactive drill-downs
   const [selectedTransaction, setSelectedTransaction] = useState(null);
+  const [selectedOrder, setSelectedOrder] = useState(null);
+  const [selectedCustomer, setSelectedCustomer] = useState(null);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+
+  // Modals & Panels
+  const [isSearchOpen, setIsSearchOpen] = useState(false);
+  const [isNotificationsOpen, setIsNotificationsOpen] = useState(false);
   const [isArchModalOpen, setIsArchModalOpen] = useState(false);
   const [isDeckModalOpen, setIsDeckModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Global Keyboard Shortcut (⌘K / Ctrl+K)
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      if ((e.metaKey || e.ctrlKey) && e.key === 'k') {
+        e.preventDefault();
+        setIsSearchOpen(prev => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   // Handle direct navigation routing
   const handleNavigateView = (viewId) => {
     setCurrentView(viewId);
     setIsMobileMenuOpen(false);
+    setIsNotificationsOpen(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // Cross-entity drill down helpers
+  const handleInspectCustomerById = (custId) => {
+    const cust = COMMERCE_CUSTOMERS.find(c => c.id === custId || c.name.toLowerCase() === custId?.toLowerCase());
+    if (cust) setSelectedCustomer(cust);
+  };
+
+  const handleInspectTransactionById = (txnId) => {
+    const txn = COMMERCE_TRANSACTIONS.find(t => t.id === txnId);
+    if (txn) setSelectedTransaction(txn);
+  };
+
+  const handleInspectOrderById = (ord) => {
+    setSelectedOrder(ord);
   };
 
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 flex font-sans antialiased">
       
-      {/* 1. Enterprise Sidebar (Desktop fixed + Mobile slide-over drawer) */}
+      {/* 1. Grouped Enterprise Sidebar (Desktop fixed + Mobile drawer) */}
       <Sidebar 
         currentView={currentView} 
         setCurrentView={handleNavigateView} 
@@ -42,7 +87,7 @@ export default function App() {
       />
 
       {/* 2. Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 min-h-screen">
+      <div className="flex-1 flex flex-col min-w-0 min-h-screen relative">
         
         {/* Top Header */}
         <Header 
@@ -50,10 +95,22 @@ export default function App() {
           onOpenDeck={() => setIsDeckModalOpen(true)}
           onOpenArch={() => setIsArchModalOpen(true)}
           onOpenMobileMenu={() => setIsMobileMenuOpen(true)}
+          onOpenSearch={() => setIsSearchOpen(true)}
+          onToggleNotifications={() => setIsNotificationsOpen(prev => !prev)}
+          unreadNotificationsCount={2}
           riskAlertsCount={4}
         />
 
-        {/* Dynamic Page Body with mobile padding adjustments */}
+        {/* Dynamic Notifications Dropdown */}
+        <NotificationsDropdown 
+          isOpen={isNotificationsOpen}
+          onClose={() => setIsNotificationsOpen(false)}
+          onNavigateView={handleNavigateView}
+          onSelectTransaction={(txn) => setSelectedTransaction(txn)}
+          onSelectProduct={(prd) => setSelectedProduct(prd)}
+        />
+
+        {/* Dynamic Page Body with mobile padding */}
         <main className="flex-1 p-3.5 sm:p-6 md:p-8 pb-24 lg:pb-8 max-w-7xl w-full mx-auto space-y-6">
           
           {/* View Routing */}
@@ -61,10 +118,11 @@ export default function App() {
             <DashboardView 
               onSelectTransaction={(txn) => setSelectedTransaction(txn)}
               onNavigateView={handleNavigateView}
+              onSelectProduct={(prd) => setSelectedProduct(prd)}
             />
           )}
 
-          {currentView === 'transactions' && (
+          {(currentView === 'transactions' || currentView === 'refunds') && (
             <TransactionsView 
               onSelectTransaction={(txn) => setSelectedTransaction(txn)}
             />
@@ -76,8 +134,15 @@ export default function App() {
 
           {['orders', 'products', 'customers', 'inventory'].includes(currentView) && (
             <CommerceView 
-              initialSubTab={currentView === 'orders' ? 'orders' : currentView} 
+              initialSubTab={currentView} 
+              onSelectOrder={(ord) => setSelectedOrder(ord)}
+              onSelectProduct={(prd) => setSelectedProduct(prd)}
+              onSelectCustomer={(cust) => setSelectedCustomer(cust)}
             />
+          )}
+
+          {currentView === 'analytics' && (
+            <AnalyticsView />
           )}
 
           {['risk-hub', 'qr-shield', 'deepfake-voice', 'social-eng', 'scambait', 'receipt-guard'].includes(currentView) && (
@@ -125,7 +190,7 @@ export default function App() {
           <button
             onClick={() => handleNavigateView('transactions')}
             className={`flex flex-col items-center gap-1 p-1 rounded-lg text-[10px] font-semibold transition ${
-              currentView === 'transactions' ? 'text-blue-600' : 'text-slate-500 hover:text-slate-900'
+              ['transactions', 'payments', 'refunds'].includes(currentView) ? 'text-blue-600' : 'text-slate-500 hover:text-slate-900'
             }`}
           >
             <ArrowLeftRight className="w-4 h-4" />
@@ -148,7 +213,7 @@ export default function App() {
           <button
             onClick={() => handleNavigateView('orders')}
             className={`flex flex-col items-center gap-1 p-1 rounded-lg text-[10px] font-semibold transition ${
-              ['orders', 'products', 'customers', 'inventory', 'payments'].includes(currentView) 
+              ['orders', 'products', 'customers', 'inventory'].includes(currentView) 
                 ? 'text-blue-600' 
                 : 'text-slate-500 hover:text-slate-900'
             }`}
@@ -169,13 +234,42 @@ export default function App() {
 
       </div>
 
-      {/* 3. Slide-Over Transaction Detail Drawer */}
+      {/* 3. Interactive Detail Drawers */}
       <TransactionDetailDrawer 
         transaction={selectedTransaction}
         onClose={() => setSelectedTransaction(null)}
       />
 
-      {/* 4. Modals */}
+      <OrderDetailDrawer 
+        order={selectedOrder}
+        onClose={() => setSelectedOrder(null)}
+        onInspectCustomer={handleInspectCustomerById}
+        onInspectTransaction={handleInspectTransactionById}
+      />
+
+      <CustomerDetailDrawer 
+        customer={selectedCustomer}
+        onClose={() => setSelectedCustomer(null)}
+        onInspectOrder={handleInspectOrderById}
+      />
+
+      <ProductDetailDrawer 
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+      />
+
+      {/* 4. Global Command Palette Search Modal (⌘K) */}
+      <GlobalSearchModal 
+        isOpen={isSearchOpen}
+        onClose={() => setIsSearchOpen(false)}
+        onSelectTransaction={(txn) => setSelectedTransaction(txn)}
+        onSelectOrder={(ord) => setSelectedOrder(ord)}
+        onSelectCustomer={(cust) => setSelectedCustomer(cust)}
+        onSelectProduct={(prd) => setSelectedProduct(prd)}
+        onNavigateView={handleNavigateView}
+      />
+
+      {/* 5. Information Modals */}
       <ArchitectureModal 
         isOpen={isArchModalOpen} 
         onClose={() => setIsArchModalOpen(false)} 

@@ -142,15 +142,327 @@ export const RECEIPT_TEST_CASES = [
   }
 ];
 
-// ==========================================
-// REALISTIC FINTECH & RETAIL COMMERCE DATA
-// ==========================================
+// ========================================================
+// REALISTIC FINTECH & COMMERCE DATA WITH DEEP RELATIONS
+// ========================================================
+
+export const COMMERCE_PRODUCTS = [
+  {
+    id: "PRD_001",
+    sku: "TEA-ASS-01",
+    name: "Organic Assam CTC Tea (1kg)",
+    category: "Beverages & Pantry",
+    price: 480.00,
+    inventory: 142,
+    maxStock: 200,
+    stockPercent: 71,
+    reorderThreshold: 30,
+    status: "IN_STOCK",
+    sales30d: 384,
+    rating: 4.8,
+    description: "Single-origin premium leaf CTC tea sourced directly from Upper Assam tea estates. Vacuum-sealed retail pouch.",
+    movementHistory: [
+      { date: "Today, 18:30", type: "SALE", qty: -2, note: "Order #ORD_78912" },
+      { date: "Yesterday", type: "SALE", qty: -14, note: "POS Terminal #04" },
+      { date: "Aug 20", type: "RESTOCK", qty: +100, note: "Supplier Inward Batch #992" }
+    ]
+  },
+  {
+    id: "PRD_002",
+    sku: "COF-CRG-02",
+    name: "Coorg Single Origin Arabica Beans (500g)",
+    category: "Beverages & Pantry",
+    price: 650.00,
+    inventory: 18,
+    maxStock: 100,
+    stockPercent: 18,
+    reorderThreshold: 25,
+    status: "LOW_STOCK",
+    sales30d: 219,
+    rating: 4.9,
+    description: "Medium-dark roasted artisanal Arabica beans with chocolate & nutty undertones from Madikeri estate.",
+    movementHistory: [
+      { date: "Today, 21:10", type: "SALE", qty: -1, note: "Order #ORD_78910" },
+      { date: "Today, 14:00", type: "SALE", qty: -4, note: "Online Store" },
+      { date: "Aug 18", type: "SALE", qty: -12, note: "Wholesale counter" }
+    ]
+  },
+  {
+    id: "PRD_003",
+    sku: "HON-HIM-03",
+    name: "Raw Himalayan Multi-Flora Honey (500g)",
+    category: "Organic Grocery",
+    price: 550.00,
+    inventory: 64,
+    maxStock: 80,
+    stockPercent: 80,
+    reorderThreshold: 15,
+    status: "IN_STOCK",
+    sales30d: 180,
+    rating: 4.7,
+    description: "Unpasteurized, unfiltered wildflower honey harvested from high-altitude Himalayan apiaries.",
+    movementHistory: [
+      { date: "Today, 22:45", type: "SALE", qty: -1, note: "Order #ORD_78912" },
+      { date: "Aug 22", type: "RESTOCK", qty: +40, note: "Co-op shipment" }
+    ]
+  },
+  {
+    id: "PRD_004",
+    sku: "RIC-BAS-04",
+    name: "Royal Aged Basmati Rice (5kg Bag)",
+    category: "Grains & Staples",
+    price: 920.00,
+    inventory: 8,
+    maxStock: 50,
+    stockPercent: 16,
+    reorderThreshold: 12,
+    status: "LOW_STOCK",
+    sales30d: 142,
+    rating: 4.6,
+    description: "2-year naturally aged extra-long grain aromatic Basmati rice for premium culinary preparations.",
+    movementHistory: [
+      { date: "Today, 17:20", type: "SALE", qty: -3, note: "Kirana Walk-in" },
+      { date: "Aug 21", type: "SALE", qty: -5, note: "Residential pack" }
+    ]
+  },
+  {
+    id: "PRD_005",
+    sku: "MCH-STM-05",
+    name: "Retail Steam Milk Frother (Commercial)",
+    category: "Store Equipment",
+    price: 4250.00,
+    inventory: 0,
+    maxStock: 10,
+    stockPercent: 0,
+    reorderThreshold: 2,
+    status: "OUT_OF_STOCK",
+    sales30d: 24,
+    rating: 4.9,
+    description: "Heavy-duty dual heating element stainless steel electric frother for café and Kirana beverage stalls.",
+    movementHistory: [
+      { date: "Aug 22", type: "SALE", qty: -1, note: "Store equipment upgrade" },
+      { date: "Aug 23", type: "REORDER_PLACED", qty: +5, note: "PO #PO-9018 placed with vendor" }
+    ]
+  },
+  {
+    id: "PRD_006",
+    sku: "SPC-KRL-06",
+    name: "Kerala Cardamom & Cinnamon Spice Pack (250g)",
+    category: "Organic Grocery",
+    price: 380.00,
+    inventory: 95,
+    maxStock: 120,
+    stockPercent: 79,
+    reorderThreshold: 20,
+    status: "IN_STOCK",
+    sales30d: 310,
+    rating: 4.8,
+    description: "Handpicked 8mm bold green cardamom and Ceylon cinnamon quills from Idukki spice valley.",
+    movementHistory: [
+      { date: "Today, 19:45", type: "SALE", qty: -2, note: "Order #ORD_78908" },
+      { date: "Aug 19", type: "RESTOCK", qty: +50, note: "Direct Spice Board lot" }
+    ]
+  }
+];
+
+export const COMMERCE_ORDERS = [
+  {
+    id: "ORD_78912",
+    customerId: "CUST_401",
+    customer: "Aditi Sharma",
+    email: "aditi.sharma@gmail.com",
+    phone: "+91 98450 12384",
+    itemsCount: 3,
+    total: 1450.00,
+    paymentStatus: "PAID",
+    paymentMethod: "UPI QR (PhonePe)",
+    transactionId: "TXN_98234109",
+    fulfillmentStatus: "FULFILLED",
+    fulfillmentStep: 5,
+    date: "Today, 22:45",
+    channel: "Retail POS Terminal #04",
+    items: [
+      { name: "Organic Assam Green Tea (500g)", sku: "TEA-ASS-01", qty: 2, price: 450.00, subtotal: 900.00 },
+      { name: "Raw Himalayan Honey (250g)", sku: "HON-HIM-03", qty: 1, price: 550.00, subtotal: 550.00 }
+    ],
+    timeline: [
+      { step: "Order Placed", time: "22:42", completed: true },
+      { step: "UPI Payment Confirmed", time: "22:43", completed: true },
+      { step: "Items Packed", time: "22:44", completed: true },
+      { step: "Handed to Customer", time: "22:45", completed: true }
+    ]
+  },
+  {
+    id: "ORD_78911",
+    customerId: "CUST_402",
+    customer: "Karthik Sundaram",
+    email: "karthik.s@zoho.com",
+    phone: "+91 94440 99120",
+    itemsCount: 4,
+    total: 320.00,
+    paymentStatus: "PAID",
+    paymentMethod: "UPI QR (Paytm)",
+    transactionId: "TXN_98234107",
+    fulfillmentStatus: "FULFILLED",
+    fulfillmentStep: 5,
+    date: "Today, 22:15",
+    channel: "QR Pay & Dine-In",
+    items: [
+      { name: "Special Masala Chai + Samosa Box", sku: "FOD-CHA-01", qty: 4, price: 80.00, subtotal: 320.00 }
+    ],
+    timeline: [
+      { step: "QR Scanned at Table #4", time: "22:12", completed: true },
+      { step: "Payment Cleared (Paytm)", time: "22:13", completed: true },
+      { step: "Served Fresh", time: "22:15", completed: true }
+    ]
+  },
+  {
+    id: "ORD_78910",
+    customerId: "CUST_403",
+    customer: "Vikram Malhotra",
+    email: "vikram.m@techcorp.in",
+    phone: "+91 98110 55432",
+    itemsCount: 2,
+    total: 8750.00,
+    paymentStatus: "PAID",
+    paymentMethod: "Debit Card (POS)",
+    transactionId: "TXN_98234105",
+    fulfillmentStatus: "DISPATCHED",
+    fulfillmentStep: 4,
+    date: "Today, 21:10",
+    channel: "Online Merchant Store",
+    items: [
+      { name: "Premium Filter Coffee Maker", sku: "MCH-FLT-02", qty: 1, price: 6250.00, subtotal: 6250.00 },
+      { name: "Coorg Arabica Roast (1kg)", sku: "COF-CRG-02", qty: 1, price: 2500.00, subtotal: 2500.00 }
+    ],
+    timeline: [
+      { step: "Order Placed", time: "21:05", completed: true },
+      { step: "Card Authorized (Razorpay POS)", time: "21:08", completed: true },
+      { step: "Shipped via Dunzo Express", time: "21:30", completed: true },
+      { step: "Out for Delivery", time: "In Transit", completed: false }
+    ]
+  },
+  {
+    id: "ORD_78909",
+    customerId: "CUST_404",
+    customer: "Priya Nair",
+    email: "priya.nair@icloud.com",
+    phone: "+91 97401 22819",
+    itemsCount: 3,
+    total: 2450.00,
+    paymentStatus: "BLOCKED_FRAUD",
+    paymentMethod: "Counterfeit Screenshot",
+    transactionId: "TXN_98234106",
+    fulfillmentStatus: "CANCELLED",
+    fulfillmentStep: 0,
+    date: "Today, 21:50",
+    channel: "Counter Spoof Attempt",
+    items: [
+      { name: "Alphonso Mango Pulp Cans (3x)", sku: "FRT-MNG-01", qty: 3, price: 816.66, subtotal: 2450.00 }
+    ],
+    timeline: [
+      { step: "Customer showed fake Paytm screen", time: "21:50", completed: true },
+      { step: "AegisPay flagged font & Luhn mismatch", time: "21:50", completed: true },
+      { step: "Order Cancelled / Goods retained", time: "21:51", completed: true }
+    ]
+  },
+  {
+    id: "ORD_78908",
+    customerId: "CUST_405",
+    customer: "Amitav Ghosh",
+    email: "amitav.g@kolkata.org",
+    phone: "+91 98300 77123",
+    itemsCount: 1,
+    total: 680.00,
+    paymentStatus: "PAID",
+    paymentMethod: "UPI Intent (Cred Pay)",
+    transactionId: "TXN_98234103",
+    fulfillmentStatus: "PROCESSING",
+    fulfillmentStep: 3,
+    date: "Today, 19:45",
+    channel: "Store Pickup",
+    items: [
+      { name: "Darjeeling First Flush Tea (200g)", sku: "TEA-DAR-01", qty: 1, price: 680.00, subtotal: 680.00 }
+    ],
+    timeline: [
+      { step: "Web Pre-order Placed", time: "19:40", completed: true },
+      { step: "UPI Paid via Cred", time: "19:42", completed: true },
+      { step: "Packaging at Store Counter", time: "19:45", completed: true },
+      { step: "Ready for Pickup", time: "Pending", completed: false }
+    ]
+  }
+];
+
+export const COMMERCE_CUSTOMERS = [
+  {
+    id: "CUST_401",
+    name: "Aditi Sharma",
+    email: "aditi.sharma@gmail.com",
+    phone: "+91 98450 12384",
+    city: "Bengaluru, Karnataka",
+    memberSince: "March 2024",
+    ordersCount: 18,
+    totalSpent: 24850.00,
+    avgOrderValue: 1380.50,
+    trustScore: "99.4% (Verified)",
+    status: "ACTIVE",
+    preferredMethod: "UPI (PhonePe)",
+    recentOrders: ["ORD_78912", "ORD_77102", "ORD_76590"]
+  },
+  {
+    id: "CUST_402",
+    name: "Karthik Sundaram",
+    email: "karthik.s@zoho.com",
+    phone: "+91 94440 99120",
+    city: "Chennai, Tamil Nadu",
+    memberSince: "January 2024",
+    ordersCount: 42,
+    totalSpent: 16400.00,
+    avgOrderValue: 390.40,
+    trustScore: "99.8% (Frequent Regular)",
+    status: "ACTIVE",
+    preferredMethod: "UPI QR (Paytm)",
+    recentOrders: ["ORD_78911", "ORD_78401", "ORD_78119"]
+  },
+  {
+    id: "CUST_403",
+    name: "Vikram Malhotra",
+    email: "vikram.m@techcorp.in",
+    phone: "+91 98110 55432",
+    city: "Gurugram, Haryana",
+    memberSince: "May 2024",
+    ordersCount: 6,
+    totalSpent: 48900.00,
+    avgOrderValue: 8150.00,
+    trustScore: "98.2% (Enterprise B2B)",
+    status: "ACTIVE",
+    preferredMethod: "Debit / Corporate Card",
+    recentOrders: ["ORD_78910", "ORD_75201"]
+  },
+  {
+    id: "CUST_404",
+    name: "Priya Nair",
+    email: "priya.nair@icloud.com",
+    phone: "+91 97401 22819",
+    city: "Kochi, Kerala",
+    memberSince: "August 2026",
+    ordersCount: 1,
+    totalSpent: 0.00,
+    avgOrderValue: 0.00,
+    trustScore: "12.0% (Flagged Counterfeit)",
+    status: "RESTRICTED",
+    preferredMethod: "Counterfeit App (Blocked)",
+    recentOrders: ["ORD_78909"]
+  }
+];
 
 export const COMMERCE_TRANSACTIONS = [
   {
     id: "TXN_98234109",
     utr: "423610982341",
     customer: "Aditi Sharma",
+    customerId: "CUST_401",
+    orderId: "ORD_78912",
     email: "aditi.sharma@gmail.com",
     phone: "+91 98450 12384",
     amount: 1450.00,
@@ -176,6 +488,8 @@ export const COMMERCE_TRANSACTIONS = [
     id: "TXN_98234108",
     utr: "423610982340",
     customer: "Rajesh Patel",
+    customerId: "CUST_406",
+    orderId: "ORD_78914",
     email: "r.patel88@outlook.com",
     phone: "+91 99201 44819",
     amount: 4999.00,
@@ -200,6 +514,8 @@ export const COMMERCE_TRANSACTIONS = [
     id: "TXN_98234107",
     utr: "423610982339",
     customer: "Karthik Sundaram",
+    customerId: "CUST_402",
+    orderId: "ORD_78911",
     email: "karthik.s@zoho.com",
     phone: "+91 94440 99120",
     amount: 320.00,
@@ -224,6 +540,8 @@ export const COMMERCE_TRANSACTIONS = [
     id: "TXN_98234106",
     utr: "423610982338",
     customer: "Priya Nair",
+    customerId: "CUST_404",
+    orderId: "ORD_78909",
     email: "priya.nair@icloud.com",
     phone: "+91 97401 22819",
     amount: 2450.00,
@@ -248,6 +566,8 @@ export const COMMERCE_TRANSACTIONS = [
     id: "TXN_98234105",
     utr: "423610982337",
     customer: "Vikram Malhotra",
+    customerId: "CUST_403",
+    orderId: "ORD_78910",
     email: "vikram.m@techcorp.in",
     phone: "+91 98110 55432",
     amount: 8750.00,
@@ -273,6 +593,8 @@ export const COMMERCE_TRANSACTIONS = [
     id: "TXN_98234104",
     utr: "423610982336",
     customer: "Sneha Rao",
+    customerId: "CUST_407",
+    orderId: "ORD_78905",
     email: "sneha.rao@gmail.com",
     phone: "+91 96320 11984",
     amount: 1500.00,
@@ -292,226 +614,64 @@ export const COMMERCE_TRANSACTIONS = [
       vpaEntropy: "SAFE",
       settlementStatus: "Refunded ₹1,470 back to user after correcting surcharge"
     }
-  },
-  {
-    id: "TXN_98234103",
-    utr: "423610982335",
-    customer: "Amitav Ghosh",
-    email: "amitav.g@kolkata.org",
-    phone: "+91 98300 77123",
-    amount: 680.00,
-    currency: "INR",
-    method: "UPI Intent (Cred Pay)",
-    terminalId: "TERM_BLR_04",
-    date: "2026-08-24 19:45",
-    timestamp: "4 hrs ago",
-    status: "COMPLETED",
-    riskLevel: "LOW",
-    riskScore: 2,
-    items: [
-      { name: "Darjeeling First Flush Tea (200g)", qty: 1, price: 680.00 }
-    ],
-    riskDetails: {
-      quishingCheck: "PASS",
-      vpaEntropy: "SAFE",
-      settlementStatus: "Settled"
-    }
-  },
-  {
-    id: "TXN_98234102",
-    utr: "423610982334",
-    customer: "Deepak Choudhary",
-    email: "deepak.c@jaipur.biz",
-    phone: "+91 94140 33819",
-    amount: 12400.00,
-    currency: "INR",
-    method: "NetBanking (HDFC)",
-    terminalId: "TERM_BLR_01",
-    date: "2026-08-24 18:20",
-    timestamp: "5 hrs ago",
-    status: "COMPLETED",
-    riskLevel: "LOW",
-    riskScore: 5,
-    items: [
-      { name: "Commercial Espresso Grinder Parts", qty: 2, price: 12400.00 }
-    ],
-    riskDetails: {
-      quishingCheck: "PASS",
-      vpaEntropy: "SAFE",
-      settlementStatus: "Settled"
-    }
   }
 ];
 
-export const COMMERCE_PRODUCTS = [
+export const NOTIFICATIONS_DATA = [
   {
-    id: "PRD_001",
-    sku: "TEA-ASS-01",
-    name: "Organic Assam CTC Tea (1kg)",
-    category: "Beverages & Pantry",
-    price: 480.00,
-    inventory: 142,
-    status: "IN_STOCK",
-    sales30d: 384,
-    rating: 4.8
+    id: "NOTIF_01",
+    group: "Today",
+    type: "CRITICAL",
+    title: "Quishing Sticker Tamper Blocked",
+    desc: "Counter #04 QR stand had an overlay sticker routing to disposable mule account quick_refund_x98234@ibl.",
+    time: "26m ago",
+    isUnread: true,
+    targetType: "transaction",
+    targetId: "TXN_98234108"
   },
   {
-    id: "PRD_002",
-    sku: "COF-CRG-02",
-    name: "Coorg Single Origin Arabica Beans (500g)",
-    category: "Beverages & Pantry",
-    price: 650.00,
-    inventory: 18,
-    status: "LOW_STOCK",
-    sales30d: 219,
-    rating: 4.9
+    id: "NOTIF_02",
+    group: "Today",
+    type: "WARNING",
+    title: "Low Inventory Alert: 2 Products",
+    desc: "Coorg Arabica Roast (18 units) and Basmati Rice (8 units) dropped below safety reorder threshold.",
+    time: "2h ago",
+    isUnread: true,
+    targetType: "product",
+    targetId: "PRD_002"
   },
   {
-    id: "PRD_003",
-    sku: "HON-HIM-03",
-    name: "Raw Himalayan Multi-Flora Honey (500g)",
-    category: "Organic Grocery",
-    price: 550.00,
-    inventory: 64,
-    status: "IN_STOCK",
-    sales30d: 180,
-    rating: 4.7
+    id: "NOTIF_03",
+    group: "Today",
+    type: "SUCCESS",
+    title: "Settlement Credited: ₹18.45L",
+    desc: "T+0 instant UPI batch #SETTLE_20260824_03 credited to HDFC Current Account ...4012.",
+    time: "3h ago",
+    isUnread: false,
+    targetType: "payments",
+    targetId: "payments"
   },
   {
-    id: "PRD_004",
-    sku: "RIC-BAS-04",
-    name: "Royal Aged Basmati Rice (5kg Bag)",
-    category: "Grains & Staples",
-    price: 920.00,
-    inventory: 8,
-    status: "LOW_STOCK",
-    sales30d: 142,
-    rating: 4.6
-  },
-  {
-    id: "PRD_005",
-    sku: "MCH-STM-05",
-    name: "Retail Steam Milk Frother (Commercial)",
-    category: "Store Equipment",
-    price: 4250.00,
-    inventory: 0,
-    status: "OUT_OF_STOCK",
-    sales30d: 24,
-    rating: 4.9
-  },
-  {
-    id: "PRD_006",
-    sku: "SPC-KRL-06",
-    name: "Kerala Cardamom & Cinnamon Spice Pack (250g)",
-    category: "Organic Grocery",
-    price: 380.00,
-    inventory: 95,
-    status: "IN_STOCK",
-    sales30d: 310,
-    rating: 4.8
-  }
-];
-
-export const COMMERCE_ORDERS = [
-  {
-    id: "ORD_78912",
-    customer: "Aditi Sharma",
-    itemsCount: 3,
-    total: 1450.00,
-    paymentStatus: "PAID",
-    fulfillmentStatus: "FULFILLED",
-    date: "Today, 22:45",
-    channel: "Retail POS Terminal #04"
-  },
-  {
-    id: "ORD_78911",
-    customer: "Karthik Sundaram",
-    itemsCount: 4,
-    total: 320.00,
-    paymentStatus: "PAID",
-    fulfillmentStatus: "FULFILLED",
-    date: "Today, 22:15",
-    channel: "QR Pay & Dine-In"
-  },
-  {
-    id: "ORD_78910",
-    customer: "Vikram Malhotra",
-    itemsCount: 2,
-    total: 8750.00,
-    paymentStatus: "PAID",
-    fulfillmentStatus: "DISPATCHED",
-    date: "Today, 21:10",
-    channel: "Online Merchant Store"
-  },
-  {
-    id: "ORD_78909",
-    customer: "Priya Nair",
-    itemsCount: 3,
-    total: 2450.00,
-    paymentStatus: "BLOCKED_FRAUD",
-    fulfillmentStatus: "CANCELLED",
-    date: "Today, 21:50",
-    channel: "Counter Spoof Attempt"
-  },
-  {
-    id: "ORD_78908",
-    customer: "Amitav Ghosh",
-    itemsCount: 1,
-    total: 680.00,
-    paymentStatus: "PAID",
-    fulfillmentStatus: "PROCESSING",
-    date: "Today, 19:45",
-    channel: "Store Pickup"
-  }
-];
-
-export const COMMERCE_CUSTOMERS = [
-  {
-    id: "CUST_401",
-    name: "Aditi Sharma",
-    phone: "+91 98450 12384",
-    ordersCount: 18,
-    totalSpent: 24850.00,
-    trustScore: "99.4% (Verified)",
-    status: "ACTIVE"
-  },
-  {
-    id: "CUST_402",
-    name: "Karthik Sundaram",
-    phone: "+91 94440 99120",
-    ordersCount: 42,
-    totalSpent: 16400.00,
-    trustScore: "99.8% (Frequent Regular)",
-    status: "ACTIVE"
-  },
-  {
-    id: "CUST_403",
-    name: "Vikram Malhotra",
-    phone: "+91 98110 55432",
-    ordersCount: 6,
-    totalSpent: 48900.00,
-    trustScore: "98.2% (Enterprise B2B)",
-    status: "ACTIVE"
-  },
-  {
-    id: "CUST_404",
-    name: "Priya Nair",
-    phone: "+91 97401 22819",
-    ordersCount: 1,
-    totalSpent: 0.00,
-    trustScore: "12.0% (Flagged Counterfeit)",
-    status: "RESTRICTED"
+    id: "NOTIF_04",
+    group: "Earlier",
+    type: "INFO",
+    title: "1930 Cybercrime Dossier Generated",
+    desc: "Mule account forensics extracted from ScamBait honeypot session ready for police submission.",
+    time: "Yesterday",
+    isUnread: false,
+    targetType: "reports",
+    targetId: "reports"
   }
 ];
 
 export const REVENUE_TIMELINE = [
-  { label: "Mon", revenue: 284000, txns: 2410 },
-  { label: "Tue", revenue: 310000, txns: 2650 },
-  { label: "Wed", revenue: 345000, txns: 2980 },
-  { label: "Thu", revenue: 290000, txns: 2520 },
-  { label: "Fri", revenue: 410000, txns: 3410 },
-  { label: "Sat", revenue: 465000, txns: 3890 },
-  { label: "Sun", revenue: 378450, txns: 3120 }
+  { label: "Mon", revenue: 284000, txns: 2410, aov: 117.8 },
+  { label: "Tue", revenue: 310000, txns: 2650, aov: 116.9 },
+  { label: "Wed", revenue: 345000, txns: 2980, aov: 115.7 },
+  { label: "Thu", revenue: 290000, txns: 2520, aov: 115.0 },
+  { label: "Fri", revenue: 410000, txns: 3410, aov: 120.2 },
+  { label: "Sat", revenue: 465000, txns: 3890, aov: 119.5 },
+  { label: "Sun", revenue: 378450, txns: 3120, aov: 121.2 }
 ];
 
 export const REQUIRES_ATTENTION = [
@@ -520,7 +680,7 @@ export const REQUIRES_ATTENTION = [
     severity: "HIGH",
     title: "Quishing Sticker Tamper Attempt Blocked",
     description: "Counter #04 QR stand had a physical sticker overlay (+0.35mm depth) routing to disposable mule VPA quick_refund_x98234@ibl.",
-    action: "Review Terminal Log",
+    action: "Inspect Terminal",
     tab: "qr-shield",
     time: "26 mins ago"
   },
@@ -529,7 +689,7 @@ export const REQUIRES_ATTENTION = [
     severity: "HIGH",
     title: "AI Voice Clone Impersonation Intercepted",
     description: "Incoming call audio flagged 98.4% deepfake probability demanding emergency ₹25,000 hospital transfer.",
-    action: "Inspect Audio Waveform",
+    action: "Analyze Waveform",
     tab: "deepfake-voice",
     time: "1 hr ago"
   },
@@ -539,7 +699,7 @@ export const REQUIRES_ATTENTION = [
     title: "2 Products Running Low on Retail Inventory",
     description: "Coorg Arabica Roast (18 units left) and Basmati Rice 5kg (8 units left) reached replenishment threshold.",
     action: "Manage Inventory",
-    tab: "commerce-inventory",
+    tab: "inventory",
     time: "2 hrs ago"
   },
   {

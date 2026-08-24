@@ -3,7 +3,8 @@ import {
   LayoutDashboard, CreditCard, ArrowLeftRight, ShoppingBag, 
   Package, Users, Warehouse, ShieldAlert, QrCode, Waves, 
   MessageSquareWarning, Bot, Receipt, FileCheck, ChevronDown, 
-  Building2, Sparkles, ShieldCheck, CheckCircle2, AlertTriangle, X
+  Building2, Sparkles, ShieldCheck, CheckCircle2, AlertTriangle, 
+  X, BarChart3, Settings, Undo2
 } from 'lucide-react';
 
 export default function Sidebar({ 
@@ -24,23 +25,35 @@ export default function Sidebar({
     {
       title: "Commerce",
       items: [
-        { id: "transactions", label: "Transactions", icon: ArrowLeftRight },
-        { id: "payments", label: "Payments & Settlements", icon: CreditCard },
         { id: "orders", label: "Orders", icon: ShoppingBag, badge: "5 new" },
         { id: "products", label: "Products", icon: Package },
-        { id: "customers", label: "Customers", icon: Users },
-        { id: "inventory", label: "Inventory", icon: Warehouse, badgeColor: "amber", badge: "2 low" }
+        { id: "inventory", label: "Inventory", icon: Warehouse, badgeColor: "amber", badge: "2 low" },
+        { id: "customers", label: "Customers", icon: Users }
+      ]
+    },
+    {
+      title: "Payments",
+      items: [
+        { id: "transactions", label: "Transactions", icon: ArrowLeftRight },
+        { id: "payments", label: "Settlements & Payouts", icon: CreditCard },
+        { id: "refunds", label: "Refunds & Claims", icon: Undo2 }
       ]
     },
     {
       title: "Risk & Security",
       items: [
         { id: "risk-hub", label: "Risk Overview", icon: ShieldAlert, badge: `${riskAlertsCount}`, badgeColor: "rose" },
-        { id: "qr-shield", label: "QR & Ingress Shield", icon: QrCode },
+        { id: "qr-shield", label: "3D QR Ingress Terminal", icon: QrCode },
         { id: "deepfake-voice", label: "Voice & Call Risk", icon: Waves },
         { id: "social-eng", label: "Intent Interceptor", icon: MessageSquareWarning },
         { id: "scambait", label: "ScamBait Forensics", icon: Bot },
         { id: "receipt-guard", label: "Kirana Settlement", icon: Receipt }
+      ]
+    },
+    {
+      title: "Analytics",
+      items: [
+        { id: "analytics", label: "Financial Analytics", icon: BarChart3 }
       ]
     },
     {
@@ -105,21 +118,24 @@ export default function Sidebar({
       </div>
 
       {/* Navigation Sections */}
-      <div className="p-3 space-y-5 flex-1 overflow-y-auto">
+      <div className="p-3 space-y-4 flex-1 overflow-y-auto">
         {navSections.map((section, idx) => (
           <div key={idx} className="space-y-1">
             <div className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
               {section.title}
             </div>
-            <div className="space-y-0.5 pt-1">
+            <div className="space-y-0.5 pt-0.5">
               {section.items.map((item) => {
                 const Icon = item.icon;
-                const isActive = currentView === item.id;
+                const isActive = currentView === item.id || 
+                  (item.id === 'refunds' && currentView === 'transactions') ||
+                  (item.id === 'risk-hub' && ['qr-shield', 'deepfake-voice', 'social-eng', 'scambait', 'receipt-guard'].includes(currentView));
+                
                 return (
                   <button
                     key={item.id}
                     onClick={() => handleItemClick(item.id)}
-                    className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition cursor-pointer ${
+                    className={`w-full flex items-center justify-between px-3 py-1.5 rounded-lg text-xs font-medium transition cursor-pointer ${
                       isActive
                         ? 'bg-blue-50 text-blue-700 font-semibold shadow-xs'
                         : 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
