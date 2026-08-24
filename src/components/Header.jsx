@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Cpu, Wifi, WifiOff, Zap, FileText, Layers, Bot } from 'lucide-react';
+import { ShieldCheck, Cpu, Wifi, WifiOff, Zap, FileText, Layers, Bot, Activity, Waves } from 'lucide-react';
 
 export default function Header({ activeTab, setActiveTab, onOpenDeck, onOpenArch }) {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -86,50 +86,62 @@ export default function Header({ activeTab, setActiveTab, onOpenDeck, onOpenArch
       <div className="max-w-6xl mx-auto px-4 flex gap-1 border-t border-slate-800/60 overflow-x-auto">
         <button
           onClick={() => setActiveTab('qr-shield')}
-          className={`px-4 py-2.5 text-xs font-semibold tracking-wide border-b-2 transition flex items-center gap-2 whitespace-nowrap cursor-pointer ${
+          className={`px-3.5 py-2.5 text-xs font-semibold tracking-wide border-b-2 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
             activeTab === 'qr-shield'
               ? 'border-cyan-400 text-cyan-300 bg-cyan-500/5'
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
           <Zap className="w-4 h-4" />
-          <span>1. QR & Quishing Shield</span>
+          <span>1. 3D QR & Parallax Shield</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('deepfake-voice')}
+          className={`px-3.5 py-2.5 text-xs font-semibold tracking-wide border-b-2 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+            activeTab === 'deepfake-voice'
+              ? 'border-rose-400 text-rose-300 bg-rose-500/10 font-bold'
+              : 'border-transparent text-rose-400 hover:text-rose-200'
+          }`}
+        >
+          <Waves className="w-4 h-4 text-rose-400 animate-pulse" />
+          <span>2. 🎙️ AI Deepfake Voice Detector</span>
         </button>
 
         <button
           onClick={() => setActiveTab('social-eng')}
-          className={`px-4 py-2.5 text-xs font-semibold tracking-wide border-b-2 transition flex items-center gap-2 whitespace-nowrap cursor-pointer ${
+          className={`px-3.5 py-2.5 text-xs font-semibold tracking-wide border-b-2 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
             activeTab === 'social-eng'
               ? 'border-cyan-400 text-cyan-300 bg-cyan-500/5'
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
           <ShieldCheck className="w-4 h-4" />
-          <span>2. Social Engineering Interceptor</span>
+          <span>3. Social Eng. Interceptor</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('scambait')}
+          className={`px-3.5 py-2.5 text-xs font-semibold tracking-wide border-b-2 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
+            activeTab === 'scambait'
+              ? 'border-amber-400 text-amber-300 bg-amber-500/10 font-bold'
+              : 'border-transparent text-amber-400 hover:text-amber-200'
+          }`}
+        >
+          <Bot className="w-4 h-4 text-amber-400" />
+          <span>4. 🤖 ScamBait Honeypot</span>
         </button>
 
         <button
           onClick={() => setActiveTab('receipt-guard')}
-          className={`px-4 py-2.5 text-xs font-semibold tracking-wide border-b-2 transition flex items-center gap-2 whitespace-nowrap cursor-pointer ${
+          className={`px-3.5 py-2.5 text-xs font-semibold tracking-wide border-b-2 transition flex items-center gap-1.5 whitespace-nowrap cursor-pointer ${
             activeTab === 'receipt-guard'
               ? 'border-cyan-400 text-cyan-300 bg-cyan-500/5'
               : 'border-transparent text-slate-400 hover:text-slate-200'
           }`}
         >
           <Layers className="w-4 h-4" />
-          <span>3. Spoofed Receipt Guard</span>
-        </button>
-
-        <button
-          onClick={() => setActiveTab('scambait')}
-          className={`px-4 py-2.5 text-xs font-semibold tracking-wide border-b-2 transition flex items-center gap-2 whitespace-nowrap cursor-pointer ${
-            activeTab === 'scambait'
-              ? 'border-rose-400 text-rose-300 bg-rose-500/10 font-bold'
-              : 'border-transparent text-rose-400 hover:text-rose-200'
-          }`}
-        >
-          <Bot className="w-4 h-4 text-rose-400 animate-pulse" />
-          <span>4. 🤖 ScamBait Honeypot</span>
+          <span>5. Receipt Guard</span>
         </button>
       </div>
     </header>

@@ -1,12 +1,13 @@
 import React, { useState } from 'react';
 import Header from './components/Header';
 import QRScannerView from './components/QRScannerView';
+import DeepfakeVoiceDetector from './components/DeepfakeVoiceDetector';
 import SocialEngineeringInterceptor from './components/SocialEngineeringInterceptor';
 import ReceiptVerifier from './components/ReceiptVerifier';
 import ScamBaitHoneypot from './components/ScamBaitHoneypot';
 import ArchitectureModal from './components/ArchitectureModal';
 import PitchDeckModal from './components/PitchDeckModal';
-import { ShieldCheck, Cpu, WifiOff, Sparkles, HelpCircle, FileText, CheckCircle2, ChevronRight, X, Bot } from 'lucide-react';
+import { ShieldCheck, Cpu, WifiOff, Sparkles, HelpCircle, FileText, CheckCircle2, ChevronRight, X, Bot, Waves } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('qr-shield');
@@ -33,7 +34,7 @@ export default function App() {
                 Judge Quick Tour
               </span>
               <span className="text-slate-300">
-                1. Test <strong>Quishing QR</strong> ➔ 2. Try <strong>Call Interceptor</strong> ➔ 3. <strong>Receipt Guard</strong> ➔ 4. <strong>🤖 ScamBait Honeypot</strong>
+                1. <strong>3D Parallax QR</strong> ➔ 2. <strong>🎙️ Deepfake Audio AI</strong> ➔ 3. <strong>Scam Call Shield</strong> ➔ 4. <strong>🤖 ScamBait Honeypot</strong>
               </span>
             </div>
             <div className="flex items-center gap-3">
@@ -59,9 +60,10 @@ export default function App() {
       {/* Main Content Area */}
       <main className="flex-1 max-w-6xl w-full mx-auto px-4 py-6 md:py-8">
         {activeTab === 'qr-shield' && <QRScannerView />}
+        {activeTab === 'deepfake-voice' && <DeepfakeVoiceDetector />}
         {activeTab === 'social-eng' && <SocialEngineeringInterceptor />}
-        {activeTab === 'receipt-guard' && <ReceiptVerifier />}
         {activeTab === 'scambait' && <ScamBaitHoneypot />}
+        {activeTab === 'receipt-guard' && <ReceiptVerifier />}
       </main>
 
       {/* Edge AI Telemetry Footer Bar */}
@@ -69,13 +71,13 @@ export default function App() {
         <div className="max-w-6xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
-            <span className="text-slate-400 font-medium">AegisPay Edge AI Sandbox v1.0</span>
+            <span className="text-slate-400 font-medium">AegisPay Edge AI Sandbox v2.0 (Superior Build)</span>
             <span className="text-slate-600">|</span>
             <span>iQOO Hackathon 2026 Submission</span>
           </div>
 
           <div className="flex items-center gap-4 text-[11px] font-mono text-slate-400">
-            <span>Model: LiteRT MobileBERT (INT8)</span>
+            <span>Core: LiteRT MobileBERT + Mel-Spectrogram Transformer</span>
             <span>Zero Cloud I/O</span>
             <button
               onClick={() => setIsDeckOpen(true)}
