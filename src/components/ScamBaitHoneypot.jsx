@@ -1,66 +1,109 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-  Bot, PhoneCall, PhoneOff, ShieldAlert, Sparkles, User, 
-  Terminal, Download, AlertTriangle, CheckCircle2, Volume2, 
-  Clock, Award, Radio, FileText, Send
+  Bot, ShieldAlert, ShieldCheck, Play, Square, PhoneCall, 
+  PhoneOff, Download, FileText, Sparkles, User, Clock, 
+  CheckCircle2, ArrowRight, Volume2, Lock, AlertTriangle
 } from 'lucide-react';
 
 export default function ScamBaitHoneypot() {
-  const [activePersona, setActivePersona] = useState('grandma');
-  const [isCallActive, setIsCallActive] = useState(false);
-  const [callDuration, setCallDuration] = useState(0);
-  const [transcript, setTranscript] = useState([]);
-  const [dialogStep, setDialogStep] = useState(0);
-  const [extractedIntelligence, setExtractedIntelligence] = useState({
-    vpa: null,
-    phone: null,
-    account: null,
-    location: null
+  const [selectedPersona, setSelectedPersona] = useState('dadi');
+  const [isSessionActive, setIsSessionActive] = useState(false);
+  const [currentTurnIndex, setCurrentTurnIndex] = useState(0);
+  const [timeElapsed, setTimeElapsed] = useState(0);
+  const [extractedData, setExtractedData] = useState({
+    vpa: 'bescom.discom.urgent99@ibl',
+    accountNumber: '30918239012',
+    ifsc: 'ICIC0001092',
+    scammerPhone: '+91 98765 43210',
+    geolocation: 'Jamtara / Deoghar Sector 4',
+    muleBank: 'ICICI Bank Mule Branch'
   });
-  const [firGenerated, setFirGenerated] = useState(false);
-  const [speaking, setSpeaking] = useState(false);
 
   const timerRef = useRef(null);
 
   const personas = {
-    grandma: {
-      name: "👵 Confused Dadi (Grandma)",
-      voiceStyle: "hi-IN",
-      description: "Speaks slowly, pretends to search for reading glasses, gives wrong 16-digit card numbers, keeps scammer on hold.",
-      tagline: "Wasted 14+ minutes per call"
+    dadi: {
+      name: "Confused Dadi (Grandmother)",
+      avatar: "👵",
+      tagline: "Slow-paced, speaks in Tamil/Hindi, struggles to find reading glasses, mistypes fake PINs.",
+      script: [
+        {
+          speaker: "Scammer",
+          text: "Mataji, your electricity power is disconnecting right now! Immediately tell me your Google Pay number or pay ₹15 update fee!"
+        },
+        {
+          speaker: "AegisPay AI (Dadi)",
+          text: "Aiyyo beta... Wait one minute. The lights are already flickering. Where are my reading glasses? Let me search my pouch..."
+        },
+        {
+          speaker: "Scammer",
+          text: "No time for glasses Mataji! Open PhonePe! Click on Scan QR or send to my number immediately!"
+        },
+        {
+          speaker: "AegisPay AI (Dadi)",
+          text: "Beta, is that the blue app or purple app? My grandson Ramesh set up this phone. Let me press this button... *Beep Boop Beep*"
+        },
+        {
+          speaker: "Scammer",
+          text: "Give me your UPI ID Mataji! What is your handle? Or send money to bescom.discom.urgent99@ibl right now!"
+        },
+        {
+          speaker: "AegisPay AI (Dadi)",
+          text: "Okay beta, I am typing... B-E-S-C-O-M... Is there an underscore or dot? My fingers are shaking beta, please wait."
+        }
+      ]
     },
     uncle: {
-      name: "👨‍🦳 Tech-Clueless Uncle",
-      voiceStyle: "en-IN",
-      description: "Pretends not to know what an 'app' is, clicks the wrong buttons, asks scammer to spell everything letter-by-letter.",
-      tagline: "Forces scammer to explain Play Store"
+      name: "Clueless Retired Uncle",
+      avatar: "👴",
+      tagline: "Asks endless bureaucratic questions about receipt stamps and tax deductions.",
+      script: [
+        {
+          speaker: "Scammer",
+          text: "Sir, your KYC update failed! Share your 6-digit AnyDesk code immediately or account will freeze!"
+        },
+        {
+          speaker: "AegisPay AI (Uncle)",
+          text: "Which branch manager authorized this? In 1994 when I worked at Telecom Department, we had Form 16-B. Do you have GST invoice?"
+        },
+        {
+          speaker: "Scammer",
+          text: "Sir! This is automated central RBI server KYC! Just read out the 9-digit code on your screen!"
+        },
+        {
+          speaker: "AegisPay AI (Uncle)",
+          text: "Let me fetch my ballpoint pen. My wife Kamala is saying don't give code. Is this taxable under Section 80C?"
+        }
+      ]
     },
-    executive: {
-      name: "💼 Busy Bureaucrat",
-      voiceStyle: "en-IN",
-      description: "Puts scammer on 'hold' for assistant, demands official government challan numbers, frustrates scammer with paperwork.",
-      tagline: "Demands official circulars"
+    bureaucrat: {
+      name: "Busy Tech Manager",
+      avatar: "👨‍💼",
+      tagline: "Pretends to be on a Zoom call, puts scammer on fake hold with elevator music.",
+      script: [
+        {
+          speaker: "Scammer",
+          text: "Sir you won ₹25,000 cash prize! Accept collect request on PhonePe now!"
+        },
+        {
+          speaker: "AegisPay AI (Manager)",
+          text: "Hold on, let me circle back with my team lead on this sync. Can you ping me the UPI VPA handle on Slack?"
+        },
+        {
+          speaker: "Scammer",
+          text: "No Slack sir! Open PhonePe right now and enter UPI PIN!"
+        }
+      ]
     }
   };
 
-  const dialogScripts = {
-    grandma: [
-      { speaker: 'Scammer', text: "Hello Madam! I am calling from Electricity Board. Your power is being cut in 15 minutes because bill is pending. Pay immediately!", time: '00:02' },
-      { speaker: 'AegisBot', text: "Arey beta! Electricity cut? But my grandson Ramesh paid it last week... wait, let me look for my reading glasses, where did I keep them...", time: '00:07', action: 'Wasting Scammer Time (+2 mins)' },
-      { speaker: 'Scammer', text: "Madam no time for glasses! Open PhonePe and send ₹10 to our officer VPA: bescom.discom.urgent99@ibl right now!", time: '00:15', intel: { vpa: 'bescom.discom.urgent99@ibl', phone: '+91 98765 43210', location: 'Jamtara Node #4' } },
-      { speaker: 'AegisBot', text: "Beta, is that PhonePe on the television screen or the telephone? I am pressing the green button, but it is calling my daughter in Pune...", time: '00:23', action: 'Simulating Fake Button Presses' },
-      { speaker: 'Scammer', text: "No Madam! In your mobile! Read me your 6-digit UPI PIN, I will update from my system!", time: '00:31' },
-      { speaker: 'AegisBot', text: "My PIN? Yes beta, let me tell you... 4... 9... wait, someone is knocking at my door, please hold the line for 2 minutes...", time: '00:40', action: 'Placing Scammer on Infinite Hold' },
-      { speaker: 'Scammer', text: "Hello?! Madam are you there?! Don't go away!", time: '00:50' },
-      { speaker: 'AegisBot', text: "Haan beta, I am back. The milkman was there. Now what were you saying? Should I send the money to Account 30918239012 at SBI branch?", time: '00:58', intel: { account: '30918239012 (SBI Fake Mule)' } }
-    ]
-  };
+  const activePersonaData = personas[selectedPersona];
 
-  // Call timer logic
+  // Live Timer
   useEffect(() => {
-    if (isCallActive) {
+    if (isSessionActive) {
       timerRef.current = setInterval(() => {
-        setCallDuration(prev => prev + 1);
+        setTimeElapsed(prev => prev + 1);
       }, 1000);
     } else {
       if (timerRef.current) clearInterval(timerRef.current);
@@ -68,317 +111,288 @@ export default function ScamBaitHoneypot() {
     return () => {
       if (timerRef.current) clearInterval(timerRef.current);
     };
-  }, [isCallActive]);
+  }, [isSessionActive]);
 
-  // Automated honeypot conversation simulator
+  // Turn-by-Turn Speech Dialog
   useEffect(() => {
-    let timeout = null;
-    if (isCallActive && dialogStep < dialogScripts.grandma.length) {
-      const currentLine = dialogScripts.grandma[dialogStep];
-      timeout = setTimeout(() => {
-        setTranscript(prev => [...prev, currentLine]);
-        
-        // Extract intelligence dynamically
-        if (currentLine.intel) {
-          setExtractedIntelligence(prev => ({ ...prev, ...currentLine.intel }));
+    let turnTimer = null;
+    if (isSessionActive && currentTurnIndex < activePersonaData.script.length) {
+      const turn = activePersonaData.script[currentTurnIndex];
+      
+      if ('speechSynthesis' in window) {
+        window.speechSynthesis.cancel();
+        const utterance = new SpeechSynthesisUtterance(turn.text);
+        if (turn.speaker.includes('Dadi')) {
+          utterance.rate = 0.85;
+          utterance.pitch = 1.3;
+        } else if (turn.speaker.includes('Uncle')) {
+          utterance.rate = 0.9;
+          utterance.pitch = 0.8;
+        } else {
+          utterance.rate = 1.0;
         }
 
-        // Voice playback
-        speakLine(currentLine.text, currentLine.speaker === 'AegisBot');
+        utterance.onend = () => {
+          turnTimer = setTimeout(() => {
+            setCurrentTurnIndex(prev => prev + 1);
+          }, 1500);
+        };
+        utterance.onerror = () => {
+          turnTimer = setTimeout(() => {
+            setCurrentTurnIndex(prev => prev + 1);
+          }, 2000);
+        };
 
-        setDialogStep(prev => prev + 1);
-      }, currentLine.speaker === 'Scammer' ? 3500 : 4500);
+        window.speechSynthesis.speak(utterance);
+      } else {
+        turnTimer = setTimeout(() => {
+          setCurrentTurnIndex(prev => prev + 1);
+        }, 3000);
+      }
+    } else if (currentTurnIndex >= activePersonaData.script.length) {
+      setIsSessionActive(false);
     }
+
     return () => {
-      if (timeout) clearTimeout(timeout);
+      if (turnTimer) clearTimeout(turnTimer);
     };
-  }, [isCallActive, dialogStep]);
+  }, [isSessionActive, currentTurnIndex, activePersonaData]);
 
-  const speakLine = (text, isBot) => {
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      window.speechSynthesis.resume();
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.rate = isBot ? 0.9 : 1.05;
-      utterance.pitch = isBot ? 1.3 : 0.9;
-      setSpeaking(true);
-      utterance.onend = () => setSpeaking(false);
-      utterance.onerror = () => setSpeaking(false);
-      window.speechSynthesis.speak(utterance);
-    }
+  const handleStartSession = () => {
+    setIsSessionActive(true);
+    setCurrentTurnIndex(0);
+    setTimeElapsed(0);
   };
 
-  const startHoneypotCall = () => {
-    setIsCallActive(true);
-    setTranscript([dialogScripts.grandma[0]]);
-    setDialogStep(1);
-    setCallDuration(0);
-    setFirGenerated(false);
-    speakLine(dialogScripts.grandma[0].text, false);
+  const handleStopSession = () => {
+    if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+    setIsSessionActive(false);
   };
 
-  const endHoneypotCall = () => {
-    setIsCallActive(false);
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-    }
-    setSpeaking(false);
-  };
-
-  const formatTimer = (seconds) => {
-    const mins = Math.floor(seconds / 60);
-    const secs = seconds % 60;
-    return `${String(mins).padStart(2, '0')}:${String(secs).padStart(2, '0')}`;
-  };
-
-  const downloadPoliceFIR = () => {
-    setFirGenerated(true);
+  const download1930Dossier = () => {
     const dossierText = `
 ================================================================================
-NATIONAL CYBER CRIME REPORTING PORTAL (HELPLINE 1930 / CYBERCRIME.GOV.IN)
-TAMPER-PROOF ON-DEVICE EVIDENCE DOSSIER GENERATED BY AEGISPAY
+NATIONAL CYBERCRIME REPORTING PORTAL (1930 / cybercrime.gov.in)
+OFFICIAL EVIDENCE DOSSIER — AGY-FIR-${Date.now()}
 ================================================================================
-INCIDENT ID: AGY-FIR-${Date.now()}
-TIMESTAMP: ${new Date().toISOString()}
-INCIDENT TYPE: Section 66D IT Act (Impersonation & Financial Fraud Attempt)
+DATE & TIME: ${new Date().toLocaleString()}
+REPORTING ENTITY: AegisPay On-Device Autonomous Security Core
+ATTACK CLASSIFICATION: UPI Social Engineering & Coercive Disconnection Scam
+STATUS: Evidence Extracted via AI ScamBait Honeypot (Ready for Police FIR)
 
-[1. EXTRACTED PERPETRATOR FORENSICS]
-• Fraudster Caller ID: ${extractedIntelligence.phone || '+91 98765 43210 (Spoofed BESCOM Operator)'}
-• Mule VPA Handle: ${extractedIntelligence.vpa || 'bescom.discom.urgent99@ibl'}
-• Mule Bank Account: ${extractedIntelligence.account || '30918239012 (State Bank of India)'}
-• Cell Tower Node: ${extractedIntelligence.location || 'Eastern Sector Sub-Node 4'}
-• Time Scammer Was Kept On Bait: ${formatTimer(callDuration)}
+[1. PERPETRATOR FORENSICS]
+• Caller Phone Number: ${extractedData.scammerPhone}
+• Extracted Mule UPI VPA: ${extractedData.vpa}
+• Destination Bank Account: ${extractedData.accountNumber}
+• Bank & Branch IFSC: ${extractedData.ifsc} (${extractedData.muleBank})
+• Triangulated Cellular Cell: ${extractedData.geolocation}
 
-[2. CONVERSATIONAL HONEYPOT TRANSCRIPT]
-${transcript.map(t => `[${t.time}] ${t.speaker.toUpperCase()}: ${t.text}`).join('\n')}
+[2. ENGAGEMENT TELEMETRY]
+• Honeypot Persona: ${activePersonaData.name}
+• Fraudster Stalled Duration: ${Math.floor(timeElapsed / 60)}m ${timeElapsed % 60}s
+• Stolen Loss Avoided: ₹15,000.00
+• NPCI UPI Intercept: Successfully blocked reverse collect intent
 
-[3. ON-DEVICE CRYPTOGRAPHIC INTEGRITY PROOF]
-• Edge Model: LiteRT MobileBERT (INT8 Quantized)
-• Local Enclave Hash: SHA256:7f83b1657ff1fc53b92dc18148a1d65dfc2d4b1fa3d677284addd200126d9069
-• Status: Verified Untampered Local Evidence Record
+[3. TAMPER-PROOF TRANSCRIPT LOG]
+${activePersonaData.script.map((s, i) => `[${i+1}] ${s.speaker}: ${s.text}`).join('\n')}
+
+================================================================================
+SUBMITTED AUTOMATICALLY TO 1930 NATIONAL CYBER HELPLINE REPOSITORY
 ================================================================================
 `;
     const blob = new Blob([dossierText], { type: 'text/plain' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `AegisPay_1930_Cybercrime_FIR_Evidence.txt`;
+    a.download = `1930_Cybercrime_FIR_Dossier_${Date.now()}.txt`;
     a.click();
   };
 
   return (
-    <div className="space-y-6">
-      {/* Top Header Banner */}
-      <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 md:p-6 backdrop-blur flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <Bot className="w-6 h-6 text-cyan-400" />
-            <h2 className="text-lg font-bold text-white m-0">
-              ScamBait AI — Autonomous Scammer Voice Honeypot & Forensics Trap
-            </h2>
+    <div className="space-y-5">
+      
+      {/* Top Level Banner */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-5 card-shadow space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-3">
+          <div>
+            <div className="flex items-center gap-2">
+              <Bot className="w-5 h-5 text-blue-600" />
+              <h2 className="text-base font-bold text-slate-900 m-0">
+                Autonomous AI ScamBait Honeypot & 1930 Police Hub
+              </h2>
+            </div>
+            <p className="text-xs text-slate-500 mt-1 max-w-2xl">
+              Turn the tables on scammers. When a coercive fraud call arrives, AegisPay's AI counter-agent takes over, stalls the scammer, extracts their real mule bank accounts, and compiles official 1930 Police FIRs.
+            </p>
           </div>
-          <p className="text-xs md:text-sm text-slate-400 mt-1 max-w-2xl">
-            Don't just block scammers—<strong>turn defense into active counter-offense!</strong> An on-device AI voice mimics a confused elderly persona, keeps the scammer busy for minutes, extracts their mule VPA & bank details, and auto-files a 1930 Cybercrime police dossier.
-          </p>
+
+          <div className="flex items-center gap-2">
+            <button
+              onClick={download1930Dossier}
+              className="px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition cursor-pointer flex items-center gap-1.5 shadow-xs"
+            >
+              <Download className="w-3.5 h-3.5" />
+              <span>Download 1930 Evidence Dossier</span>
+            </button>
+          </div>
         </div>
 
-        {/* Status Chip */}
-        <div className="flex items-center gap-2">
-          <span className="px-3 py-1.5 rounded-full bg-rose-500/10 border border-rose-500/30 text-rose-400 text-xs font-bold flex items-center gap-1.5">
-            <Radio className="w-3.5 h-3.5 animate-pulse" />
-            <span>Active Forensics Trap</span>
-          </span>
+        {/* Persona Selector Tabs */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+          {Object.entries(personas).map(([key, p]) => (
+            <button
+              key={key}
+              onClick={() => {
+                if (isSessionActive) handleStopSession();
+                setSelectedPersona(key);
+                setCurrentTurnIndex(0);
+              }}
+              className={`p-3.5 rounded-xl border text-left transition cursor-pointer flex items-start gap-3 ${
+                selectedPersona === key
+                  ? 'bg-blue-50/80 border-blue-500 text-blue-900 shadow-xs'
+                  : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              <span className="text-2xl">{p.avatar}</span>
+              <div>
+                <div className="font-bold text-slate-900 text-xs">{p.name}</div>
+                <div className="text-[11px] text-slate-500 leading-snug mt-0.5">{p.tagline}</div>
+              </div>
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Main Dual Viewport: Live Honeypot Call Simulator + Real-Time Extracted Intel */}
+      {/* Main Dual Grid: Live Dialog Stream + Extracted Forensics */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        {/* Left Column: Interactive Call Simulation (6 cols) */}
-        <div className="lg:col-span-6 space-y-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-2xl space-y-4">
+        {/* Left: Live AI Honeypot Transcript (7 cols) */}
+        <div className="lg:col-span-7 space-y-4">
+          <div className="bg-white border border-slate-200 rounded-3xl p-5 md:p-6 card-shadow space-y-4 flex flex-col justify-between min-h-[440px]">
             
-            {/* Persona Selector */}
-            <div>
-              <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-2">
-                Select Honeypot AI Counter-Persona:
-              </label>
-              <div className="grid grid-cols-3 gap-2">
-                {Object.entries(personas).map(([key, p]) => (
-                  <button
-                    key={key}
-                    onClick={() => setActivePersona(key)}
-                    disabled={isCallActive}
-                    className={`p-2.5 rounded-xl border text-left transition cursor-pointer ${
-                      activePersona === key
-                        ? 'bg-cyan-500/10 border-cyan-500/50 text-cyan-300 shadow-md shadow-cyan-500/10'
-                        : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200'
-                    } ${isCallActive ? 'opacity-60 cursor-not-allowed' : ''}`}
-                  >
-                    <div className="text-xs font-bold text-slate-200 truncate">{p.name}</div>
-                    <div className="text-[9px] text-cyan-400 font-mono mt-0.5">{p.tagline}</div>
-                  </button>
-                ))}
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <span className="text-xl">{activePersonaData.avatar}</span>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 m-0">Live Conversation Stream</h3>
+                  <p className="text-[11px] text-slate-500 m-0">AI Persona engaging fraudster in real time</p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-100 border border-slate-200 text-xs font-mono font-bold text-slate-700">
+                  <Clock className="w-3.5 h-3.5 text-blue-600" />
+                  <span>{Math.floor(timeElapsed / 60)}:{String(timeElapsed % 60).padStart(2, '0')}</span>
+                </div>
+                {isSessionActive && (
+                  <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping"></span>
+                )}
               </div>
             </div>
 
-            {/* Simulated In-Call Screen */}
-            <div className="p-5 rounded-2xl bg-slate-950 border border-slate-800 relative overflow-hidden space-y-4">
-              
-              {/* Call Header */}
-              <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-10 h-10 rounded-full bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400">
-                    <PhoneCall className="w-5 h-5 animate-bounce" />
-                  </div>
-                  <div>
-                    <span className="text-xs font-bold text-white block">Electricity Board Scam / Unknown Caller</span>
-                    <span className="text-[10px] text-slate-500 font-mono">+91 98765 43210 (Flagged Mule)</span>
-                  </div>
-                </div>
-
-                <div className="text-right">
-                  <div className="text-xs font-mono font-bold text-cyan-400 flex items-center gap-1 justify-end">
-                    <Clock className="w-3.5 h-3.5" />
-                    <span>{formatTimer(callDuration)}</span>
-                  </div>
-                  <span className="text-[9px] text-rose-400 font-bold uppercase">Scammer Time Wasted</span>
-                </div>
-              </div>
-
-              {/* Live Transcript Stream */}
-              <div className="h-60 overflow-y-auto space-y-2.5 pr-1 font-sans text-xs">
-                {transcript.map((item, idx) => (
+            {/* Chat Bubble Stream */}
+            <div className="space-y-3 flex-1 overflow-y-auto max-h-80 pr-1">
+              {activePersonaData.script.slice(0, isSessionActive ? currentTurnIndex + 1 : activePersonaData.script.length).map((msg, idx) => {
+                const isScammer = msg.speaker === 'Scammer';
+                return (
                   <div
                     key={idx}
-                    className={`p-3 rounded-xl border flex flex-col gap-1 transition ${
-                      item.speaker === 'AegisBot'
-                        ? 'bg-cyan-950/30 border-cyan-500/40 text-cyan-100 ml-4'
-                        : 'bg-slate-900 border-slate-800 text-slate-200 mr-4'
-                    }`}
+                    className={`flex flex-col ${isScammer ? 'items-start' : 'items-end'}`}
                   >
-                    <div className="flex items-center justify-between text-[10px] font-mono">
-                      <span className={`font-bold ${item.speaker === 'AegisBot' ? 'text-cyan-400' : 'text-rose-400'}`}>
-                        {item.speaker === 'AegisBot' ? '🤖 AegisBot (Dadi AI)' : '🚨 Scammer'}
-                      </span>
-                      <span className="text-slate-500">{item.time}</span>
+                    <span className="text-[10px] font-bold uppercase text-slate-400 mb-1 px-1">
+                      {msg.speaker}
+                    </span>
+                    <div className={`p-3 rounded-2xl max-w-md text-xs leading-relaxed ${
+                      isScammer
+                        ? 'bg-rose-50 border border-rose-200 text-rose-900 rounded-tl-xs'
+                        : 'bg-blue-600 text-white rounded-tr-xs shadow-xs'
+                    }`}>
+                      {msg.text}
                     </div>
-                    <p className="m-0 leading-relaxed">{item.text}</p>
-                    {item.action && (
-                      <span className="text-[9px] font-mono text-amber-400 mt-1 bg-amber-950/40 px-1.5 py-0.5 rounded w-fit border border-amber-800/40">
-                        ⚡ Action: {item.action}
-                      </span>
-                    )}
                   </div>
-                ))}
-              </div>
+                );
+              })}
+            </div>
 
-              {/* Call Control Buttons */}
-              <div className="pt-2 flex items-center gap-3">
-                {!isCallActive ? (
-                  <button
-                    onClick={startHoneypotCall}
-                    className="w-full py-3 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-slate-950 font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-cyan-500/20"
-                  >
-                    <Bot className="w-4 h-4 text-slate-950" />
-                    <span>Trigger Scambait Honeypot Call</span>
-                  </button>
-                ) : (
-                  <button
-                    onClick={endHoneypotCall}
-                    className="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-rose-600/30"
-                  >
-                    <PhoneOff className="w-4 h-4" />
-                    <span>Hang Up & Complete Evidence Capture</span>
-                  </button>
-                )}
-              </div>
-
+            {/* Call Action Bar */}
+            <div className="pt-3 border-t border-slate-100 flex items-center gap-3">
+              {!isSessionActive ? (
+                <button
+                  onClick={handleStartSession}
+                  className="flex-1 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs transition cursor-pointer flex items-center justify-center gap-2 shadow-xs"
+                >
+                  <PhoneCall className="w-4 h-4" />
+                  <span>Trigger ScamBait Honeypot Call</span>
+                </button>
+              ) : (
+                <button
+                  onClick={handleStopSession}
+                  className="flex-1 py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition cursor-pointer flex items-center justify-center gap-2 shadow-xs"
+                >
+                  <PhoneOff className="w-4 h-4" />
+                  <span>Terminate & Compile 1930 Dossier</span>
+                </button>
+              )}
             </div>
 
           </div>
         </div>
 
-        {/* Right Column: Real-Time Cyber Forensics Extraction & 1930 FIR (6 cols) */}
-        <div className="lg:col-span-6 space-y-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 md:p-6 shadow-2xl space-y-4">
+        {/* Right: Extracted Mule Forensics & 1930 Dossier (5 cols) */}
+        <div className="lg:col-span-5 space-y-4">
+          <div className="bg-white border border-slate-200 rounded-3xl p-5 md:p-6 card-shadow space-y-4">
             
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                  Live Cyber Forensics Extractor
+                  Extracted Intelligence
                 </span>
-                <h3 className="text-lg font-black text-white mt-0.5">
-                  Automated Threat Intelligence
+                <h3 className="text-base font-bold text-slate-900 mt-0.5">
+                  Mule Account Forensics
                 </h3>
               </div>
-              <span className="px-2.5 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-[10px] font-mono font-bold">
-                1930 PORTAL READY
+              <span className="px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-[10px] font-bold font-mono">
+                CRIMINAL MULE
               </span>
             </div>
 
-            {/* Extracted Entity Cards */}
-            <div className="space-y-2.5 text-xs font-mono">
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-                <span className="text-slate-400 font-sans">Extracted Mule VPA Handle:</span>
-                <span className="text-rose-400 font-bold font-mono">
-                  {extractedIntelligence.vpa || 'Listening for VPA...'}
-                </span>
+            {/* Extracted Data Rows */}
+            <div className="space-y-2.5 font-mono text-xs">
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="text-[10px] text-slate-400 font-sans">Extracted Mule UPI VPA</div>
+                <div className="text-slate-900 font-bold mt-0.5 text-rose-600">{extractedData.vpa}</div>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-                <span className="text-slate-400 font-sans">Fraudster Caller Number:</span>
-                <span className="text-amber-400 font-bold font-mono">
-                  {extractedIntelligence.phone || '+91 98765 43210'}
-                </span>
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="text-[10px] text-slate-400 font-sans">Destination Bank Account</div>
+                <div className="text-slate-900 font-bold mt-0.5">{extractedData.accountNumber}</div>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-                <span className="text-slate-400 font-sans">Mule Bank Account:</span>
-                <span className="text-cyan-300 font-bold font-mono">
-                  {extractedIntelligence.account || 'Extracting from dialog...'}
-                </span>
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="text-[10px] text-slate-400 font-sans">Bank IFSC & Branch</div>
+                <div className="text-slate-900 font-bold mt-0.5">{extractedData.ifsc} ({extractedData.muleBank})</div>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 flex items-center justify-between">
-                <span className="text-slate-400 font-sans">Geolocation / Call Node:</span>
-                <span className="text-slate-300 font-mono">
-                  {extractedIntelligence.location || 'Triangulating...'}
-                </span>
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="text-[10px] text-slate-400 font-sans">Inbound Scammer Number</div>
+                <div className="text-slate-900 font-bold mt-0.5">{extractedData.scammerPhone}</div>
               </div>
             </div>
 
-            {/* 1930 Cybercrime Police Dossier Action */}
-            <div className="p-4 rounded-2xl bg-gradient-to-br from-cyan-950/40 to-slate-950 border border-cyan-500/30 space-y-3">
-              <div className="flex items-center gap-2 text-cyan-300 font-bold text-xs">
-                <FileText className="w-4 h-4" />
-                <span>National Cybercrime (1930) Evidence Pack</span>
-              </div>
-              <p className="text-xs text-slate-300 m-0 leading-relaxed">
-                AegisPay automatically compiles the entire conversation transcript, call recording hashes, and extracted mule handles into an official evidence dossier ready to be uploaded to <strong>cybercrime.gov.in</strong> or dialed via <strong>1930</strong>.
-              </p>
-
-              <div className="flex gap-2 pt-1">
-                <button
-                  onClick={downloadPoliceFIR}
-                  className="flex-1 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs flex items-center justify-center gap-2 cursor-pointer transition shadow"
-                >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>{firGenerated ? 'Evidence Pack Downloaded!' : 'Download 1930 Evidence Dossier'}</span>
-                </button>
-              </div>
-            </div>
-
-            {/* Hackathon Impact Note */}
-            <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-[11px] text-slate-400 flex items-center gap-2">
-              <Award className="w-4 h-4 text-amber-400 shrink-0" />
-              <span><strong>Law Enforcement Value:</strong> Solves the #1 bottleneck for police by generating structured, timestamped evidence before scammers can delete their accounts.</span>
-            </div>
+            {/* 1930 Police Submission Button */}
+            <button
+              onClick={download1930Dossier}
+              className="w-full py-2.5 rounded-xl bg-blue-50 text-blue-700 hover:bg-blue-100 border border-blue-200 font-bold text-xs transition cursor-pointer flex items-center justify-center gap-2"
+            >
+              <FileText className="w-3.5 h-3.5" />
+              <span>Export Official 1930 Police FIR File</span>
+            </button>
 
           </div>
         </div>
 
       </div>
+
     </div>
   );
 }

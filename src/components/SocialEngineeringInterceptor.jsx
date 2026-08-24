@@ -1,426 +1,250 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState } from 'react';
 import { SCAM_SCENARIOS } from '../data/mockScenarios';
 import { 
-  ShieldAlert, ShieldCheck, MessageSquare, AlertOctagon, 
-  PhoneCall, Zap, Cpu, Lock, Sparkles, CheckCircle2, Copy, Volume2
+  MessageSquareWarning, ShieldAlert, ShieldCheck, AlertTriangle, 
+  Sparkles, CheckCircle2, XCircle, ArrowRight, Smartphone, Lock, 
+  Send, Bot, Cpu, Volume2
 } from 'lucide-react';
 
 export default function SocialEngineeringInterceptor() {
-  const [selectedScenarioId, setSelectedScenarioId] = useState(SCAM_SCENARIOS[1].id);
+  const [selectedScenarioId, setSelectedScenarioId] = useState(SCAM_SCENARIOS[0].id);
   const [customText, setCustomText] = useState('');
-  const [simulatingInference, setSimulatingInference] = useState(false);
-  const [speaking, setSpeaking] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState('ta');
-  const [spokenSubtitle, setSpokenSubtitle] = useState('');
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
+  const [lockdownActive, setLockdownActive] = useState(false);
 
-  // Dynamic analysis for custom text or selected scenario
-  const currentItem = useMemo(() => {
+  const currentScenario = React.useMemo(() => {
     if (customText.trim().length > 0) {
       const lower = customText.toLowerCase();
       let score = 5;
       let tokens = [];
-      let explanation = "Message appears routine without urgent financial coercion flags.";
-      let intent = "Routine Text / Notification";
+      let explanation = "Standard conversational notification. No coercive patterns detected.";
+      let intent = "Routine Informational";
 
-      // NLP Heuristic keywords for on-device simulation
-      const scamTriggers = [
-        { phrase: "pin", risk: 35, token: "PIN entry request" },
-        { phrase: "disconnect", risk: 40, token: "Utility Disconnection Panic" },
-        { phrase: "anydesk", risk: 45, token: "Remote Access (AnyDesk)" },
-        { phrase: "quicksupport", risk: 45, token: "Remote Access (QuickSupport)" },
-        { phrase: "teamviewer", risk: 45, token: "Remote Access (TeamViewer)" },
-        { phrase: "kyc", risk: 25, token: "Urgent KYC Expiry" },
-        { phrase: "lottery", risk: 40, token: "Lottery / Prize Bait" },
-        { phrase: "reward", risk: 20, token: "Reward / Cashback Trap" },
-        { phrase: "credit refund", risk: 30, token: "Reverse-Charge Deception" },
-        { phrase: "bit.ly", risk: 30, token: "Obfuscated Shortlink" },
-        { phrase: "immediately", risk: 20, token: "High Psychological Urgency" },
-      ];
-
-      scamTriggers.forEach(t => {
-        if (lower.includes(t.phrase)) {
-          score += t.risk;
-          tokens.push(t.token);
-        }
-      });
-
-      const finalScore = Math.min(99, score);
-      if (finalScore > 65) {
-        intent = "High-Risk Financial Social Engineering";
-        explanation = "Detected aggressive psychological coercion, urgent deadline, or deceptive credential harvest triggers.";
+      if (lower.includes('disconnected') || lower.includes('suspend') || lower.includes('urgently') || lower.includes('tonight')) {
+        score += 45;
+        tokens.push('Urgency Pressure');
+        explanation = "High urgency coercion token flagged: Attempting to induce panic via immediate disconnection threat.";
+        intent = "Psychological Pressure";
+      }
+      if (lower.includes('pin') || lower.includes('otp') || lower.includes('cvv') || lower.includes('password')) {
+        score += 40;
+        tokens.push('Credential Extraction');
+        explanation = "Critical credential solicitation: Requesting UPI PIN or authentication token.";
+        intent = "Credential Harvesting";
+      }
+      if (lower.includes('anydesk') || lower.includes('teamviewer') || lower.includes('quicksupport') || lower.includes('apk')) {
+        score += 50;
+        tokens.push('Remote Access / Malware Tool');
+        explanation = "Screen-share takeover attempt: Fraudster attempting to gain remote control of banking apps.";
+        intent = "Device Takeover";
       }
 
       return {
-        id: "custom",
-        category: finalScore > 65 ? "Dynamic Coercion Detection" : "Standard Message",
-        sender: "Active Input / Notification Stream",
+        id: 'custom',
+        category: 'Custom Inbound Text',
+        sender: 'Inbound Notification Stream',
         snippet: customText,
         intent,
-        riskScore: finalScore,
+        riskScore: Math.min(100, score),
         threatTokens: tokens,
         aiExplanation: explanation,
-        suggestedAction: finalScore > 65 ? "Immediate Interception: Blocked UPI Intent Screen" : "Safe: Normal Processing"
+        suggestedAction: score > 70 ? 'Trigger Emergency Lockdown & Block Sender' : 'Safe to proceed'
       };
     }
     return SCAM_SCENARIOS.find(s => s.id === selectedScenarioId) || SCAM_SCENARIOS[0];
   }, [selectedScenarioId, customText]);
 
-  // Audio Siren Tone Generator
-  const playSirenTone = () => {
-    try {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContext) return;
-      const ctx = new AudioContext();
-      if (ctx.state === 'suspended') ctx.resume();
-
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.type = 'sawtooth';
-
-      const now = ctx.currentTime;
-      osc.frequency.setValueAtTime(600, now);
-      osc.frequency.linearRampToValueAtTime(1000, now + 0.15);
-      osc.frequency.linearRampToValueAtTime(600, now + 0.3);
-
-      gain.gain.setValueAtTime(0.2, now);
-      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
-
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.start(now);
-      osc.stop(now + 0.4);
-    } catch (e) {
-      console.log('Audio issue', e);
-    }
-  };
-
-  // Vernacular Speech & Alarm with Phonetic Transliteration
-  const playScamAudioWarning = (lang = selectedLanguage) => {
-    setSpeaking(true);
-    playSirenTone();
-
-    if (navigator.vibrate) {
-      navigator.vibrate([200, 100, 200, 100, 250]);
-    }
-
-    const audioCatalog = {
-      ta: {
-        nativeScript: "எச்சரிக்கை! இது மோசடி செய்தி. உங்கள் பின் அல்லது OTPயை பகிர வேண்டாம்!",
-        phoneticSpeech: "Echarikkai! Idhu mosadi seidhi. Ungal PIN alladhu OTP-yai pagira vendam!",
-        langCode: "ta-IN"
-      },
-      hi: {
-        nativeScript: "सावधान! यह धोखाधड़ी का प्रयास है। किसी को अपना पिन या ओटीपी न बताएं!",
-        phoneticSpeech: "Saavdhaan! Yeh dhokhadhadi ka prayaas hai. Kisi ko apna PIN ya OTP na batayein!",
-        langCode: "hi-IN"
-      },
-      te: {
-        nativeScript: "హెచ్చరిక! ఇది మోసపూరిత సందేశం. మీ పిన్ లేదా ఓటీపీని పంచుకోవద్దు!",
-        phoneticSpeech: "Hechcharika! Idhi mosapooritha sandesham. Mee PIN leda OTP panchukovaddhu!",
-        langCode: "te-IN"
-      },
-      kn: {
-        nativeScript: "ಎಚ್ಚರಿಕೆ! ಇದು ವಂಚನೆಯ ಸಂದೇಶ. ನಿಮ್ಮ ಪಿನ್ ಅಥವಾ OTP ಹಂಚಿಕೊಳ್ಳಬೇಡಿ!",
-        phoneticSpeech: "Echcharike! Idhu vanchane sandesha. Nimma PIN athava OTP hanchikollabedi!",
-        langCode: "kn-IN"
-      },
-      en: {
-        nativeScript: "Alert! Social engineering scam detected. Do not share OTP or enter PIN!",
-        phoneticSpeech: "Alert! Social engineering scam detected. Do not share OTP or enter PIN!",
-        langCode: "en-IN"
-      }
-    };
-
-    const target = audioCatalog[lang] || audioCatalog.en;
-    setSpokenSubtitle(target.nativeScript);
-
-    if ('speechSynthesis' in window) {
-      try {
-        window.speechSynthesis.cancel();
-        window.speechSynthesis.resume();
-
-        const voices = window.speechSynthesis.getVoices();
-        const nativeVoice = voices.find(v => v.lang.startsWith(lang) || v.lang.includes(target.langCode));
-
-        const speechText = (nativeVoice && lang !== 'en') ? target.nativeScript : target.phoneticSpeech;
-        const utterance = new SpeechSynthesisUtterance(speechText);
-        
-        if (nativeVoice) {
-          utterance.voice = nativeVoice;
-          utterance.lang = target.langCode;
-        } else {
-          utterance.lang = 'en-IN';
-        }
-
-        utterance.rate = 0.95;
-        utterance.pitch = 1.05;
-        utterance.volume = 1.0;
-
-        utterance.onend = () => {
-          setSpeaking(false);
-          setTimeout(() => setSpokenSubtitle(''), 5000);
-        };
-        utterance.onerror = () => {
-          setSpeaking(false);
-          setTimeout(() => setSpokenSubtitle(''), 5000);
-        };
-        window.speechSynthesis.speak(utterance);
-      } catch (e) {
-        setSpeaking(false);
-      }
-    } else {
-      setTimeout(() => {
-        setSpeaking(false);
-        setSpokenSubtitle('');
-      }, 5000);
-    }
-  };
-
-  const handleTestScenario = (id) => {
-    setSimulatingInference(true);
-    setSelectedScenarioId(id);
-    setCustomText('');
-    setTimeout(() => setSimulatingInference(false), 200);
+  const handleSimulateLockdown = () => {
+    setLockdownActive(true);
+    if (navigator.vibrate) navigator.vibrate([150, 50, 150, 50, 250]);
+    setTimeout(() => setLockdownActive(false), 3000);
   };
 
   return (
-    <div className="space-y-6">
-      {/* Top Banner Overview */}
-      <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 md:p-6 backdrop-blur flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <ShieldAlert className="w-5 h-5 text-cyan-400" />
-            <h2 className="text-lg font-bold text-white m-0">
-              Ambient Social Engineering & Voice/SMS Interceptor
-            </h2>
-          </div>
-          <p className="text-xs md:text-sm text-slate-400 mt-1 max-w-2xl">
-            Lightweight quantized MobileBERT model running continuously on the phone's NPU to detect panic manipulation, reverse-charge deceptions, and remote-access fraud in real time.
-          </p>
-        </div>
-
-        {/* Preset Selector */}
-        <div className="w-full md:w-auto">
-          <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
-            Test Attack Scenarios:
-          </label>
-          <div className="grid grid-cols-2 md:flex gap-2">
-            {SCAM_SCENARIOS.map((sc) => (
-              <button
-                key={sc.id}
-                onClick={() => handleTestScenario(sc.id)}
-                className={`px-3 py-2 rounded-xl text-xs font-medium transition text-left cursor-pointer border ${
-                  selectedScenarioId === sc.id && !customText
-                    ? 'bg-cyan-500/10 border-cyan-500/50 text-cyan-300 shadow-md shadow-cyan-500/10'
-                    : 'bg-slate-800/80 border-slate-700/60 text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                <div className="font-bold text-slate-200 truncate">{sc.category}</div>
-                <div className="text-[10px] text-slate-400 truncate max-w-[130px]">{sc.sender.split('(')[0]}</div>
-              </button>
-            ))}
-          </div>
+    <div className="space-y-5">
+      
+      {/* Preset Scenarios Strip */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-4 card-shadow space-y-2">
+        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+          Select Inbound Intent Scenario:
+        </label>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+          {SCAM_SCENARIOS.map((sc) => (
+            <button
+              key={sc.id}
+              onClick={() => {
+                setSelectedScenarioId(sc.id);
+                setCustomText('');
+              }}
+              className={`p-3 rounded-xl text-xs font-medium transition text-left cursor-pointer border ${
+                selectedScenarioId === sc.id && !customText
+                  ? 'bg-blue-50/80 border-blue-500 text-blue-900 shadow-xs'
+                  : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              <div className="font-bold text-slate-900 truncate">{sc.category}</div>
+              <div className="text-[11px] text-slate-500 truncate mt-0.5">{sc.intent}</div>
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Main Analysis Grid */}
+      {/* Main Dual Grid: Mobile Simulation + MobileBERT NLP Forensics */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        {/* Left Column: Input Simulator & Live Message Feed (6 cols) */}
-        <div className="lg:col-span-6 space-y-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-2xl">
-            <div className="flex items-center justify-between mb-3">
-              <span className="text-xs font-bold text-slate-300 flex items-center gap-2">
-                <MessageSquare className="w-4 h-4 text-cyan-400" />
-                <span>Simulated Incoming Stream (SMS / Call / Push)</span>
-              </span>
-              <span className="text-[10px] px-2 py-0.5 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20 font-mono">
-                PRIVACY SANDBOX ACTIVE
-              </span>
+        {/* Left: Mobile Notification Card (5 cols) */}
+        <div className="lg:col-span-5 space-y-4">
+          <div className="bg-white border border-slate-200 rounded-3xl p-5 md:p-6 card-shadow space-y-4">
+            
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <Smartphone className="w-4 h-4 text-blue-600" />
+                <span className="text-xs font-bold text-slate-900">Inbound SMS / WhatsApp Stream</span>
+              </div>
+              <span className="text-[10px] font-mono text-slate-400">Android Intent Hook</span>
             </div>
 
-            {/* Subtitle Toast if voice alert is active */}
-            {spokenSubtitle && (
-              <div className="mb-3 p-2.5 rounded-xl bg-cyan-950/95 border border-cyan-400 text-cyan-200 text-xs font-bold shadow-2xl animate-bounce backdrop-blur flex items-center gap-2">
-                <Volume2 className="w-4 h-4 text-cyan-400 shrink-0 animate-pulse" />
-                <span className="text-left font-sans">{spokenSubtitle}</span>
+            {/* Notification Bubble */}
+            <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 shadow-xs space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="font-bold text-xs text-slate-900">{currentScenario.sender}</span>
+                <span className="text-[10px] text-slate-400">Just Now</span>
               </div>
-            )}
-
-            {/* Simulated Notification / Chat Bubble */}
-            <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 relative">
-              <div className="flex items-center justify-between text-xs text-slate-400 mb-2 border-b border-slate-800/80 pb-2">
-                <div className="flex items-center gap-1.5 font-semibold text-slate-200">
-                  <PhoneCall className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>Sender: {currentItem.sender}</span>
-                </div>
-                <span className="text-[10px] font-mono text-slate-500">Live Ingress</span>
-              </div>
-
-              <div className="text-sm text-slate-200 leading-relaxed font-sans mt-2">
-                {currentItem.snippet}
-              </div>
-
-              {/* Threat Token Badges */}
-              {currentItem.threatTokens.length > 0 && (
-                <div className="mt-4 pt-3 border-t border-slate-800/80">
-                  <span className="text-[10px] font-bold text-rose-400 uppercase tracking-wider block mb-1.5">
-                    Extracted Threat Signatures:
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {currentItem.threatTokens.map((tok, i) => (
-                      <span
-                        key={i}
-                        className="text-[11px] font-mono px-2 py-0.5 rounded-md bg-rose-500/10 text-rose-300 border border-rose-500/30"
-                      >
-                        ⚠️ {tok}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-            </div>
-
-            {/* Custom Input Tester */}
-            <div className="mt-4">
-              <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
-                Type or Paste Any Custom Suspicious Message:
-              </label>
-              <textarea
-                rows={3}
-                value={customText}
-                onChange={(e) => setCustomText(e.target.value)}
-                placeholder="e.g. Dear user, enter your PIN to claim ₹2000 cashback immediately..."
-                className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs text-slate-200 placeholder-slate-600 focus:outline-none focus:border-cyan-400 resize-none font-sans"
-              />
-            </div>
-          </div>
-
-          {/* Privacy & Zero Knowledge Assurance Card */}
-          <div className="p-4 rounded-2xl bg-cyan-950/20 border border-cyan-500/20 text-xs text-cyan-200 flex items-start gap-3">
-            <Cpu className="w-5 h-5 text-cyan-400 shrink-0 mt-0.5" />
-            <div>
-              <span className="font-bold text-cyan-300 block mb-0.5">100% Zero-Knowledge Edge Inference</span>
-              This NLP classification runs strictly inside the phone’s isolated hardware enclave. Text, OTPs, and audio logs are NEVER transmitted over the internet, satisfying DPDP Act & GDPR compliance.
-            </div>
-          </div>
-        </div>
-
-        {/* Right Column: AI Threat Engine & Automated Defensive Response (6 cols) */}
-        <div className="lg:col-span-6 space-y-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 md:p-6 shadow-2xl">
-            <div className="flex items-center justify-between border-b border-slate-800/80 pb-4">
-              <div>
-                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                  Edge NLP Classifier Result
-                </span>
-                <h3 className="text-lg font-black text-white mt-0.5">
-                  {currentItem.intent}
-                </h3>
-              </div>
-
-              <div className={`px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider border ${
-                currentItem.riskScore > 75
-                  ? 'bg-rose-500/10 border-rose-500/30 text-rose-400 animate-pulse'
-                  : 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
-              }`}>
-                {currentItem.riskScore > 75 ? '🚨 High Fraud Risk' : '✅ Verified Safe'}
-              </div>
-            </div>
-
-            {/* Score Meters */}
-            <div className="grid grid-cols-2 gap-4 my-4">
-              <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-center">
-                <div className={`text-3xl font-black font-mono ${
-                  currentItem.riskScore > 75 ? 'text-rose-400' : 'text-emerald-400'
-                }`}>
-                  {currentItem.riskScore}%
-                </div>
-                <div className="text-[11px] font-bold text-slate-400 uppercase mt-1">
-                  Social Eng. Confidence
-                </div>
-              </div>
-
-              <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 text-center">
-                <div className="text-2xl font-black font-mono text-cyan-400">
-                  12.1 ms
-                </div>
-                <div className="text-[11px] font-bold text-slate-400 uppercase mt-1">
-                  Quantized Model Speed
-                </div>
-              </div>
-            </div>
-
-            {/* AI Explanation & Pedagogical Breakdown */}
-            <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800/80 space-y-2">
-              <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-                <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
-                <span>On-Device AI Context Analysis:</span>
-              </span>
-              <p className="text-xs text-slate-300 leading-relaxed m-0">
-                {currentItem.aiExplanation}
+              <p className="text-xs text-slate-800 leading-relaxed m-0 font-medium">
+                {currentScenario.snippet}
               </p>
             </div>
 
-            {/* Automated System Intervention Simulation */}
-            <div className="mt-4">
-              <span className="text-xs font-bold text-slate-400 uppercase tracking-wider block mb-2">
-                Automated Phone-First Defensive Action:
+            {/* Custom Input */}
+            <div>
+              <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                Test Custom Inbound SMS / Call Script:
+              </label>
+              <textarea
+                value={customText}
+                onChange={(e) => setCustomText(e.target.value)}
+                rows={3}
+                placeholder="Type or paste any coercive SMS, WhatsApp text, or OTP message to test on-device NLP..."
+                className="w-full p-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-blue-500"
+              />
+            </div>
+
+            {/* Emergency Screen Barrier Action */}
+            {currentScenario.riskScore > 75 && (
+              <button
+                onClick={handleSimulateLockdown}
+                className="w-full py-3 rounded-xl bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs transition cursor-pointer flex items-center justify-center gap-2 shadow-xs"
+              >
+                <Lock className="w-4 h-4" />
+                <span>{lockdownActive ? 'Screen Barrier Engaged (Locked)' : 'Simulate Android Barrier Pin Lock'}</span>
+              </button>
+            )}
+
+          </div>
+        </div>
+
+        {/* Right: MobileBERT Quantized NLP Diagnostics (7 cols) */}
+        <div className="lg:col-span-7 space-y-4">
+          <div className="bg-white border border-slate-200 rounded-3xl p-5 md:p-6 card-shadow space-y-4">
+            
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div>
+                <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
+                  Quantized NLP Classifier
+                </span>
+                <h3 className="text-base font-bold text-slate-900 mt-0.5">
+                  MobileBERT On-Device Intent Analysis
+                </h3>
+              </div>
+              <div className="text-right">
+                <div className={`text-xl font-bold font-mono ${
+                  currentScenario.riskScore > 75 ? 'text-rose-600' : 'text-emerald-600'
+                }`}>
+                  {currentScenario.riskScore}%
+                </div>
+                <div className="text-[10px] uppercase font-bold text-slate-400">Coercion Probability</div>
+              </div>
+            </div>
+
+            {/* 3 Metric Gauges */}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-center">
+                <div className="text-lg font-bold font-mono text-blue-600">
+                  11.4 ms
+                </div>
+                <div className="text-[10px] uppercase font-bold text-slate-500 mt-0.5">
+                  Inference Time
+                </div>
+              </div>
+
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-center">
+                <div className="text-lg font-bold font-mono text-slate-900">
+                  ~18 MB
+                </div>
+                <div className="text-[10px] uppercase font-bold text-slate-500 mt-0.5">
+                  INT8 Model Size
+                </div>
+              </div>
+
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-center">
+                <div className="text-lg font-bold font-mono text-emerald-600">
+                  0 Bytes
+                </div>
+                <div className="text-[10px] uppercase font-bold text-slate-500 mt-0.5">
+                  Cloud Leak (100% Local)
+                </div>
+              </div>
+            </div>
+
+            {/* Extracted Threat Tokens */}
+            <div className="space-y-2">
+              <span className="text-xs font-bold text-slate-700 block">
+                Flagged Urgency & Manipulation Tokens:
               </span>
-
-              {currentItem.riskScore > 75 ? (
-                <div className="p-4 rounded-2xl bg-gradient-to-r from-rose-950/80 to-slate-950 border border-rose-500/60 text-white space-y-3 shadow-lg">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-rose-400 font-bold text-xs">
-                      <Lock className="w-4 h-4" />
-                      <span>SYSTEM LOCKDOWN TRIGGERED</span>
-                    </div>
-                    <span className="text-[9px] font-mono bg-rose-900/60 px-1.5 py-0.5 rounded text-rose-300">TOUCH LOCKED</span>
-                  </div>
-                  <p className="text-xs text-rose-200 m-0">
-                    AegisPay draws a high-contrast Android overlay barrier over any active UPI / Banking app, disabling touch input to prevent inadvertent PIN entry.
-                  </p>
-                  
-                  {/* Language Selector & Audio Alarm Button */}
-                  <div className="flex items-center gap-2 pt-1">
-                    <select
-                      value={selectedLanguage}
-                      onChange={(e) => {
-                        setSelectedLanguage(e.target.value);
-                        playScamAudioWarning(e.target.value);
-                      }}
-                      className="bg-slate-900 border border-slate-700 text-cyan-300 rounded-lg text-[10px] font-bold px-2 py-1.5 focus:outline-none cursor-pointer"
+              <div className="flex flex-wrap gap-2">
+                {currentScenario.threatTokens.length > 0 ? (
+                  currentScenario.threatTokens.map((token, idx) => (
+                    <span
+                      key={idx}
+                      className="px-2.5 py-1 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 font-mono text-xs font-semibold"
                     >
-                      <option value="ta">தமிழ் (Tamil Alert)</option>
-                      <option value="hi">हिंदी (Hindi Alert)</option>
-                      <option value="en">English Alert</option>
-                      <option value="te">తెలుగు (Telugu Alert)</option>
-                      <option value="kn">ಕನ್ನಡ (Kannada Alert)</option>
-                    </select>
+                      ⚠️ "{token}"
+                    </span>
+                  ))
+                ) : (
+                  <span className="text-xs text-emerald-600 font-semibold flex items-center gap-1">
+                    <CheckCircle2 className="w-3.5 h-3.5" /> No psychological coercion tokens detected.
+                  </span>
+                )}
+              </div>
+            </div>
 
-                    <button
-                      onClick={() => playScamAudioWarning(selectedLanguage)}
-                      className="flex-1 py-1.5 bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-rose-600/30"
-                    >
-                      <Volume2 className="w-3.5 h-3.5" />
-                      <span>{speaking ? '🔊 Speaking...' : '🔊 Speak Alert'}</span>
-                    </button>
-                  </div>
-                </div>
-              ) : (
-                <div className="p-4 rounded-2xl bg-emerald-950/40 border border-emerald-800/60 text-emerald-200 flex items-center gap-3">
-                  <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
-                  <div className="text-xs">
-                    <span className="font-bold block text-emerald-300">Clean Transaction Signature</span>
-                    Standard OTP detected. Safe for automated system autofill.
-                  </div>
-                </div>
-              )}
+            {/* AI Explanation Box */}
+            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+              <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                Cognitive Reasoning:
+              </span>
+              <p className="text-xs text-slate-700 leading-relaxed m-0 font-medium">
+                {currentScenario.aiExplanation}
+              </p>
+            </div>
+
+            {/* Suggested Action */}
+            <div className={`p-3 rounded-xl border flex items-center justify-between gap-2 ${
+              currentScenario.riskScore > 75
+                ? 'bg-rose-50 border-rose-200 text-rose-800'
+                : 'bg-emerald-50 border-emerald-200 text-emerald-800'
+            }`}>
+              <span className="text-xs font-semibold">
+                <strong>Recommended Action:</strong> {currentScenario.suggestedAction}
+              </span>
             </div>
 
           </div>
         </div>
+
       </div>
+
     </div>
   );
 }

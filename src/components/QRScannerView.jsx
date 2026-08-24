@@ -48,7 +48,7 @@ export default function QRScannerView() {
 
         return {
           id: 'custom',
-          title: '🛠️ Custom Input URI',
+          title: 'Custom Ingress Input',
           merchant: pn,
           vpa: pa,
           rawUri: customUri,
@@ -56,12 +56,12 @@ export default function QRScannerView() {
           status: score > 75 ? 'CRITICAL' : score > 40 ? 'WARNING' : 'SAFE',
           type: isCollect ? 'collect' : 'pay',
           flags,
-          recommendation: score > 75 ? 'DO NOT PAY! High probability of scam.' : 'Verify recipient identity.'
+          recommendation: score > 75 ? 'DO NOT PAY! High probability of quishing fraud.' : 'Verify recipient identity before paying.'
         };
       } catch (e) {
         return {
           id: 'invalid',
-          title: '⚠️ Malformed UPI String',
+          title: 'Malformed UPI String',
           merchant: 'Unknown',
           vpa: 'invalid',
           rawUri: customUri,
@@ -250,110 +250,91 @@ export default function QRScannerView() {
     switch (status) {
       case 'SAFE':
         return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs font-bold uppercase tracking-wider">
-            <CheckCircle2 className="w-4 h-4" /> Verified Safe
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-xs font-bold uppercase tracking-wider">
+            <CheckCircle2 className="w-3.5 h-3.5" /> Verified Clean
           </span>
         );
       case 'WARNING':
         return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/30 text-xs font-bold uppercase tracking-wider">
-            <AlertTriangle className="w-4 h-4" /> Caution / Tamper Risk
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-amber-50 text-amber-700 border border-amber-200 text-xs font-bold uppercase tracking-wider">
+            <AlertTriangle className="w-3.5 h-3.5" /> Price Surcharge Warning
           </span>
         );
       case 'CRITICAL':
       default:
         return (
-          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-rose-500/10 text-rose-400 border border-rose-500/30 text-xs font-bold uppercase tracking-wider animate-pulse">
-            <ShieldAlert className="w-4 h-4" /> High Threat / Quishing Blocked
+          <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-rose-50 text-rose-700 border border-rose-200 text-xs font-bold uppercase tracking-wider">
+            <ShieldAlert className="w-3.5 h-3.5" /> Quishing Threat Blocked
           </span>
         );
     }
   };
 
   return (
-    <div className="space-y-6">
-      {/* Top Banner Overview */}
-      <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 md:p-6 backdrop-blur flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <Scan className="w-5 h-5 text-cyan-400" />
-            <h2 className="text-lg font-bold text-white m-0">
-              3D AR Optical Parallax QR & Quishing Shield
-            </h2>
-          </div>
-          <p className="text-xs md:text-sm text-slate-400 mt-1 max-w-2xl">
-            Goes beyond 2D string regex: Uses <strong>60 FPS multi-frame parallax depth & micro-edge shadow detection</strong> to measure the physical 0.35mm step-elevation of paper stickers pasted over genuine shop QR acrylic stands.
-          </p>
-        </div>
-
-        {/* Quick Scenario Selector */}
-        <div className="w-full md:w-auto">
-          <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">
-            Test Preset Scenarios:
-          </label>
-          <div className="grid grid-cols-2 md:flex gap-2">
-            {QR_TEST_CASES.map((tc) => (
-              <button
-                key={tc.id}
-                onClick={() => {
-                  setSelectedCaseId(tc.id);
-                  setCustomUri('');
-                }}
-                className={`px-3 py-2 rounded-xl text-xs font-medium transition text-left cursor-pointer border ${
-                  selectedCaseId === tc.id && !customUri
-                    ? 'bg-cyan-500/10 border-cyan-500/50 text-cyan-300 shadow-md shadow-cyan-500/10'
-                    : 'bg-slate-800/80 border-slate-700/60 text-slate-400 hover:text-slate-200'
-                }`}
-              >
-                <div className="font-bold text-slate-200">{tc.title.split(' ')[0]} {tc.title.split(' ')[1]}</div>
-                <div className="text-[10px] text-slate-400 truncate max-w-[120px]">{tc.merchant}</div>
-              </button>
-            ))}
-          </div>
+    <div className="space-y-5">
+      
+      {/* Preset Scenarios Strip */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-4 card-shadow space-y-2">
+        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+          Select Terminal Simulation Scenario:
+        </label>
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-2">
+          {QR_TEST_CASES.map((tc) => (
+            <button
+              key={tc.id}
+              onClick={() => {
+                setSelectedCaseId(tc.id);
+                setCustomUri('');
+              }}
+              className={`p-3 rounded-xl text-xs font-medium transition text-left cursor-pointer border ${
+                selectedCaseId === tc.id && !customUri
+                  ? 'bg-blue-50/80 border-blue-500 text-blue-900 shadow-xs'
+                  : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              <div className="font-bold text-slate-900 truncate">{tc.title}</div>
+              <div className="text-[11px] text-slate-500 truncate mt-0.5">{tc.merchant}</div>
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Main Dual Grid: Scanner Viewport + AI Deep Analysis */}
+      {/* Main Dual Grid: Terminal Viewfinder + Diagnostics */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        {/* Left Column: Interactive Mobile Viewfinder (5 cols) */}
+        {/* Left Column: Viewfinder (5 cols) */}
         <div className="lg:col-span-5 space-y-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-2xl relative overflow-hidden">
-            {/* Phone Frame Header & Controls */}
-            <div className="flex items-center justify-between mb-4 px-2">
-              {/* 3D Parallax Mode Toggle */}
+          <div className="bg-white border border-slate-200 rounded-3xl p-5 card-shadow space-y-4">
+            
+            <div className="flex items-center justify-between">
               <button
                 onClick={() => setEnable3DParallax(!enable3DParallax)}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider transition cursor-pointer border ${
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold transition cursor-pointer border ${
                   enable3DParallax
-                    ? 'bg-cyan-500/20 text-cyan-300 border-cyan-400 shadow-md shadow-cyan-500/10'
-                    : 'bg-slate-800 text-slate-400 border-slate-700'
+                    ? 'bg-blue-50 text-blue-700 border-blue-300'
+                    : 'bg-slate-50 text-slate-600 border-slate-200'
                 }`}
               >
-                <Layers className="w-3 h-3 text-cyan-400" />
-                <span>{enable3DParallax ? '3D Parallax: ON' : '3D Depth: Off'}</span>
+                <Layers className="w-3.5 h-3.5 text-blue-600" />
+                <span>{enable3DParallax ? '3D Parallax: Active' : '3D Depth: Off'}</span>
               </button>
 
-              {/* Camera Toggle Button */}
               <button
                 onClick={() => setUseLiveCamera(!useLiveCamera)}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[10px] font-bold tracking-wider transition cursor-pointer border ${
+                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-[11px] font-semibold transition cursor-pointer border ${
                   useLiveCamera 
-                    ? 'bg-cyan-500 text-slate-950 border-cyan-400 shadow-lg shadow-cyan-500/20' 
-                    : 'bg-slate-800 text-slate-300 border-slate-700 hover:bg-slate-700'
+                    ? 'bg-blue-600 text-white border-blue-700 shadow-xs' 
+                    : 'bg-slate-100 text-slate-700 border-slate-200 hover:bg-slate-200'
                 }`}
               >
-                {useLiveCamera ? <CameraOff className="w-3 h-3" /> : <Camera className="w-3 h-3" />}
-                <span>{useLiveCamera ? 'Stop Live Camera' : 'Use Device Camera'}</span>
+                {useLiveCamera ? <CameraOff className="w-3.5 h-3.5" /> : <Camera className="w-3.5 h-3.5" />}
+                <span>{useLiveCamera ? 'Stop Camera' : 'Use Device Camera'}</span>
               </button>
             </div>
 
-            {/* Viewfinder Screen Area */}
-            <div className="relative aspect-[3/4] bg-slate-950 rounded-2xl border-2 border-slate-800 overflow-hidden flex flex-col items-center justify-center p-6 text-center">
-              {/* Background Grid Pattern */}
-              <div className="absolute inset-0 bg-[linear-gradient(to_right,#1e293b15_1px,transparent_1px),linear-gradient(to_bottom,#1e293b15_1px,transparent_1px)] bg-[size:16px_16px]"></div>
-
-              {/* Live Webcam Stream Video */}
+            {/* Viewfinder Frame */}
+            <div className="relative aspect-[3/4] bg-slate-900 rounded-2xl overflow-hidden flex flex-col items-center justify-center p-6 text-center border border-slate-800">
+              
               {useLiveCamera && (
                 <video
                   ref={videoRef}
@@ -364,28 +345,25 @@ export default function QRScannerView() {
                 />
               )}
 
-              {/* Scanning Laser Animation */}
               {isScanning && (
                 <div className="absolute inset-x-0 h-1 bg-gradient-to-r from-transparent via-cyan-400 to-transparent shadow-[0_0_15px_#22d3ee] animate-scan z-20"></div>
               )}
 
-              {/* Corner HUD Markers */}
+              {/* Corner HUD */}
               <div className="absolute top-4 left-4 w-6 h-6 border-t-2 border-l-2 border-cyan-400 rounded-tl-lg z-20"></div>
               <div className="absolute top-4 right-4 w-6 h-6 border-t-2 border-r-2 border-cyan-400 rounded-tr-lg z-20"></div>
               <div className="absolute bottom-4 left-4 w-6 h-6 border-b-2 border-l-2 border-cyan-400 rounded-bl-lg z-20"></div>
               <div className="absolute bottom-4 right-4 w-6 h-6 border-b-2 border-r-2 border-cyan-400 rounded-br-lg z-20"></div>
 
-              {/* Center Simulated QR Graphic */}
               {!useLiveCamera && (
-                <div className="relative z-10 p-4 rounded-2xl bg-slate-900/90 border border-slate-700/80 shadow-2xl backdrop-blur">
-                  <div className="w-36 h-36 bg-white rounded-xl p-2.5 flex items-center justify-center shadow-inner relative">
+                <div className="relative z-10 p-4 rounded-2xl bg-white/95 border border-slate-200 shadow-xl backdrop-blur">
+                  <div className="w-36 h-36 bg-white rounded-xl p-2 flex items-center justify-center relative">
                     <QrCode className="w-full h-full text-slate-900" />
                     
-                    {/* Tampered Overlay Visual Indicator */}
                     {currentScenario.id === 'quishing-tampered' && (
-                      <div className="absolute inset-1.5 bg-rose-500/20 border-2 border-dashed border-rose-500 rounded-lg flex items-center justify-center backdrop-blur-[1px]">
-                        <span className="bg-rose-600 text-white text-[9px] font-black uppercase px-2 py-0.5 rounded shadow">
-                          PHYSICAL STICKER DETECTED
+                      <div className="absolute inset-1.5 bg-rose-500/20 border-2 border-dashed border-rose-500 rounded-lg flex items-center justify-center">
+                        <span className="bg-rose-600 text-white text-[9px] font-bold uppercase px-2 py-0.5 rounded shadow">
+                          STICKER DETECTED
                         </span>
                       </div>
                     )}
@@ -393,59 +371,55 @@ export default function QRScannerView() {
                 </div>
               )}
 
-              {/* 3D Optical Parallax Live Depth HUD Overlay */}
+              {/* 3D Optical Parallax Depth HUD Overlay */}
               {enable3DParallax && currentScenario.id === 'quishing-tampered' && (
-                <div className="absolute top-3 inset-x-3 z-30 p-2 rounded-xl bg-rose-950/90 border border-rose-500/70 text-[10px] font-mono text-rose-200 text-left backdrop-blur-md shadow-xl flex items-center justify-between">
+                <div className="absolute top-3 inset-x-3 z-30 p-2.5 rounded-xl bg-rose-950/90 border border-rose-500/80 text-[10px] font-mono text-rose-200 text-left backdrop-blur-md shadow-xl flex items-center justify-between">
                   <div>
-                    <span className="text-rose-400 font-bold block">🔬 3D PARALLAX DEPTH ANOMALY:</span>
-                    <span>Elevation: <strong>+0.35mm</strong> (Paper Sticker Glued on Acrylic)</span>
+                    <span className="text-rose-400 font-bold block">🔬 3D OPTICAL PARALLAX DEPTH:</span>
+                    <span>Paper Step: <strong>+0.35mm elevation</strong> on Acrylic</span>
                   </div>
                   <span className="px-1.5 py-0.5 bg-rose-600 text-white font-bold rounded text-[9px]">
-                    99.1% PROOF
+                    99.1% TAMPER
                   </span>
                 </div>
               )}
 
-              {/* Real-time AR Overlay Tag */}
+              {/* AR Result Tag */}
               <div className="mt-4 z-10 max-w-xs">
-                <div className={`text-xs font-mono font-bold px-3 py-1.5 rounded-xl border backdrop-blur-md transition ${
+                <div className={`text-xs font-mono font-bold px-3 py-1.5 rounded-xl border backdrop-blur-md ${
                   currentScenario.riskScore > 75 
-                    ? 'bg-rose-950/80 border-rose-500/60 text-rose-300'
+                    ? 'bg-rose-950/90 border-rose-500 text-rose-200'
                     : currentScenario.riskScore > 40
-                    ? 'bg-amber-950/80 border-amber-500/60 text-amber-300'
-                    : 'bg-emerald-950/80 border-emerald-500/60 text-emerald-300'
+                    ? 'bg-amber-950/90 border-amber-500 text-amber-200'
+                    : 'bg-emerald-950/90 border-emerald-500 text-emerald-200'
                 }`}>
-                  {currentScenario.status === 'CRITICAL' ? '⛔ THREAT INTERCEPTED' : '✅ VPA SIGNATURE OK'}
+                  {currentScenario.status === 'CRITICAL' ? '⛔ THREAT BLOCKED' : '✅ CLEAN VPA SIGNATURE'}
                 </div>
-                <div className="text-[11px] text-slate-300 mt-1.5 font-semibold truncate bg-slate-950/70 px-2 py-0.5 rounded-md">
+                <div className="text-[11px] text-white mt-1.5 font-semibold truncate bg-slate-950/80 px-2.5 py-0.5 rounded-md">
                   {currentScenario.merchant}
                 </div>
               </div>
 
-              {/* Spoken Subtitle Audio Banner */}
+              {/* Voice Subtitles Banner */}
               {spokenSubtitle && (
-                <div className="absolute inset-x-3 top-14 z-30 p-2.5 rounded-xl bg-cyan-950/95 border border-cyan-400 text-cyan-200 text-xs font-bold shadow-2xl animate-bounce backdrop-blur flex items-center gap-2">
-                  <Volume2 className="w-4 h-4 text-cyan-400 shrink-0 animate-pulse" />
+                <div className="absolute inset-x-3 top-14 z-30 p-2.5 rounded-xl bg-blue-950/95 border border-blue-400 text-blue-100 text-xs font-bold shadow-2xl animate-bounce backdrop-blur flex items-center gap-2">
+                  <Volume2 className="w-4 h-4 text-blue-300 shrink-0" />
                   <span className="text-left font-sans">{spokenSubtitle}</span>
                 </div>
               )}
 
-              {/* Lock Alert Modal Simulation */}
+              {/* Emergency Lockdown Action Bar */}
               {currentScenario.riskScore > 75 && (
-                <div className="absolute inset-x-3 bottom-3 z-30 p-3.5 rounded-xl bg-gradient-to-br from-rose-950/95 to-slate-950/95 border border-rose-500/80 shadow-2xl text-left backdrop-blur-md">
-                  <div className="flex items-center justify-between text-rose-400 font-bold text-xs">
+                <div className="absolute inset-x-3 bottom-3 z-30 p-3 rounded-xl bg-rose-950/95 border border-rose-500/80 text-left backdrop-blur-md shadow-2xl space-y-2">
+                  <div className="flex items-center justify-between text-rose-300 font-bold text-xs">
                     <div className="flex items-center gap-1.5">
-                      <Lock className="w-4 h-4" />
-                      <span>EMERGENCY LOCKDOWN</span>
+                      <Lock className="w-3.5 h-3.5" />
+                      <span>PIN Prompt Intercepted</span>
                     </div>
-                    <span className="text-[9px] font-mono bg-rose-900/60 px-1.5 py-0.5 rounded">PIN BLOCKED</span>
+                    <span className="text-[9px] font-mono bg-rose-900/60 px-1.5 py-0.5 rounded">8.2ms NPU</span>
                   </div>
-                  <p className="text-[10px] text-rose-200 mt-1 leading-snug">
-                    UPI Intent intercepted in 8.2ms. Reverse collect request blocked.
-                  </p>
-                  
-                  {/* Vernacular Language Selector & Audio Trigger */}
-                  <div className="mt-2.5 flex items-center gap-2">
+
+                  <div className="flex items-center gap-2 pt-1">
                     <select
                       value={selectedLanguage}
                       onChange={(e) => {
@@ -454,176 +428,173 @@ export default function QRScannerView() {
                       }}
                       className="bg-slate-900 border border-slate-700 text-cyan-300 rounded-lg text-[10px] font-bold px-2 py-1 focus:outline-none cursor-pointer"
                     >
-                      <option value="ta">தமிழ் (Tamil Alert)</option>
-                      <option value="hi">हिंदी (Hindi Alert)</option>
-                      <option value="en">English Alert</option>
-                      <option value="te">తెలుగు (Telugu Alert)</option>
-                      <option value="kn">ಕನ್ನಡ (Kannada Alert)</option>
+                      <option value="ta">தமிழ் (Tamil)</option>
+                      <option value="hi">हिंदी (Hindi)</option>
+                      <option value="en">English</option>
+                      <option value="te">తెలుగు (Telugu)</option>
+                      <option value="kn">ಕನ್ನಡ (Kannada)</option>
                     </select>
 
                     <button
                       onClick={() => playVernacularAudioWarning(selectedLanguage)}
-                      className="flex-1 py-1.5 bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-rose-600/30"
+                      className="flex-1 py-1 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1 cursor-pointer"
                     >
-                      <Volume2 className="w-3.5 h-3.5" />
-                      <span>{speaking ? '🔊 Speaking...' : hapticTriggered ? 'Vibrating...' : '🔊 Speak Alert'}</span>
+                      <Volume2 className="w-3 h-3" />
+                      <span>{speaking ? 'Speaking...' : '🔊 Play Alert'}</span>
                     </button>
                   </div>
                 </div>
               )}
+
             </div>
 
-            {/* Manual Custom Input Bar */}
-            <div className="mt-4">
-              <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block mb-1">
-                Or Test Custom UPI URI:
+            {/* Custom Input */}
+            <div>
+              <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block mb-1">
+                Custom UPI URI Inspector:
               </label>
               <input
                 type="text"
                 value={customUri}
                 onChange={(e) => setCustomUri(e.target.value)}
                 placeholder="e.g. upi://pay?pa=store@upi&pn=Retail..."
-                className="w-full px-3 py-2 rounded-xl bg-slate-950 border border-slate-700 text-xs font-mono text-cyan-300 placeholder-slate-600 focus:outline-none focus:border-cyan-400"
+                className="w-full px-3 py-2 rounded-lg bg-slate-50 border border-slate-200 text-xs font-mono text-slate-800 placeholder-slate-400 focus:outline-none focus:bg-white focus:border-blue-500"
               />
             </div>
+
           </div>
         </div>
 
-        {/* Right Column: AI Analysis & Threat Scoring Engine (7 cols) */}
-        <div className="lg:col-span-7 space-y-5">
-          
-          {/* Risk Score & Assessment Card */}
-          <div className="bg-slate-900/80 border border-slate-800 rounded-3xl p-5 md:p-6 backdrop-blur">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-800/80 pb-4">
+        {/* Right Column: AI Heuristics & NPCI URI Inspection (7 cols) */}
+        <div className="lg:col-span-7 space-y-4">
+          <div className="bg-white border border-slate-200 rounded-3xl p-5 md:p-6 card-shadow space-y-4">
+            
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                  Threat Classification
+                  Threat Classification Engine
                 </span>
-                <h3 className="text-xl font-black text-white mt-0.5">
+                <h3 className="text-lg font-bold text-slate-900 mt-0.5">
                   {currentScenario.title}
                 </h3>
               </div>
               <div>{getStatusBadge(currentScenario.status)}</div>
             </div>
 
-            {/* Risk Gauge & Meters */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 my-5">
-              
-              {/* Primary Gauge */}
-              <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 text-center flex flex-col items-center justify-center">
-                <div className="text-3xl font-black font-mono tracking-tight text-white flex items-baseline gap-1">
-                  <span className={
-                    currentScenario.riskScore > 75 ? 'text-rose-400' :
-                    currentScenario.riskScore > 40 ? 'text-amber-400' : 'text-emerald-400'
-                  }>
-                    {currentScenario.riskScore}
-                  </span>
-                  <span className="text-xs text-slate-500 font-normal">/100</span>
+            {/* Metric Gauges */}
+            <div className="grid grid-cols-3 gap-3">
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-center">
+                <div className={`text-2xl font-bold font-mono ${
+                  currentScenario.riskScore > 75 ? 'text-rose-600' :
+                  currentScenario.riskScore > 40 ? 'text-amber-600' : 'text-emerald-600'
+                }`}>
+                  {currentScenario.riskScore}
+                  <span className="text-xs text-slate-400 font-normal">/100</span>
                 </div>
-                <div className="text-[11px] uppercase font-bold text-slate-400 mt-1">
-                  Quishing Risk Index
+                <div className="text-[10px] uppercase font-bold text-slate-500 mt-0.5">
+                  Quishing Score
                 </div>
               </div>
 
-              {/* Engine Latency */}
-              <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 text-center flex flex-col items-center justify-center">
-                <div className="text-2xl font-black font-mono text-cyan-400">
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-center">
+                <div className="text-2xl font-bold font-mono text-blue-600">
                   8.2 ms
                 </div>
-                <div className="text-[11px] uppercase font-bold text-slate-400 mt-1">
-                  Edge Inference Speed
+                <div className="text-[10px] uppercase font-bold text-slate-500 mt-0.5">
+                  Edge NPU Speed
                 </div>
               </div>
 
-              {/* Protocol Type */}
-              <div className="p-4 rounded-2xl bg-slate-950/80 border border-slate-800 text-center flex flex-col items-center justify-center">
-                <div className={`text-lg font-black font-mono uppercase ${
-                  currentScenario.type === 'collect' ? 'text-rose-400' : 'text-slate-200'
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-center">
+                <div className={`text-base font-bold font-mono uppercase truncate ${
+                  currentScenario.type === 'collect' ? 'text-rose-600' : 'text-slate-800'
                 }`}>
-                  {currentScenario.type === 'collect' ? '🚨 COLLECT (REVERSE)' : 'STANDARD PAY'}
+                  {currentScenario.type === 'collect' ? 'COLLECT REVERSE' : 'STANDARD PAY'}
                 </div>
-                <div className="text-[11px] uppercase font-bold text-slate-400 mt-1">
-                  Intent Method
+                <div className="text-[10px] uppercase font-bold text-slate-500 mt-0.5">
+                  Protocol Method
                 </div>
               </div>
             </div>
 
-            {/* Transparent Parameter Inspection */}
+            {/* NPCI Parameter Breakdown */}
             <div>
               <div className="flex items-center justify-between mb-2">
-                <span className="text-xs font-bold text-slate-300 flex items-center gap-1.5">
-                  <Terminal className="w-3.5 h-3.5 text-cyan-400" />
-                  <span>On-Device Parameter Dissection</span>
+                <span className="text-xs font-bold text-slate-700 flex items-center gap-1.5">
+                  <Terminal className="w-3.5 h-3.5 text-blue-600" />
+                  <span>NPCI UPI Spec Parameter Dissection</span>
                 </span>
-                <span className="text-[10px] font-mono text-slate-500">NPCI URI SPEC v2.0</span>
+                <span className="text-[10px] font-mono text-slate-400">v2.0 Protocol</span>
               </div>
 
               <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 font-mono text-xs">
-                <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
-                  <div className="text-[10px] text-slate-500 font-sans">Payee VPA (pa)</div>
-                  <div className="text-slate-200 truncate mt-0.5 font-semibold">{parsedParams.pa}</div>
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="text-[10px] text-slate-400 font-sans">Payee VPA (pa)</div>
+                  <div className="text-slate-900 truncate mt-0.5 font-semibold">{parsedParams.pa}</div>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
-                  <div className="text-[10px] text-slate-500 font-sans">Merchant Name (pn)</div>
-                  <div className="text-slate-200 truncate mt-0.5 font-semibold">{parsedParams.pn}</div>
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="text-[10px] text-slate-400 font-sans">Merchant Name (pn)</div>
+                  <div className="text-slate-900 truncate mt-0.5 font-semibold">{parsedParams.pn}</div>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
-                  <div className="text-[10px] text-slate-500 font-sans">Merchant Code (mc)</div>
-                  <div className="text-slate-200 truncate mt-0.5 font-semibold">{parsedParams.mc}</div>
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="text-[10px] text-slate-400 font-sans">MCC Code (mc)</div>
+                  <div className="text-slate-900 truncate mt-0.5 font-semibold">{parsedParams.mc}</div>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
-                  <div className="text-[10px] text-slate-500 font-sans">Amount Injected (am)</div>
-                  <div className="text-slate-200 truncate mt-0.5 font-semibold">{parsedParams.am}</div>
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="text-[10px] text-slate-400 font-sans">Amount (am)</div>
+                  <div className="text-slate-900 truncate mt-0.5 font-semibold">{parsedParams.am}</div>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
-                  <div className="text-[10px] text-slate-500 font-sans">Currency (cu)</div>
-                  <div className="text-slate-200 truncate mt-0.5 font-semibold">{parsedParams.cu}</div>
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="text-[10px] text-slate-400 font-sans">Currency (cu)</div>
+                  <div className="text-slate-900 truncate mt-0.5 font-semibold">{parsedParams.cu}</div>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-slate-950 border border-slate-800/80">
-                  <div className="text-[10px] text-slate-500 font-sans">Transaction Note (tn)</div>
-                  <div className="text-slate-200 truncate mt-0.5 font-semibold">{parsedParams.tn}</div>
+                <div className="p-2.5 rounded-xl bg-slate-50 border border-slate-200">
+                  <div className="text-[10px] text-slate-400 font-sans">Note (tn)</div>
+                  <div className="text-slate-900 truncate mt-0.5 font-semibold">{parsedParams.tn}</div>
                 </div>
               </div>
             </div>
 
-            {/* AI Flags & Heuristic Explanations */}
-            <div className="mt-5 space-y-2">
-              <span className="text-xs font-bold text-slate-300 block">
+            {/* Heuristic Flags */}
+            <div className="space-y-1.5">
+              <span className="text-xs font-bold text-slate-700 block">
                 Edge Heuristic & Threat Signatures:
               </span>
               {currentScenario.flags.map((flag, idx) => (
                 <div
                   key={idx}
-                  className="flex items-start gap-2.5 p-2.5 rounded-xl bg-slate-950/60 border border-slate-800/60 text-xs text-slate-300"
+                  className="flex items-start gap-2 p-2 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700"
                 >
-                  <ArrowRight className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+                  <ArrowRight className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
                   <span>{flag}</span>
                 </div>
               ))}
             </div>
 
-            {/* Actionable Recommendation Bar */}
-            <div className={`mt-5 p-3.5 rounded-2xl border flex items-center justify-between gap-3 ${
+            {/* Recommendation Box */}
+            <div className={`p-3 rounded-xl border flex items-center justify-between gap-3 ${
               currentScenario.riskScore > 75
-                ? 'bg-rose-950/40 border-rose-800/60 text-rose-200'
+                ? 'bg-rose-50 border-rose-200 text-rose-800'
                 : currentScenario.riskScore > 40
-                ? 'bg-amber-950/40 border-amber-800/60 text-amber-200'
-                : 'bg-emerald-950/40 border-emerald-800/60 text-emerald-200'
+                ? 'bg-amber-50 border-amber-200 text-amber-800'
+                : 'bg-emerald-50 border-emerald-200 text-emerald-800'
             }`}>
-              <div className="text-xs font-semibold">
-                <span className="font-bold uppercase mr-1">Recommendation:</span>
+              <div className="text-xs font-medium">
+                <strong className="uppercase mr-1">Recommendation:</strong>
                 {currentScenario.recommendation}
               </div>
             </div>
 
           </div>
         </div>
+
       </div>
+
     </div>
   );
 }

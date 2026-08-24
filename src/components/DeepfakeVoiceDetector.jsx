@@ -1,372 +1,358 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { 
-  Activity, ShieldAlert, Mic, MicOff, Volume2, Sparkles, 
-  AlertTriangle, CheckCircle2, Lock, Radio, Cpu, RefreshCw, 
-  Layers, ChevronRight, Waves
+  Waves, ShieldAlert, ShieldCheck, Play, Square, AlertTriangle, 
+  Lock, Mic, Volume2, Sparkles, RefreshCw, Smartphone, CheckCircle2, ChevronRight
 } from 'lucide-react';
 
 export default function DeepfakeVoiceDetector() {
-  const [selectedCase, setSelectedCase] = useState('son_accident');
+  const [selectedAudioCase, setSelectedAudioCase] = useState('scam-accident-clone');
+  const [isPlaying, setIsPlaying] = useState(false);
   const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [audioProgress, setAudioProgress] = useState(0);
-  const [showScreenLock, setShowScreenLock] = useState(false);
-  const [spectrogramData, setSpectrogramData] = useState([]);
+  const [showScreenBarrier, setShowScreenBarrier] = useState(false);
+  const [liveMetrics, setLiveMetrics] = useState({
+    vocoderArtifacts: 99.1,
+    phaseJitter: 96.4,
+    biologicalBreathing: 1.2,
+    spectralEntropy: 0.94,
+    deepfakeScore: 98.4
+  });
+
   const canvasRef = useRef(null);
+  const animationFrameRef = useRef(null);
+  const audioContextRef = useRef(null);
 
-  const testCases = {
-    son_accident: {
-      id: 'son_accident',
-      name: "🚨 AI-Cloned Family Voice (Emergency Hospital Scam)",
-      caller: "+91 94821 00291 (Spoofed Family Number)",
-      claim: "Accident Emergency in Bengaluru",
-      audioTranscript: "Dad! Please don't panic... I had a serious bike accident near Koramangala. The doctor is asking for ₹25,000 immediately before taking me into surgery. Send to hospital UPI right now!",
+  const audioCases = [
+    {
+      id: 'scam-accident-clone',
+      title: '🚨 AI Voice Clone: "Dad, I had a bike accident in Bengaluru, send ₹25,000 to clinic UPI!"',
+      category: 'Emergency Coercion / AI Clone',
+      audioText: '"Papa... I am in Victoria Hospital right now, my bike was hit. Doctor is asking ₹25,000 for emergency surgery immediately! Please send to clinic UPI right now!"',
       isDeepfake: true,
-      probability: 98.4,
-      vocoderAnomaly: "99.1% (ElevenLabs Neural Vocoder Artifacts)",
-      phaseJitter: "96.4% (Inconsistent Glottal Waveform)",
-      breathAcoustics: "1.2% (Absence of biological lung inhalation)",
-      verdict: "CRITICAL: Generative AI Voice Clone Impersonation"
+      riskScore: 98.4,
+      callerId: '+91 91204 88319 (Spoofed Family Member)',
+      artifactsDetected: [
+        'Neural vocoder pitch glottal pulse mismatch (120Hz synthetic resonance)',
+        'Absence of micro-tremors and natural respiratory pauses (0.00s breathing silence)',
+        'Phase discontinuity in acoustic high-frequency harmonics (> 7.5 kHz)',
+        'Emergency financial coercion trigger: Demanding urgent ₹25,000 UPI PIN transfer'
+      ]
     },
-    cbi_officer: {
-      id: 'cbi_officer',
-      name: "🚨 AI-Cloned Police / Cyber Officer (Digital Arrest Scam)",
-      caller: "+91 80234 11099 (Spoofed CBI Cyber Cell)",
-      claim: "Digital Arrest Warrant & Money Laundering",
-      audioTranscript: "This is Special Officer Verma from National Crime Branch. A narcotics parcel was registered under your Aadhaar. You are under live digital arrest. Transfer verification funds to security escrow now!",
+    {
+      id: 'scam-police-digital-arrest',
+      title: '🚨 AI Voice Clone: "CBI Officer Kaushik — Your Aadhaar is linked to money laundering!"',
+      category: 'Digital Arrest / Coercion',
+      audioText: '"This is Inspector Kaushik from Mumbai Cyber Cell. A courier package containing 5 fake passports and narcotics was seized under your name. Stay on video call and transfer verification deposit now!"',
       isDeepfake: true,
-      probability: 96.8,
-      vocoderAnomaly: "97.5% (VALL-E Synthetic Prosody)",
-      phaseJitter: "94.8% (Frequency Phase Clipping)",
-      breathAcoustics: "2.4% (Flat breathing baseline)",
-      verdict: "CRITICAL: Synthesized Law Enforcement Voice"
+      riskScore: 97.1,
+      callerId: '+91 22 2849 0192 (Spoofed Law Enforcement)',
+      artifactsDetected: [
+        'Text-to-speech synthetic concatenation boundaries detected',
+        'Repetitive synthetic intonation contour',
+        'Psychological coercion trigger: Illegal digital arrest ultimatum'
+      ]
     },
-    real_friend: {
-      id: 'real_friend',
-      name: "✅ Authentic Natural Human Voice (Genuine Call)",
-      caller: "+91 98840 55123 (Verified Contact)",
-      claim: "Dinner Plans & Weekend Trip",
-      audioTranscript: "Hey bro! Are we still meeting for dinner tonight at Indiranagar? Let me know if you want me to pick you up on the way.",
+    {
+      id: 'legit-family-call',
+      title: '✅ Genuine Voice Call: Family Member checking in',
+      category: 'Authentic Biological Speech',
+      audioText: '"Hey, just calling to see if you reached home safely. Don\'t forget to pick up milk and fruits from the market on your way back."',
       isDeepfake: false,
-      probability: 2.1,
-      vocoderAnomaly: "0.4% (Clean Natural Harmonics)",
-      phaseJitter: "1.8% (Organic Glottal Pulse Dynamic)",
-      breathAcoustics: "97.6% (Natural Inhalation & Micro-Pauses)",
-      verdict: "SAFE: Verified Biological Human Acoustics"
+      riskScore: 4.2,
+      callerId: '+91 98450 12384 (Mom)',
+      artifactsDetected: [
+        'Natural biological respiration cycles (0.42s inhale detected)',
+        'Realistic human vocal tract resonance & pitch variance',
+        'Zero financial coercion or urgent money transfer request'
+      ]
     }
-  };
+  ];
 
-  const activeData = testCases[selectedCase];
+  const currentCase = audioCases.find(c => c.id === selectedAudioCase) || audioCases[0];
 
-  // Draw animated spectrogram on canvas
+  // Visualizer Animation
   useEffect(() => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    let animationFrameId;
+    let angle = 0;
 
     const render = () => {
-      ctx.fillStyle = '#020617';
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      const width = canvas.width;
+      const height = canvas.height;
+      const barCount = 48;
+      const barWidth = width / barCount;
 
-      const numBars = 48;
-      const barWidth = canvas.width / numBars;
-
-      for (let i = 0; i < numBars; i++) {
-        let height = 0;
-        if (isAnalyzing) {
-          if (activeData.isDeepfake) {
-            // Unnatural rigid spikes typical of vocoder artifact
-            height = Math.sin(Date.now() * 0.015 + i * 0.4) * 35 + (i % 2 === 0 ? 55 : 20) + Math.random() * 20;
-          } else {
-            // Smooth organic acoustic curves
-            height = Math.sin(Date.now() * 0.008 + i * 0.2) * 45 + 35 + Math.random() * 10;
-          }
+      for (let i = 0; i < barCount; i++) {
+        let barHeight;
+        if (isPlaying) {
+          const freq = Math.sin(angle + i * 0.3) * 0.5 + 0.5;
+          barHeight = (freq * (height - 30)) + Math.random() * 20;
         } else {
-          height = 10 + Math.sin(i * 0.3) * 6;
+          barHeight = 6;
         }
 
         const x = i * barWidth;
-        const y = canvas.height - height;
+        const y = height - barHeight;
 
-        // Gradient coloring
-        const grad = ctx.createLinearGradient(0, y, 0, canvas.height);
-        if (isAnalyzing && activeData.isDeepfake) {
-          grad.addColorStop(0, '#f43f5e'); // Rose
-          grad.addColorStop(1, '#881337');
-        } else if (isAnalyzing && !activeData.isDeepfake) {
-          grad.addColorStop(0, '#10b981'); // Emerald
-          grad.addColorStop(1, '#064e3b');
+        // Clean light visualizer colors
+        if (currentCase.isDeepfake && isPlaying) {
+          ctx.fillStyle = i % 2 === 0 ? '#e11d48' : '#fb7185';
+        } else if (!currentCase.isDeepfake && isPlaying) {
+          ctx.fillStyle = i % 2 === 0 ? '#10b981' : '#34d399';
         } else {
-          grad.addColorStop(0, '#06b6d4'); // Cyan
-          grad.addColorStop(1, '#083344');
+          ctx.fillStyle = '#cbd5e1';
         }
 
-        ctx.fillStyle = grad;
-        ctx.fillRect(x + 1, y, barWidth - 2, height);
+        ctx.fillRect(x + 1, y, barWidth - 2, barHeight);
       }
 
-      animationFrameId = requestAnimationFrame(render);
+      if (isPlaying) {
+        angle += 0.15;
+      }
+      animationFrameRef.current = requestAnimationFrame(render);
     };
 
     render();
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      if (animationFrameRef.current) {
+        cancelAnimationFrame(animationFrameRef.current);
+      }
     };
-  }, [isAnalyzing, activeData]);
+  }, [isPlaying, currentCase]);
 
-  const runDeepfakeAnalysis = () => {
+  // Audio Playback & Analysis Simulation
+  const handlePlayAudio = () => {
+    if (isPlaying) {
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
+      setIsPlaying(false);
+      setIsAnalyzing(false);
+      return;
+    }
+
+    setIsPlaying(true);
     setIsAnalyzing(true);
-    setShowScreenLock(false);
 
-    // Speak audio transcript using speech synthesis
+    if (currentCase.isDeepfake) {
+      setTimeout(() => {
+        setShowScreenBarrier(true);
+      }, 2500);
+    }
+
     if ('speechSynthesis' in window) {
       window.speechSynthesis.cancel();
-      window.speechSynthesis.resume();
-      const utterance = new SpeechSynthesisUtterance(activeData.audioTranscript);
-      utterance.rate = activeData.isDeepfake ? 1.05 : 0.95;
-      utterance.pitch = activeData.isDeepfake ? 1.15 : 1.0;
+      const utterance = new SpeechSynthesisUtterance(currentCase.audioText);
+      utterance.rate = currentCase.isDeepfake ? 1.05 : 0.95;
+      utterance.pitch = currentCase.isDeepfake ? 1.2 : 1.0;
       utterance.onend = () => {
+        setIsPlaying(false);
         setIsAnalyzing(false);
-        if (activeData.isDeepfake) {
-          setShowScreenLock(true);
-        }
+      };
+      utterance.onerror = () => {
+        setIsPlaying(false);
+        setIsAnalyzing(false);
       };
       window.speechSynthesis.speak(utterance);
     } else {
       setTimeout(() => {
+        setIsPlaying(false);
         setIsAnalyzing(false);
-        if (activeData.isDeepfake) {
-          setShowScreenLock(true);
-        }
-      }, 4000);
-    }
-  };
-
-  const stopAnalysis = () => {
-    setIsAnalyzing(false);
-    if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
+      }, 5000);
     }
   };
 
   return (
-    <div className="space-y-6">
-      {/* Top Banner */}
-      <div className="bg-slate-900/60 border border-slate-800 rounded-2xl p-4 md:p-6 backdrop-blur flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <Activity className="w-6 h-6 text-rose-400" />
-            <h2 className="text-lg font-bold text-white m-0">
-              Edge AI Deepfake Voice Clone & Acoustic Spectrogram Analyzer
-            </h2>
-          </div>
-          <p className="text-xs md:text-sm text-slate-400 mt-1 max-w-2xl">
-            In 2026, fraudsters use 3-second audio clips to clone children's voices for emergency hospital/accident scams. AegisPay runs an on-device <strong>Mel-Spectrogram Transformer (LiteRT INT8)</strong> on the NPU to detect vocoder phase discontinuities in &lt;15ms.
-          </p>
-        </div>
-
-        <div className="flex items-center gap-2">
-          <span className="px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-bold font-mono flex items-center gap-1.5">
-            <Cpu className="w-3.5 h-3.5" />
-            <span>NPU Audio Transformer (18MB)</span>
-          </span>
+    <div className="space-y-5">
+      
+      {/* Preset Scenarios Strip */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-4 card-shadow space-y-2">
+        <label className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+          Select Audio Forensic Simulation:
+        </label>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
+          {audioCases.map((ac) => (
+            <button
+              key={ac.id}
+              onClick={() => {
+                if (isPlaying && 'speechSynthesis' in window) window.speechSynthesis.cancel();
+                setIsPlaying(false);
+                setIsAnalyzing(false);
+                setShowScreenBarrier(false);
+                setSelectedAudioCase(ac.id);
+              }}
+              className={`p-3 rounded-xl text-xs font-medium transition text-left cursor-pointer border ${
+                selectedAudioCase === ac.id
+                  ? 'bg-blue-50/80 border-blue-500 text-blue-900 shadow-xs'
+                  : 'bg-slate-50 border-slate-200 text-slate-600 hover:bg-slate-100'
+              }`}
+            >
+              <div className="font-bold text-slate-900 truncate">{ac.title}</div>
+              <div className="text-[11px] text-slate-500 truncate mt-0.5">{ac.callerId}</div>
+            </button>
+          ))}
         </div>
       </div>
 
-      {/* Main Dual Grid */}
+      {/* Main Grid: Spectral Visualizer + Forensic Indicators */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
         
-        {/* Left Column: Test Case Selection & Live Audio Simulator (6 cols) */}
+        {/* Left: Spectrogram & Audio Player (6 cols) */}
         <div className="lg:col-span-6 space-y-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 shadow-2xl space-y-4">
+          <div className="bg-white border border-slate-200 rounded-3xl p-5 md:p-6 card-shadow space-y-4">
             
-            <label className="text-[11px] font-bold text-slate-400 uppercase tracking-wider block">
-              Select Incoming Call Audio Scenario:
-            </label>
-
-            <div className="space-y-2">
-              {Object.values(testCases).map((tc) => (
-                <button
-                  key={tc.id}
-                  onClick={() => {
-                    setSelectedCase(tc.id);
-                    stopAnalysis();
-                    setShowScreenLock(false);
-                  }}
-                  className={`w-full p-3.5 rounded-2xl border text-left transition cursor-pointer flex items-center justify-between gap-3 ${
-                    selectedCase === tc.id
-                      ? tc.isDeepfake
-                        ? 'bg-rose-950/40 border-rose-500/60 shadow-lg shadow-rose-950/20'
-                        : 'bg-emerald-950/40 border-emerald-500/60 shadow-lg shadow-emerald-950/20'
-                      : 'bg-slate-950 border-slate-800 text-slate-400 hover:text-slate-200'
-                  }`}
-                >
-                  <div>
-                    <div className="text-xs font-bold text-slate-200">{tc.name}</div>
-                    <div className="text-[10px] text-slate-400 font-mono mt-0.5">{tc.caller} • {tc.claim}</div>
-                  </div>
-                  <span className={`px-2 py-0.5 rounded text-[10px] font-bold font-mono ${
-                    tc.isDeepfake ? 'bg-rose-500/20 text-rose-400 border border-rose-500/30' : 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
-                  }`}>
-                    {tc.isDeepfake ? 'CLONE THREAT' : 'NATURAL'}
-                  </span>
-                </button>
-              ))}
-            </div>
-
-            {/* Audio Playback & Live Spectrogram Canvas */}
-            <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-3">
-              <div className="flex items-center justify-between text-xs">
-                <span className="font-bold text-slate-300 flex items-center gap-1.5">
-                  <Waves className="w-4 h-4 text-cyan-400" />
-                  <span>Real-Time Mel-Spectrogram Waveform</span>
-                </span>
-                <span className="font-mono text-[10px] text-slate-500">
-                  {isAnalyzing ? '🔴 LISTENING & CLASSIFYING...' : 'IDLE (TAP TEST)'}
-                </span>
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 rounded-lg bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
+                  <Waves className="w-4 h-4" />
+                </div>
+                <div>
+                  <h3 className="text-sm font-bold text-slate-900 m-0">Acoustic Mel-Spectrogram</h3>
+                  <p className="text-[11px] text-slate-500 m-0">Real-time frequency phase jitter & vocoder inspection</p>
+                </div>
               </div>
 
-              {/* Canvas Waveform */}
+              <span className={`text-[10px] font-bold font-mono px-2 py-0.5 rounded-full ${
+                currentCase.isDeepfake ? 'bg-rose-50 text-rose-700 border border-rose-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'
+              }`}>
+                {currentCase.isDeepfake ? 'AI CLONE' : 'BIOLOGICAL HUMAN'}
+              </span>
+            </div>
+
+            {/* Spectrogram Canvas */}
+            <div className="bg-slate-900 rounded-2xl p-4 border border-slate-800 relative overflow-hidden">
+              <div className="flex justify-between items-center text-[10px] font-mono text-slate-400 mb-2">
+                <span>0 Hz</span>
+                <span>4,000 Hz</span>
+                <span>8,000 Hz (NPU Phase Cutoff)</span>
+              </div>
               <canvas
                 ref={canvasRef}
-                width={480}
+                width={500}
                 height={120}
-                className="w-full h-28 rounded-xl bg-slate-950 border border-slate-800/80"
+                className="w-full h-28 rounded-lg"
               />
-
-              {/* Transcript Box */}
-              <div className="p-3 rounded-xl bg-slate-900/90 border border-slate-800 text-xs space-y-1">
-                <div className="text-[10px] font-mono font-bold text-slate-400">Incoming Audio Stream:</div>
-                <p className="text-slate-200 m-0 italic text-xs leading-relaxed">
-                  "{activeData.audioTranscript}"
-                </p>
+              <div className="flex justify-between items-center text-[10px] font-mono text-slate-500 mt-2">
+                <span>Sample Rate: 48.0 kHz</span>
+                <span>Latency: 11.4ms (Mobile NPU)</span>
               </div>
-
-              {/* Action Buttons */}
-              <div className="flex gap-2 pt-1">
-                {!isAnalyzing ? (
-                  <button
-                    onClick={runDeepfakeAnalysis}
-                    className="w-full py-3 rounded-xl bg-gradient-to-r from-rose-500 to-red-600 hover:from-rose-400 hover:to-red-500 text-white font-black text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-rose-500/20"
-                  >
-                    <Volume2 className="w-4 h-4" />
-                    <span>Play & Run Deepfake Spectral Analysis</span>
-                  </button>
-                ) : (
-                  <button
-                    onClick={stopAnalysis}
-                    className="w-full py-3 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-bold text-xs uppercase tracking-wider flex items-center justify-center gap-2 cursor-pointer"
-                  >
-                    <MicOff className="w-4 h-4 text-rose-400" />
-                    <span>Stop Audio Analysis</span>
-                  </button>
-                )}
-              </div>
-
             </div>
+
+            {/* Transcript Card */}
+            <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 space-y-1">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                  Inbound Audio Stream:
+                </span>
+                <span className="text-[10px] font-mono text-slate-500">{currentCase.callerId}</span>
+              </div>
+              <p className="text-xs text-slate-800 font-medium italic m-0 leading-relaxed">
+                {currentCase.audioText}
+              </p>
+            </div>
+
+            {/* Audio Controls Button */}
+            <button
+              onClick={handlePlayAudio}
+              className={`w-full py-3 rounded-xl font-bold text-xs transition cursor-pointer flex items-center justify-center gap-2 shadow-xs ${
+                isPlaying 
+                  ? 'bg-rose-600 hover:bg-rose-700 text-white'
+                  : 'bg-blue-600 hover:bg-blue-700 text-white'
+              }`}
+            >
+              {isPlaying ? <Square className="w-4 h-4" /> : <Play className="w-4 h-4 fill-white" />}
+              <span>{isPlaying ? 'Stop Audio Analysis' : 'Play & Run Deepfake Spectral Analysis'}</span>
+            </button>
 
           </div>
         </div>
 
-        {/* Right Column: AI Spectral Analysis Breakdown & Emergency Lockdown (6 cols) */}
+        {/* Right: Forensic Indicators & Screen Barrier (6 cols) */}
         <div className="lg:col-span-6 space-y-4">
-          <div className="bg-slate-900 border border-slate-800 rounded-3xl p-5 md:p-6 shadow-2xl space-y-4">
+          <div className="bg-white border border-slate-200 rounded-3xl p-5 md:p-6 card-shadow space-y-4">
             
-            <div className="flex items-center justify-between border-b border-slate-800 pb-3">
+            <div className="flex items-center justify-between border-b border-slate-100 pb-3">
               <div>
                 <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">
-                  NPU Acoustic AI Forensics
+                  NPU Forensic Telemetry
                 </span>
-                <h3 className="text-lg font-black text-white mt-0.5">
-                  Deepfake Probability Score
+                <h3 className="text-base font-bold text-slate-900 mt-0.5">
+                  Spectral Anomaly Signatures
                 </h3>
               </div>
-
-              <div className={`text-2xl font-black font-mono px-3 py-1 rounded-xl border ${
-                activeData.isDeepfake
-                  ? 'bg-rose-950/60 border-rose-500 text-rose-400 shadow-md shadow-rose-500/20'
-                  : 'bg-emerald-950/60 border-emerald-500 text-emerald-400 shadow-md shadow-emerald-500/20'
-              }`}>
-                {activeData.probability}%
+              <div className="text-right">
+                <div className={`text-xl font-bold font-mono ${
+                  currentCase.riskScore > 75 ? 'text-rose-600' : 'text-emerald-600'
+                }`}>
+                  {currentCase.riskScore}%
+                </div>
+                <div className="text-[10px] uppercase font-bold text-slate-400">Deepfake Probability</div>
               </div>
             </div>
 
-            {/* Metric Gauges */}
-            <div className="space-y-3 text-xs font-mono">
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-                <div className="flex justify-between text-slate-300 font-sans font-bold">
-                  <span>1. Neural Vocoder Artifact Discontinuity:</span>
-                  <span className={activeData.isDeepfake ? 'text-rose-400' : 'text-emerald-400'}>{activeData.vocoderAnomaly}</span>
+            {/* 4 Diagnostic Gauges */}
+            <div className="grid grid-cols-2 gap-3">
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="text-[10px] text-slate-500 font-medium">Vocoder Glottal Distortion</div>
+                <div className="text-lg font-bold font-mono text-rose-600 mt-0.5">
+                  {currentCase.isDeepfake ? '99.1%' : '1.8%'}
                 </div>
-                <div className="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
-                  <div 
-                    className={`h-full ${activeData.isDeepfake ? 'bg-rose-500' : 'bg-emerald-500'}`}
-                    style={{ width: activeData.vocoderAnomaly.split('%')[0] + '%' }}
-                  />
-                </div>
+                <div className="text-[10px] text-slate-400">Synthesized wave residue</div>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-                <div className="flex justify-between text-slate-300 font-sans font-bold">
-                  <span>2. Frequency Phase Jitter (Glottal Wave):</span>
-                  <span className={activeData.isDeepfake ? 'text-rose-400' : 'text-emerald-400'}>{activeData.phaseJitter}</span>
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="text-[10px] text-slate-500 font-medium">Phase Jitter Variance</div>
+                <div className="text-lg font-bold font-mono text-rose-600 mt-0.5">
+                  {currentCase.isDeepfake ? '96.4%' : '2.1%'}
                 </div>
-                <div className="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
-                  <div 
-                    className={`h-full ${activeData.isDeepfake ? 'bg-rose-500' : 'bg-emerald-500'}`}
-                    style={{ width: activeData.phaseJitter.split('%')[0] + '%' }}
-                  />
-                </div>
+                <div className="text-[10px] text-slate-400">Discontinuous harmonics</div>
               </div>
 
-              <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 space-y-1">
-                <div className="flex justify-between text-slate-300 font-sans font-bold">
-                  <span>3. Biological Breath & Room Acoustics:</span>
-                  <span className={activeData.isDeepfake ? 'text-rose-400' : 'text-emerald-400'}>{activeData.breathAcoustics}</span>
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="text-[10px] text-slate-500 font-medium">Biological Respiration</div>
+                <div className={`text-lg font-bold font-mono mt-0.5 ${
+                  currentCase.isDeepfake ? 'text-rose-600' : 'text-emerald-600'
+                }`}>
+                  {currentCase.isDeepfake ? 'ABSENT (0.0s)' : 'DETECTED (0.42s)'}
                 </div>
-                <div className="w-full bg-slate-900 rounded-full h-1.5 overflow-hidden">
-                  <div 
-                    className={`h-full ${activeData.isDeepfake ? 'bg-rose-500' : 'bg-emerald-500'}`}
-                    style={{ width: activeData.breathAcoustics.split('%')[0] + '%' }}
-                  />
+                <div className="text-[10px] text-slate-400">Natural human lung intake</div>
+              </div>
+
+              <div className="p-3 rounded-xl bg-slate-50 border border-slate-200">
+                <div className="text-[10px] text-slate-500 font-medium">Coercion Intent Score</div>
+                <div className="text-lg font-bold font-mono text-amber-600 mt-0.5">
+                  {currentCase.isDeepfake ? 'HIGH (₹25k PIN)' : 'NONE (0)'}
                 </div>
+                <div className="text-[10px] text-slate-400">Psychological pressure</div>
               </div>
             </div>
 
-            {/* Final Verdict Banner */}
-            <div className={`p-4 rounded-2xl border flex items-center gap-3 ${
-              activeData.isDeepfake 
-                ? 'bg-rose-950/30 border-rose-500/50 text-rose-200' 
-                : 'bg-emerald-950/30 border-emerald-500/50 text-emerald-200'
-            }`}>
-              {activeData.isDeepfake ? <AlertTriangle className="w-6 h-6 text-rose-400 shrink-0" /> : <CheckCircle2 className="w-6 h-6 text-emerald-400 shrink-0" />}
-              <div className="text-xs">
-                <div className="font-bold">{activeData.verdict}</div>
-                <p className="m-0 text-[11px] opacity-80 mt-0.5">
-                  {activeData.isDeepfake 
-                    ? "Emergency Android screen barrier drawn over PhonePe/GPay to prevent panic money transfers." 
-                    : "Audio waveform exhibits natural human biological glottal dynamics."}
+            {/* List of Detected Anomalies */}
+            <div className="space-y-1.5">
+              <span className="text-xs font-bold text-slate-700 block">
+                Evidence Diagnostics:
+              </span>
+              {currentCase.artifactsDetected.map((item, idx) => (
+                <div key={idx} className="p-2 rounded-lg bg-slate-50 border border-slate-200 text-xs text-slate-700 flex items-start gap-2">
+                  <div className="w-1.5 h-1.5 rounded-full bg-rose-500 mt-1.5 shrink-0"></div>
+                  <span>{item}</span>
+                </div>
+              ))}
+            </div>
+
+            {/* Android Screen Barrier Simulation Card */}
+            {currentCase.isDeepfake && (
+              <div className="p-3.5 rounded-2xl bg-rose-50 border border-rose-200 space-y-2">
+                <div className="flex items-center justify-between text-xs font-bold text-rose-800">
+                  <div className="flex items-center gap-1.5">
+                    <Smartphone className="w-4 h-4 text-rose-600" />
+                    <span>Android Screen Barrier Active</span>
+                  </div>
+                  <span className="text-[10px] font-mono bg-rose-200/80 px-2 py-0.5 rounded text-rose-900">SYSTEM OVERLAY</span>
+                </div>
+                <p className="text-[11px] text-rose-700 m-0 leading-relaxed">
+                  AegisPay draws an emergency physical touch barrier over PhonePe/GPay to prevent victims from impulsively entering their 6-digit PIN during panic calls.
                 </p>
-              </div>
-            </div>
-
-            {/* Emergency Screen Barrier Modal Simulator */}
-            {showScreenLock && (
-              <div className="p-4 rounded-2xl bg-red-950/80 border-2 border-red-500 text-center space-y-2 animate-bounce">
-                <div className="flex items-center justify-center gap-2 text-white font-black text-sm uppercase">
-                  <Lock className="w-4 h-4 text-white" />
-                  <span>Android Screen Barrier Overlay Activated!</span>
-                </div>
-                <p className="text-[11px] text-red-200 m-0">
-                  Touch input frozen over all UPI apps. 500Hz Gyroscope panic tremor lock active for 15 seconds.
-                </p>
-                <button
-                  onClick={() => setShowScreenLock(false)}
-                  className="px-3 py-1 bg-white text-red-950 font-bold text-xs rounded-lg cursor-pointer hover:bg-slate-200 transition"
-                >
-                  Dismiss Overlay Barrier (Biometric Override)
-                </button>
               </div>
             )}
 
@@ -374,6 +360,7 @@ export default function DeepfakeVoiceDetector() {
         </div>
 
       </div>
+
     </div>
   );
 }
