@@ -2,13 +2,16 @@ import React, { useState, useMemo } from 'react';
 import { SCAM_SCENARIOS } from '../data/mockScenarios';
 import { 
   ShieldAlert, ShieldCheck, MessageSquare, AlertOctagon, 
-  PhoneCall, Zap, Cpu, Lock, Sparkles, CheckCircle2, Copy
+  PhoneCall, Zap, Cpu, Lock, Sparkles, CheckCircle2, Copy, Volume2
 } from 'lucide-react';
 
 export default function SocialEngineeringInterceptor() {
   const [selectedScenarioId, setSelectedScenarioId] = useState(SCAM_SCENARIOS[1].id);
   const [customText, setCustomText] = useState('');
   const [simulatingInference, setSimulatingInference] = useState(false);
+  const [speaking, setSpeaking] = useState(false);
+  const [selectedLanguage, setSelectedLanguage] = useState('hi');
+  const [spokenSubtitle, setSpokenSubtitle] = useState('');
 
   // Dynamic analysis for custom text or selected scenario
   const currentItem = useMemo(() => {
@@ -61,6 +64,97 @@ export default function SocialEngineeringInterceptor() {
     }
     return SCAM_SCENARIOS.find(s => s.id === selectedScenarioId) || SCAM_SCENARIOS[0];
   }, [selectedScenarioId, customText]);
+
+  // Audio Siren Tone Generator
+  const playSirenTone = () => {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      if (ctx.state === 'suspended') ctx.resume();
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+
+      const now = ctx.currentTime;
+      osc.frequency.setValueAtTime(700, now);
+      osc.frequency.linearRampToValueAtTime(1100, now + 0.2);
+      osc.frequency.linearRampToValueAtTime(700, now + 0.4);
+
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(now);
+      osc.stop(now + 0.5);
+    } catch (e) {
+      console.log('Audio issue', e);
+    }
+  };
+
+  // Vernacular Speech & Alarm
+  const playScamAudioWarning = (lang = selectedLanguage) => {
+    setSpeaking(true);
+    playSirenTone();
+
+    if (navigator.vibrate) {
+      navigator.vibrate([200, 100, 200, 100, 250]);
+    }
+
+    let text = "Alert! Social engineering scam detected. Do not share OTP or enter PIN.";
+    let speechLang = "en-IN";
+
+    if (lang === 'hi') {
+      text = "सावधान! यह एक फर्जी कॉल या धोखाधड़ी का प्रयास है। किसी को अपना पिन या ओटीपी न बताएं!";
+      speechLang = "hi-IN";
+    } else if (lang === 'ta') {
+      text = "எச்சரிக்கை! இது ஒரு மோசடி செய்தி. உங்கள் பின் அல்லது OTPயை பகிர வேண்டாம்!";
+      speechLang = "ta-IN";
+    } else if (lang === 'te') {
+      text = "హెచ్చరిక! ఇది మోసపూరిత సందేశం. మీ పిన్ లేదా ఓటీపీని ఎవరితోనూ పంచుకోవద్దు!";
+      speechLang = "te-IN";
+    } else if (lang === 'kn') {
+      text = "ಎಚ್ಚರಿಕೆ! ಇದು ವಂಚನೆಯ ಸಂದೇಶವಾಗಿದೆ. ನಿಮ್ಮ ಪಿನ್ ಅಥವಾ OTP ಹಂಚಿಕೊಳ್ಳಬೇಡಿ!";
+      speechLang = "kn-IN";
+    }
+
+    setSpokenSubtitle(text);
+
+    if ('speechSynthesis' in window) {
+      try {
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.resume();
+
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = speechLang;
+        utterance.rate = 1.0;
+        utterance.pitch = 1.1;
+
+        const voices = window.speechSynthesis.getVoices();
+        const matched = voices.find(v => v.lang.startsWith(lang) || v.lang.includes(speechLang));
+        if (matched) utterance.voice = matched;
+
+        utterance.onend = () => {
+          setSpeaking(false);
+          setTimeout(() => setSpokenSubtitle(''), 4000);
+        };
+        utterance.onerror = () => {
+          setSpeaking(false);
+          setTimeout(() => setSpokenSubtitle(''), 4000);
+        };
+        window.speechSynthesis.speak(utterance);
+      } catch (e) {
+        setSpeaking(false);
+      }
+    } else {
+      setTimeout(() => {
+        setSpeaking(false);
+        setSpokenSubtitle('');
+      }, 4000);
+    }
+  };
 
   const handleTestScenario = (id) => {
     setSimulatingInference(true);
@@ -124,6 +218,14 @@ export default function SocialEngineeringInterceptor() {
                 PRIVACY SANDBOX ACTIVE
               </span>
             </div>
+
+            {/* Subtitle Toast if voice alert is active */}
+            {spokenSubtitle && (
+              <div className="mb-3 p-2.5 rounded-xl bg-cyan-950/90 border border-cyan-400 text-cyan-200 text-xs font-bold shadow-2xl animate-bounce backdrop-blur flex items-center gap-2">
+                <Volume2 className="w-4 h-4 text-cyan-400 shrink-0 animate-pulse" />
+                <span className="text-left font-sans">{spokenSubtitle}</span>
+              </div>
+            )}
 
             {/* Simulated Notification / Chat Bubble */}
             <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 relative">
@@ -247,16 +349,42 @@ export default function SocialEngineeringInterceptor() {
               </span>
 
               {currentItem.riskScore > 75 ? (
-                <div className="p-4 rounded-2xl bg-gradient-to-r from-rose-950/80 to-slate-950 border border-rose-500/60 text-white space-y-2 shadow-lg">
-                  <div className="flex items-center gap-2 text-rose-400 font-bold text-xs">
-                    <Lock className="w-4 h-4" />
-                    <span>SYSTEM LOCKDOWN TRIGGERED</span>
+                <div className="p-4 rounded-2xl bg-gradient-to-r from-rose-950/80 to-slate-950 border border-rose-500/60 text-white space-y-3 shadow-lg">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-rose-400 font-bold text-xs">
+                      <Lock className="w-4 h-4" />
+                      <span>SYSTEM LOCKDOWN TRIGGERED</span>
+                    </div>
+                    <span className="text-[9px] font-mono bg-rose-900/60 px-1.5 py-0.5 rounded text-rose-300">TOUCH LOCKED</span>
                   </div>
                   <p className="text-xs text-rose-200 m-0">
-                    AegisPay draws a high-contrast Android overlay barrier over any active UPI / Banking app, disabling touch input to prevent inadvertent PIN entry while vibrating continuously.
+                    AegisPay draws a high-contrast Android overlay barrier over any active UPI / Banking app, disabling touch input to prevent inadvertent PIN entry.
                   </p>
-                  <div className="text-[11px] font-mono bg-rose-950/90 text-rose-300 p-2 rounded-lg border border-rose-800/60">
-                    Action: {currentItem.suggestedAction}
+                  
+                  {/* Language Selector & Audio Alarm Button */}
+                  <div className="flex items-center gap-2 pt-1">
+                    <select
+                      value={selectedLanguage}
+                      onChange={(e) => {
+                        setSelectedLanguage(e.target.value);
+                        playScamAudioWarning(e.target.value);
+                      }}
+                      className="bg-slate-900 border border-slate-700 text-cyan-300 rounded-lg text-[10px] font-bold px-2 py-1.5 focus:outline-none cursor-pointer"
+                    >
+                      <option value="hi">हिंदी (Hindi Alert)</option>
+                      <option value="en">English Alert</option>
+                      <option value="ta">தமிழ் (Tamil Alert)</option>
+                      <option value="te">తెలుగు (Telugu Alert)</option>
+                      <option value="kn">ಕನ್ನಡ (Kannada Alert)</option>
+                    </select>
+
+                    <button
+                      onClick={() => playScamAudioWarning(selectedLanguage)}
+                      className="flex-1 py-1.5 bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-rose-600/30"
+                    >
+                      <Volume2 className="w-3.5 h-3.5" />
+                      <span>{speaking ? 'Alarm & Speaking...' : '🔊 Play Alarm & Voice Alert'}</span>
+                    </button>
                   </div>
                 </div>
               ) : (

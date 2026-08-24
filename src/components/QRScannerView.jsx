@@ -3,7 +3,7 @@ import { QR_TEST_CASES } from '../data/mockScenarios';
 import { 
   ShieldAlert, ShieldCheck, AlertTriangle, QrCode, Scan, 
   ArrowRight, CheckCircle2, XCircle, Terminal, Eye, Volume2, Lock,
-  Camera, CameraOff, Globe, Sparkles
+  Camera, CameraOff, Globe, Sparkles, VolumeX
 } from 'lucide-react';
 
 export default function QRScannerView() {
@@ -13,8 +13,9 @@ export default function QRScannerView() {
   const [hapticTriggered, setHapticTriggered] = useState(false);
   const [useLiveCamera, setUseLiveCamera] = useState(false);
   const [cameraError, setCameraError] = useState(null);
-  const [selectedLanguage, setSelectedLanguage] = useState('en');
+  const [selectedLanguage, setSelectedLanguage] = useState('hi');
   const [speaking, setSpeaking] = useState(false);
+  const [spokenSubtitle, setSpokenSubtitle] = useState('');
 
   const videoRef = useRef(null);
   const streamRef = useRef(null);
@@ -126,45 +127,111 @@ export default function QRScannerView() {
     };
   }, [useLiveCamera]);
 
-  // Multi-Language Vernacular Audio Warning Simulation
+  // 100% Reliable Siren Tone via Web Audio API
+  const playSirenTone = () => {
+    try {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
+      const ctx = new AudioContext();
+      if (ctx.state === 'suspended') {
+        ctx.resume();
+      }
+
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sawtooth';
+
+      // 3-pulse urgent siren alarm
+      const now = ctx.currentTime;
+      osc.frequency.setValueAtTime(800, now);
+      osc.frequency.linearRampToValueAtTime(1200, now + 0.15);
+      osc.frequency.linearRampToValueAtTime(800, now + 0.3);
+      osc.frequency.linearRampToValueAtTime(1200, now + 0.45);
+      osc.frequency.linearRampToValueAtTime(800, now + 0.6);
+
+      gain.gain.setValueAtTime(0.3, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.7);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.7);
+    } catch (e) {
+      console.log('AudioContext issue:', e);
+    }
+  };
+
+  // Robust Multi-Language Vernacular Audio Warning Engine
   const playVernacularAudioWarning = (lang = selectedLanguage) => {
     setSpeaking(true);
     triggerMockHaptic();
+    playSirenTone();
+
+    let text = "Warning! Fraud attempt detected. Do not enter your UPI PIN.";
+    let speechLang = "en-IN";
+
+    if (lang === 'hi') {
+      text = "सावधान! धोखाधड़ी का प्रयास पाया गया है। अपना यूपीआई पिन कभी दर्ज न करें!";
+      speechLang = "hi-IN";
+    } else if (lang === 'ta') {
+      text = "எச்சரிக்கை! மோசடி முயற்சி கண்டறியப்பட்டது. உங்கள் யுபிஐ பின்னை உள்ளிட வேண்டாம்!";
+      speechLang = "ta-IN";
+    } else if (lang === 'te') {
+      text = "హెచ్చరిక! మోసం ప్రయత్నం గుర్తించబడింది. దయచేసి మీ యూపీఐ పిన్‌ను నమోదు చేయవద్దు!";
+      speechLang = "te-IN";
+    } else if (lang === 'kn') {
+      text = "ಎಚ್ಚರಿಕೆ! ವಂಚನೆಯ ಪ್ರಯತ್ನ ಪತ್ತೆಯಾಗಿದೆ. ನಿಮ್ಮ ಯುಪಿಐ ಪಿನ್ ಅನ್ನು ನಮೂದಿಸಬೇಡಿ!";
+      speechLang = "kn-IN";
+    }
+
+    setSpokenSubtitle(text);
 
     if ('speechSynthesis' in window) {
-      window.speechSynthesis.cancel();
-      let text = "Warning! Fraud attempt detected. Do not enter your UPI PIN.";
-      let speechLang = "en-IN";
+      try {
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.resume();
 
-      if (lang === 'hi') {
-        text = "सावधान! धोखाधड़ी का प्रयास पाया गया है। कृपया अपना यूपीआई पिन दर्ज न करें।";
-        speechLang = "hi-IN";
-      } else if (lang === 'ta') {
-        text = "எச்சரிக்கை! மோசடி முயற்சி கண்டறியப்பட்டது. உங்கள் UPI பின்னை உள்ளிட வேண்டாம்.";
-        speechLang = "ta-IN";
-      } else if (lang === 'te') {
-        text = "హెచ్చరిక! మోసం ప్రయత్నం గుర్తించబడింది. దయచేసి మీ UPI పిన్‌ను నమోదు చేయవద్దు.";
-        speechLang = "te-IN";
-      } else if (lang === 'kn') {
-        text = "ಎಚ್ಚರಿಕೆ! ವಂಚನೆಯ ಪ್ರಯತ್ನ ಪತ್ತೆಯಾಗಿದೆ. ನಿಮ್ಮ UPI ಪಿನ್ ಅನ್ನು ನಮೂದಿಸಬೇಡಿ.";
-        speechLang = "kn-IN";
+        const utterance = new SpeechSynthesisUtterance(text);
+        utterance.lang = speechLang;
+        utterance.rate = 1.0;
+        utterance.pitch = 1.1;
+        utterance.volume = 1.0;
+
+        // Try to match appropriate voice if available
+        const voices = window.speechSynthesis.getVoices();
+        const matchedVoice = voices.find(v => v.lang.startsWith(lang) || v.lang.includes(speechLang));
+        if (matchedVoice) {
+          utterance.voice = matchedVoice;
+        }
+
+        utterance.onend = () => {
+          setSpeaking(false);
+          setTimeout(() => setSpokenSubtitle(''), 4000);
+        };
+        utterance.onerror = () => {
+          setSpeaking(false);
+          setTimeout(() => setSpokenSubtitle(''), 4000);
+        };
+
+        window.speechSynthesis.speak(utterance);
+      } catch (err) {
+        console.error('Speech synthesis error:', err);
+        setSpeaking(false);
+        setTimeout(() => setSpokenSubtitle(''), 4000);
       }
-
-      const utterance = new SpeechSynthesisUtterance(text);
-      utterance.lang = speechLang;
-      utterance.rate = 0.95;
-      utterance.onend = () => setSpeaking(false);
-      utterance.onerror = () => setSpeaking(false);
-      window.speechSynthesis.speak(utterance);
     } else {
-      setTimeout(() => setSpeaking(false), 1500);
+      setTimeout(() => {
+        setSpeaking(false);
+        setSpokenSubtitle('');
+      }, 4000);
     }
   };
 
   const triggerMockHaptic = () => {
     setHapticTriggered(true);
     if (navigator.vibrate) {
-      navigator.vibrate([150, 50, 150, 50, 200]);
+      navigator.vibrate([200, 100, 200, 100, 300]);
     }
     setTimeout(() => setHapticTriggered(false), 2000);
   };
@@ -322,6 +389,14 @@ export default function QRScannerView() {
                 </div>
               </div>
 
+              {/* Spoken Subtitle Audio Banner */}
+              {spokenSubtitle && (
+                <div className="absolute inset-x-3 top-14 z-30 p-2.5 rounded-xl bg-cyan-950/90 border border-cyan-400 text-cyan-200 text-xs font-bold shadow-2xl animate-bounce backdrop-blur flex items-center gap-2">
+                  <Volume2 className="w-4 h-4 text-cyan-400 shrink-0 animate-pulse" />
+                  <span className="text-left font-sans">{spokenSubtitle}</span>
+                </div>
+              )}
+
               {/* Lock Alert Modal Simulation */}
               {currentScenario.riskScore > 75 && (
                 <div className="absolute inset-x-3 bottom-3 z-30 p-3.5 rounded-xl bg-gradient-to-br from-rose-950/95 to-slate-950/95 border border-rose-500/80 shadow-2xl text-left backdrop-blur-md">
@@ -346,8 +421,8 @@ export default function QRScannerView() {
                       }}
                       className="bg-slate-900 border border-slate-700 text-cyan-300 rounded-lg text-[10px] font-bold px-2 py-1 focus:outline-none cursor-pointer"
                     >
-                      <option value="en">English Alert</option>
                       <option value="hi">हिंदी (Hindi)</option>
+                      <option value="en">English Alert</option>
                       <option value="ta">தமிழ் (Tamil)</option>
                       <option value="te">తెలుగు (Telugu)</option>
                       <option value="kn">ಕನ್ನಡ (Kannada)</option>
@@ -355,10 +430,10 @@ export default function QRScannerView() {
 
                     <button
                       onClick={() => playVernacularAudioWarning(selectedLanguage)}
-                      className="flex-1 py-1 bg-rose-600 hover:bg-rose-500 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer shadow"
+                      className="flex-1 py-1.5 bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-rose-600/30"
                     >
-                      <Volume2 className="w-3 h-3" />
-                      <span>{speaking ? 'Speaking...' : hapticTriggered ? 'Vibrating...' : 'Voice Alert'}</span>
+                      <Volume2 className="w-3.5 h-3.5" />
+                      <span>{speaking ? 'Alarm & Speaking...' : hapticTriggered ? 'Vibrating...' : '🔊 Play Alarm & Voice'}</span>
                     </button>
                   </div>
                 </div>
