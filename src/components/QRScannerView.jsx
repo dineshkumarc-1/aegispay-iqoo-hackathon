@@ -13,7 +13,7 @@ export default function QRScannerView() {
   const [hapticTriggered, setHapticTriggered] = useState(false);
   const [useLiveCamera, setUseLiveCamera] = useState(false);
   const [cameraError, setCameraError] = useState(null);
-  const [selectedLanguage, setSelectedLanguage] = useState('hi');
+  const [selectedLanguage, setSelectedLanguage] = useState('ta');
   const [speaking, setSpeaking] = useState(false);
   const [spokenSubtitle, setSpokenSubtitle] = useState('');
 
@@ -127,104 +127,115 @@ export default function QRScannerView() {
     };
   }, [useLiveCamera]);
 
-  // 100% Reliable Siren Tone via Web Audio API
+  // Siren Alarm Tone via Web Audio API
   const playSirenTone = () => {
     try {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
       if (!AudioContext) return;
       const ctx = new AudioContext();
-      if (ctx.state === 'suspended') {
-        ctx.resume();
-      }
+      if (ctx.state === 'suspended') ctx.resume();
 
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
       osc.type = 'sawtooth';
 
-      // 3-pulse urgent siren alarm
       const now = ctx.currentTime;
-      osc.frequency.setValueAtTime(800, now);
-      osc.frequency.linearRampToValueAtTime(1200, now + 0.15);
-      osc.frequency.linearRampToValueAtTime(800, now + 0.3);
-      osc.frequency.linearRampToValueAtTime(1200, now + 0.45);
-      osc.frequency.linearRampToValueAtTime(800, now + 0.6);
+      osc.frequency.setValueAtTime(600, now);
+      osc.frequency.linearRampToValueAtTime(1000, now + 0.15);
+      osc.frequency.linearRampToValueAtTime(600, now + 0.3);
 
-      gain.gain.setValueAtTime(0.3, now);
-      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.7);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
-
       osc.start(now);
-      osc.stop(now + 0.7);
+      osc.stop(now + 0.4);
     } catch (e) {
-      console.log('AudioContext issue:', e);
+      console.log('AudioContext error:', e);
     }
   };
 
-  // Robust Multi-Language Vernacular Audio Warning Engine
+  // Robust Dual-Layer Vernacular Voice Alert Engine
   const playVernacularAudioWarning = (lang = selectedLanguage) => {
     setSpeaking(true);
     triggerMockHaptic();
     playSirenTone();
 
-    let text = "Warning! Fraud attempt detected. Do not enter your UPI PIN.";
-    let speechLang = "en-IN";
+    // Native Script + Phonetic Transliterations (guarantees voice output on all devices)
+    const audioCatalog = {
+      ta: {
+        nativeScript: "எச்சரிக்கை! மோசடி முயற்சி கண்டறியப்பட்டது. உங்கள் UPI பின்னை உள்ளிட வேண்டாம்!",
+        phoneticSpeech: "Echarikkai! Mosadi muyarchi kandupidikkappattadhu. Ungal UPI pin-ai ullida vendam!",
+        langCode: "ta-IN"
+      },
+      hi: {
+        nativeScript: "सावधान! धोखाधड़ी का प्रयास पाया गया है। अपना यूपीआई पिन कभी दर्ज न करें!",
+        phoneticSpeech: "Saavdhaan! Dhokhadhadi ka prayaas hai. Apna UPI PIN enter na karein!",
+        langCode: "hi-IN"
+      },
+      te: {
+        nativeScript: "హెచ్చరిక! మోసం ప్రయత్నం గుర్తించబడింది. దయచేసి మీ UPI పిన్‌ను నమోదు చేయవద్దు!",
+        phoneticSpeech: "Hechcharika! Mosam prayatnam gurtincha badindi. Mee UPI PIN enter cheyavaddhu!",
+        langCode: "te-IN"
+      },
+      kn: {
+        nativeScript: "ಎಚ್ಚರಿಕೆ! ವಂಚನೆಯ ಪ್ರಯತ್ನ ಪತ್ತೆಯಾಗಿದೆ. ನಿಮ್ಮ UPI ಪಿನ್ ಅನ್ನು ನಮೂದಿಸಬೇಡಿ!",
+        phoneticSpeech: "Echcharike! Vanchane prayatna pattidhe. Nimma UPI PIN enter maadbedi!",
+        langCode: "kn-IN"
+      },
+      en: {
+        nativeScript: "Warning! Fraud attempt detected. Do not enter your UPI PIN!",
+        phoneticSpeech: "Warning! Fraud attempt detected. Do not enter your UPI PIN!",
+        langCode: "en-IN"
+      }
+    };
 
-    if (lang === 'hi') {
-      text = "सावधान! धोखाधड़ी का प्रयास पाया गया है। अपना यूपीआई पिन कभी दर्ज न करें!";
-      speechLang = "hi-IN";
-    } else if (lang === 'ta') {
-      text = "எச்சரிக்கை! மோசடி முயற்சி கண்டறியப்பட்டது. உங்கள் யுபிஐ பின்னை உள்ளிட வேண்டாம்!";
-      speechLang = "ta-IN";
-    } else if (lang === 'te') {
-      text = "హెచ్చరిక! మోసం ప్రయత్నం గుర్తించబడింది. దయచేసి మీ యూపీఐ పిన్‌ను నమోదు చేయవద్దు!";
-      speechLang = "te-IN";
-    } else if (lang === 'kn') {
-      text = "ಎಚ್ಚರಿಕೆ! ವಂಚನೆಯ ಪ್ರಯತ್ನ ಪತ್ತೆಯಾಗಿದೆ. ನಿಮ್ಮ ಯುಪಿಐ ಪಿನ್ ಅನ್ನು ನಮೂದಿಸಬೇಡಿ!";
-      speechLang = "kn-IN";
-    }
-
-    setSpokenSubtitle(text);
+    const target = audioCatalog[lang] || audioCatalog.en;
+    setSpokenSubtitle(target.nativeScript);
 
     if ('speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel();
         window.speechSynthesis.resume();
 
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = speechLang;
-        utterance.rate = 1.0;
-        utterance.pitch = 1.1;
-        utterance.volume = 1.0;
-
-        // Try to match appropriate voice if available
         const voices = window.speechSynthesis.getVoices();
-        const matchedVoice = voices.find(v => v.lang.startsWith(lang) || v.lang.includes(speechLang));
-        if (matchedVoice) {
-          utterance.voice = matchedVoice;
+        const nativeVoice = voices.find(v => v.lang.startsWith(lang) || v.lang.includes(target.langCode));
+
+        // If phone has a native Tamil/Hindi voice, use native script; otherwise use phonetic transliteration
+        const speechText = (nativeVoice && lang !== 'en') ? target.nativeScript : target.phoneticSpeech;
+        const utterance = new SpeechSynthesisUtterance(speechText);
+        
+        if (nativeVoice) {
+          utterance.voice = nativeVoice;
+          utterance.lang = target.langCode;
+        } else {
+          utterance.lang = 'en-IN';
         }
+
+        utterance.rate = 0.95;
+        utterance.pitch = 1.05;
+        utterance.volume = 1.0;
 
         utterance.onend = () => {
           setSpeaking(false);
-          setTimeout(() => setSpokenSubtitle(''), 4000);
+          setTimeout(() => setSpokenSubtitle(''), 5000);
         };
         utterance.onerror = () => {
           setSpeaking(false);
-          setTimeout(() => setSpokenSubtitle(''), 4000);
+          setTimeout(() => setSpokenSubtitle(''), 5000);
         };
 
         window.speechSynthesis.speak(utterance);
       } catch (err) {
-        console.error('Speech synthesis error:', err);
+        console.error('Speech error:', err);
         setSpeaking(false);
-        setTimeout(() => setSpokenSubtitle(''), 4000);
       }
     } else {
       setTimeout(() => {
         setSpeaking(false);
         setSpokenSubtitle('');
-      }, 4000);
+      }, 5000);
     }
   };
 
@@ -391,7 +402,7 @@ export default function QRScannerView() {
 
               {/* Spoken Subtitle Audio Banner */}
               {spokenSubtitle && (
-                <div className="absolute inset-x-3 top-14 z-30 p-2.5 rounded-xl bg-cyan-950/90 border border-cyan-400 text-cyan-200 text-xs font-bold shadow-2xl animate-bounce backdrop-blur flex items-center gap-2">
+                <div className="absolute inset-x-3 top-14 z-30 p-2.5 rounded-xl bg-cyan-950/95 border border-cyan-400 text-cyan-200 text-xs font-bold shadow-2xl animate-bounce backdrop-blur flex items-center gap-2">
                   <Volume2 className="w-4 h-4 text-cyan-400 shrink-0 animate-pulse" />
                   <span className="text-left font-sans">{spokenSubtitle}</span>
                 </div>
@@ -421,11 +432,11 @@ export default function QRScannerView() {
                       }}
                       className="bg-slate-900 border border-slate-700 text-cyan-300 rounded-lg text-[10px] font-bold px-2 py-1 focus:outline-none cursor-pointer"
                     >
-                      <option value="hi">हिंदी (Hindi)</option>
+                      <option value="ta">தமிழ் (Tamil Alert)</option>
+                      <option value="hi">हिंदी (Hindi Alert)</option>
                       <option value="en">English Alert</option>
-                      <option value="ta">தமிழ் (Tamil)</option>
-                      <option value="te">తెలుగు (Telugu)</option>
-                      <option value="kn">ಕನ್ನಡ (Kannada)</option>
+                      <option value="te">తెలుగు (Telugu Alert)</option>
+                      <option value="kn">ಕನ್ನಡ (Kannada Alert)</option>
                     </select>
 
                     <button
@@ -433,7 +444,7 @@ export default function QRScannerView() {
                       className="flex-1 py-1.5 bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-rose-600/30"
                     >
                       <Volume2 className="w-3.5 h-3.5" />
-                      <span>{speaking ? 'Alarm & Speaking...' : hapticTriggered ? 'Vibrating...' : '🔊 Play Alarm & Voice'}</span>
+                      <span>{speaking ? '🔊 Speaking...' : hapticTriggered ? 'Vibrating...' : '🔊 Speak Alert'}</span>
                     </button>
                   </div>
                 </div>

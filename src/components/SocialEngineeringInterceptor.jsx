@@ -10,7 +10,7 @@ export default function SocialEngineeringInterceptor() {
   const [customText, setCustomText] = useState('');
   const [simulatingInference, setSimulatingInference] = useState(false);
   const [speaking, setSpeaking] = useState(false);
-  const [selectedLanguage, setSelectedLanguage] = useState('hi');
+  const [selectedLanguage, setSelectedLanguage] = useState('ta');
   const [spokenSubtitle, setSpokenSubtitle] = useState('');
 
   // Dynamic analysis for custom text or selected scenario
@@ -78,23 +78,23 @@ export default function SocialEngineeringInterceptor() {
       osc.type = 'sawtooth';
 
       const now = ctx.currentTime;
-      osc.frequency.setValueAtTime(700, now);
-      osc.frequency.linearRampToValueAtTime(1100, now + 0.2);
-      osc.frequency.linearRampToValueAtTime(700, now + 0.4);
+      osc.frequency.setValueAtTime(600, now);
+      osc.frequency.linearRampToValueAtTime(1000, now + 0.15);
+      osc.frequency.linearRampToValueAtTime(600, now + 0.3);
 
-      gain.gain.setValueAtTime(0.3, now);
-      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.5);
+      gain.gain.setValueAtTime(0.2, now);
+      gain.gain.exponentialRampToValueAtTime(0.01, now + 0.4);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
       osc.start(now);
-      osc.stop(now + 0.5);
+      osc.stop(now + 0.4);
     } catch (e) {
       console.log('Audio issue', e);
     }
   };
 
-  // Vernacular Speech & Alarm
+  // Vernacular Speech & Alarm with Phonetic Transliteration
   const playScamAudioWarning = (lang = selectedLanguage) => {
     setSpeaking(true);
     playSirenTone();
@@ -103,46 +103,66 @@ export default function SocialEngineeringInterceptor() {
       navigator.vibrate([200, 100, 200, 100, 250]);
     }
 
-    let text = "Alert! Social engineering scam detected. Do not share OTP or enter PIN.";
-    let speechLang = "en-IN";
+    const audioCatalog = {
+      ta: {
+        nativeScript: "எச்சரிக்கை! இது மோசடி செய்தி. உங்கள் பின் அல்லது OTPயை பகிர வேண்டாம்!",
+        phoneticSpeech: "Echarikkai! Idhu mosadi seidhi. Ungal PIN alladhu OTP-yai pagira vendam!",
+        langCode: "ta-IN"
+      },
+      hi: {
+        nativeScript: "सावधान! यह धोखाधड़ी का प्रयास है। किसी को अपना पिन या ओटीपी न बताएं!",
+        phoneticSpeech: "Saavdhaan! Yeh dhokhadhadi ka prayaas hai. Kisi ko apna PIN ya OTP na batayein!",
+        langCode: "hi-IN"
+      },
+      te: {
+        nativeScript: "హెచ్చరిక! ఇది మోసపూరిత సందేశం. మీ పిన్ లేదా ఓటీపీని పంచుకోవద్దు!",
+        phoneticSpeech: "Hechcharika! Idhi mosapooritha sandesham. Mee PIN leda OTP panchukovaddhu!",
+        langCode: "te-IN"
+      },
+      kn: {
+        nativeScript: "ಎಚ್ಚರಿಕೆ! ಇದು ವಂಚನೆಯ ಸಂದೇಶ. ನಿಮ್ಮ ಪಿನ್ ಅಥವಾ OTP ಹಂಚಿಕೊಳ್ಳಬೇಡಿ!",
+        phoneticSpeech: "Echcharike! Idhu vanchane sandesha. Nimma PIN athava OTP hanchikollabedi!",
+        langCode: "kn-IN"
+      },
+      en: {
+        nativeScript: "Alert! Social engineering scam detected. Do not share OTP or enter PIN!",
+        phoneticSpeech: "Alert! Social engineering scam detected. Do not share OTP or enter PIN!",
+        langCode: "en-IN"
+      }
+    };
 
-    if (lang === 'hi') {
-      text = "सावधान! यह एक फर्जी कॉल या धोखाधड़ी का प्रयास है। किसी को अपना पिन या ओटीपी न बताएं!";
-      speechLang = "hi-IN";
-    } else if (lang === 'ta') {
-      text = "எச்சரிக்கை! இது ஒரு மோசடி செய்தி. உங்கள் பின் அல்லது OTPயை பகிர வேண்டாம்!";
-      speechLang = "ta-IN";
-    } else if (lang === 'te') {
-      text = "హెచ్చరిక! ఇది మోసపూరిత సందేశం. మీ పిన్ లేదా ఓటీపీని ఎవరితోనూ పంచుకోవద్దు!";
-      speechLang = "te-IN";
-    } else if (lang === 'kn') {
-      text = "ಎಚ್ಚರಿಕೆ! ಇದು ವಂಚನೆಯ ಸಂದೇಶವಾಗಿದೆ. ನಿಮ್ಮ ಪಿನ್ ಅಥವಾ OTP ಹಂಚಿಕೊಳ್ಳಬೇಡಿ!";
-      speechLang = "kn-IN";
-    }
-
-    setSpokenSubtitle(text);
+    const target = audioCatalog[lang] || audioCatalog.en;
+    setSpokenSubtitle(target.nativeScript);
 
     if ('speechSynthesis' in window) {
       try {
         window.speechSynthesis.cancel();
         window.speechSynthesis.resume();
 
-        const utterance = new SpeechSynthesisUtterance(text);
-        utterance.lang = speechLang;
-        utterance.rate = 1.0;
-        utterance.pitch = 1.1;
-
         const voices = window.speechSynthesis.getVoices();
-        const matched = voices.find(v => v.lang.startsWith(lang) || v.lang.includes(speechLang));
-        if (matched) utterance.voice = matched;
+        const nativeVoice = voices.find(v => v.lang.startsWith(lang) || v.lang.includes(target.langCode));
+
+        const speechText = (nativeVoice && lang !== 'en') ? target.nativeScript : target.phoneticSpeech;
+        const utterance = new SpeechSynthesisUtterance(speechText);
+        
+        if (nativeVoice) {
+          utterance.voice = nativeVoice;
+          utterance.lang = target.langCode;
+        } else {
+          utterance.lang = 'en-IN';
+        }
+
+        utterance.rate = 0.95;
+        utterance.pitch = 1.05;
+        utterance.volume = 1.0;
 
         utterance.onend = () => {
           setSpeaking(false);
-          setTimeout(() => setSpokenSubtitle(''), 4000);
+          setTimeout(() => setSpokenSubtitle(''), 5000);
         };
         utterance.onerror = () => {
           setSpeaking(false);
-          setTimeout(() => setSpokenSubtitle(''), 4000);
+          setTimeout(() => setSpokenSubtitle(''), 5000);
         };
         window.speechSynthesis.speak(utterance);
       } catch (e) {
@@ -152,7 +172,7 @@ export default function SocialEngineeringInterceptor() {
       setTimeout(() => {
         setSpeaking(false);
         setSpokenSubtitle('');
-      }, 4000);
+      }, 5000);
     }
   };
 
@@ -221,7 +241,7 @@ export default function SocialEngineeringInterceptor() {
 
             {/* Subtitle Toast if voice alert is active */}
             {spokenSubtitle && (
-              <div className="mb-3 p-2.5 rounded-xl bg-cyan-950/90 border border-cyan-400 text-cyan-200 text-xs font-bold shadow-2xl animate-bounce backdrop-blur flex items-center gap-2">
+              <div className="mb-3 p-2.5 rounded-xl bg-cyan-950/95 border border-cyan-400 text-cyan-200 text-xs font-bold shadow-2xl animate-bounce backdrop-blur flex items-center gap-2">
                 <Volume2 className="w-4 h-4 text-cyan-400 shrink-0 animate-pulse" />
                 <span className="text-left font-sans">{spokenSubtitle}</span>
               </div>
@@ -371,9 +391,9 @@ export default function SocialEngineeringInterceptor() {
                       }}
                       className="bg-slate-900 border border-slate-700 text-cyan-300 rounded-lg text-[10px] font-bold px-2 py-1.5 focus:outline-none cursor-pointer"
                     >
+                      <option value="ta">தமிழ் (Tamil Alert)</option>
                       <option value="hi">हिंदी (Hindi Alert)</option>
                       <option value="en">English Alert</option>
-                      <option value="ta">தமிழ் (Tamil Alert)</option>
                       <option value="te">తెలుగు (Telugu Alert)</option>
                       <option value="kn">ಕನ್ನಡ (Kannada Alert)</option>
                     </select>
@@ -383,7 +403,7 @@ export default function SocialEngineeringInterceptor() {
                       className="flex-1 py-1.5 bg-rose-600 hover:bg-rose-500 active:bg-rose-700 text-white rounded-lg text-[10px] font-bold uppercase tracking-wider flex items-center justify-center gap-1.5 cursor-pointer shadow-lg shadow-rose-600/30"
                     >
                       <Volume2 className="w-3.5 h-3.5" />
-                      <span>{speaking ? 'Alarm & Speaking...' : '🔊 Play Alarm & Voice Alert'}</span>
+                      <span>{speaking ? '🔊 Speaking...' : '🔊 Speak Alert'}</span>
                     </button>
                   </div>
                 </div>
