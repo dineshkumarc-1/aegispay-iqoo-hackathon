@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AegisPay — iQOO Hackathon 2026 Pitch Deck</title>
+  <title>AegisPay — iQOO Hackathon 2026 FinTech & Commerce Pitch Deck</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
   <style>
@@ -39,14 +39,6 @@
       border: 1px solid rgba(51, 65, 85, 0.6);
     }
 
-    .glow-cyan {
-      box-shadow: 0 0 35px -5px rgba(6, 182, 212, 0.25);
-    }
-
-    .glow-rose {
-      box-shadow: 0 0 35px -5px rgba(244, 63, 94, 0.25);
-    }
-
     @media print {
       body { background: white !important; color: black !important; padding: 0 !important; }
       .slide { display: flex !important; opacity: 1 !important; transform: none !important; page-break-after: always; min-height: 100vh; padding: 2rem; border-bottom: 2px solid #e2e8f0; }
@@ -72,24 +64,21 @@
           <span class="text-base font-black tracking-tight text-white">Aegis<span class="text-cyan-400">Pay</span></span>
           <span class="text-[10px] font-mono uppercase px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-400 border border-cyan-500/30 font-bold">iQOO Hackathon 2026</span>
         </div>
-        <p class="text-[11px] text-slate-400 font-medium">FinTech & Commerce Track | On-Device AI Fraud Shield</p>
+        <p class="text-[11px] text-slate-400 font-medium">Track: FinTech & Commerce | Autonomous On-Device UPI & Merchant Shield</p>
       </div>
     </div>
 
     <!-- Slide Indicators & Controls -->
     <div class="flex items-center gap-2 md:gap-3 text-xs">
-      <!-- Auto Loop Toggle -->
       <button id="loopBtn" onclick="toggleAutoPlay()" class="px-2.5 py-1.5 rounded-lg glass-panel text-slate-300 hover:text-cyan-300 transition flex items-center gap-1.5 cursor-pointer text-[11px] font-semibold">
         <i class="fa-solid fa-repeat text-cyan-400" id="loopIcon"></i>
         <span id="loopLabel">Auto Loop: Off</span>
       </button>
 
-      <!-- Slide Counter Badge -->
       <span id="slideCounter" class="font-mono text-cyan-300 font-bold bg-cyan-950/60 border border-cyan-500/30 px-3 py-1.5 rounded-lg text-xs">
         01 / 10
       </span>
 
-      <!-- Print / PDF Button -->
       <button onclick="window.print()" class="px-3 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-200 font-bold rounded-lg border border-slate-700 transition flex items-center gap-1.5 cursor-pointer text-xs">
         <i class="fa-solid fa-file-pdf text-rose-400"></i>
         <span class="hidden sm:inline">Save PDF</span>
@@ -100,10 +89,10 @@
   <!-- Main Presentation Viewport -->
   <main class="max-w-6xl w-full mx-auto my-auto py-4 md:py-6 flex-1 flex flex-col justify-center">
 
-    <!-- SLIDE 1: Title & Hook -->
+    <!-- SLIDE 1: Title & FinTech Hook -->
     <div class="slide active flex-col items-center text-center space-y-6">
       <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-bold uppercase tracking-widest">
-        <i class="fa-solid fa-bolt text-cyan-400"></i> Official iQOO Hackathon 2026 Pitch
+        <i class="fa-solid fa-bolt text-cyan-400"></i> FinTech & Commerce Track Submission
       </div>
       
       <div class="space-y-2">
@@ -111,35 +100,34 @@
           Aegis<span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Pay</span>
         </h1>
         <p class="text-lg md:text-2xl text-slate-300 max-w-3xl mx-auto font-medium leading-relaxed">
-          Autonomous <span class="text-cyan-400 font-bold">On-Device AI Guardian</span> for UPI & QR Fraud Prevention
+          Autonomous <span class="text-cyan-400 font-bold">On-Device AI Guardian</span> for UPI Payments & Retail Commerce
         </p>
       </div>
 
       <p class="text-xs md:text-sm text-slate-400 max-w-2xl mx-auto">
-        Intercepting Quishing Stickers, Reverse PIN Traps, and Voice Social Engineering <strong class="text-slate-200">before money leaves the victim's account</strong> with sub-14ms edge inference.
+        Protecting the 14+ Billion monthly UPI transaction lifecycle: Intercepting Retail QR Quishing, Coercive PIN Traps, Deepfake Emergency Demands, and Counterfeit Kirana Screens before funds leave the bank.
       </p>
 
-      <!-- Key Pillar Metrics -->
+      <!-- Key FinTech Metrics -->
       <div class="grid grid-cols-2 md:grid-cols-4 gap-3 max-w-3xl w-full pt-2">
         <div class="p-4 rounded-2xl glass-panel text-center">
           <div class="text-2xl md:text-3xl font-black text-cyan-400 font-mono">11.4 ms</div>
-          <div class="text-[10px] uppercase font-bold text-slate-400 mt-1 tracking-wider">Edge Inference</div>
+          <div class="text-[10px] uppercase font-bold text-slate-400 mt-1 tracking-wider">Edge NPU Latency</div>
         </div>
         <div class="p-4 rounded-2xl glass-panel text-center">
           <div class="text-2xl md:text-3xl font-black text-emerald-400 font-mono">100%</div>
-          <div class="text-[10px] uppercase font-bold text-slate-400 mt-1 tracking-wider">Offline Private</div>
+          <div class="text-[10px] uppercase font-bold text-slate-400 mt-1 tracking-wider">DPDP Act Privacy (0 Cloud Leak)</div>
         </div>
         <div class="p-4 rounded-2xl glass-panel text-center">
           <div class="text-2xl md:text-3xl font-black text-amber-400 font-mono">5 Native</div>
-          <div class="text-[10px] uppercase font-bold text-slate-400 mt-1 tracking-wider">Vernacular Voice Alerts</div>
+          <div class="text-[10px] uppercase font-bold text-slate-400 mt-1 tracking-wider">Vernacular Voice Alarms</div>
         </div>
         <div class="p-4 rounded-2xl glass-panel text-center">
-          <div class="text-2xl md:text-3xl font-black text-purple-400 font-mono">0 Bytes</div>
-          <div class="text-[10px] uppercase font-bold text-slate-400 mt-1 tracking-wider">Cloud Data Leak</div>
+          <div class="text-2xl md:text-3xl font-black text-rose-400 font-mono">ScamBait</div>
+          <div class="text-[10px] uppercase font-bold text-slate-400 mt-1 tracking-wider">Mule VPA Sting & 1930 FIR</div>
         </div>
       </div>
 
-      <!-- Links Strip -->
       <div class="flex items-center gap-4 text-xs font-mono text-slate-400 pt-2 flex-wrap justify-center">
         <span class="flex items-center gap-1.5"><i class="fa-brands fa-github text-white"></i> github.com/dineshkumarc-1/aegispay-iqoo-hackathon</span>
         <span>•</span>
@@ -147,16 +135,16 @@
       </div>
     </div>
 
-    <!-- SLIDE 2: Problem Statement -->
+    <!-- SLIDE 2: Problem Statement in FinTech -->
     <div class="slide flex-col space-y-5">
       <div class="flex items-center justify-between border-b border-slate-800 pb-2">
         <span class="text-xs font-bold text-rose-400 uppercase tracking-widest font-mono">01. The Problem Statement</span>
-        <span class="text-xs text-slate-500 font-mono">Real-World Threat Landscape</span>
+        <span class="text-xs text-slate-500 font-mono">FinTech & Commerce Risk Landscape</span>
       </div>
 
       <div class="space-y-1">
-        <h2 class="text-2xl md:text-4xl font-black text-white">The ₹1,750+ Crore Digital Payment Epidemic</h2>
-        <p class="text-xs md:text-sm text-slate-400">India processes over <strong class="text-cyan-400">14+ Billion UPI transactions monthly</strong>, creating an urgent hunting ground for cyber criminals.</p>
+        <h2 class="text-2xl md:text-4xl font-black text-white">The ₹1,750+ Crore UPI & Retail Payment Crisis</h2>
+        <p class="text-xs md:text-sm text-slate-400">India processes <strong class="text-cyan-400">14+ Billion monthly UPI transactions</strong>, but 98% of digital fraud happens at the consumer-merchant interface.</p>
       </div>
 
       <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
@@ -164,83 +152,83 @@
           <div class="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center justify-center text-rose-400 text-lg">
             <i class="fa-solid fa-qrcode"></i>
           </div>
-          <h3 class="font-bold text-rose-300 text-sm">1. Physical QR Quishing Stickers</h3>
+          <h3 class="font-bold text-rose-300 text-sm">1. Retail QR Quishing & Tamper</h3>
           <p class="text-slate-300 leading-relaxed">
-            Fraudsters paste malicious stickers over genuine merchant QR codes at chai stalls and retail counters, routing payments directly to disposable mule accounts.
+            Malicious stickers pasted over authentic merchant QR stands divert everyday retail commerce payments directly to disposable mule bank accounts.
           </p>
         </div>
 
         <div class="p-5 rounded-2xl bg-amber-950/20 border border-amber-800/40 space-y-2.5">
           <div class="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400 text-lg">
-            <i class="fa-solid fa-phone-volume"></i>
+            <i class="fa-solid fa-money-bill-transfer"></i>
           </div>
-          <h3 class="font-bold text-amber-300 text-sm">2. Reverse PIN & Social Engineering</h3>
+          <h3 class="font-bold text-amber-300 text-sm">2. Reverse Collect & AutoPay Traps</h3>
           <p class="text-slate-300 leading-relaxed">
-            Victims are psychologically coerced during phone calls (e.g. fake electricity cutoff, OLX buyers) to enter their 6-digit PIN under the claim of <em>receiving</em> refunds or cashback.
+            Victims are tricked via fake calls to enter their 6-digit PIN to "receive" refund credits, or approve deceptive ₹9,999/month recurring e-Mandates.
           </p>
         </div>
 
         <div class="p-5 rounded-2xl bg-purple-950/20 border border-purple-800/40 space-y-2.5">
           <div class="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/30 flex items-center justify-center text-purple-400 text-lg">
-            <i class="fa-solid fa-receipt"></i>
+            <i class="fa-solid fa-store"></i>
           </div>
-          <h3 class="font-bold text-purple-300 text-sm">3. Counterfeit Receipt Spoof Apps</h3>
+          <h3 class="font-bold text-purple-300 text-sm">3. Kirana Merchant Receipt Fraud</h3>
           <p class="text-slate-300 leading-relaxed">
-            Spoofed payment confirmation apps display fake green checkmarks and simulated audio soundbox chimes, duping small Kirana store merchants daily.
+            Spoofed payment confirmation apps display fake green checkmarks and simulated audio soundbox chimes to steal goods from small retail shopkeepers.
           </p>
         </div>
       </div>
 
       <div class="p-3.5 rounded-xl glass-panel text-xs text-slate-300 flex items-center gap-3">
         <i class="fa-solid fa-circle-exclamation text-amber-400 text-base shrink-0"></i>
-        <span><strong>The Victim Profile:</strong> 68% of victims are first-time digital citizens, elderly users, and vernacular speakers in Tier-2/3 cities who lack cybersecurity awareness.</span>
+        <span><strong>The Market Vulnerability:</strong> 68% of victims are first-time digital citizens, elderly users, and vernacular speakers in Tier-2/3 retail markets.</span>
       </div>
     </div>
 
-    <!-- SLIDE 3: The Market Gap -->
+    <!-- SLIDE 3: Why Cloud Banking Defenses Fail -->
     <div class="slide flex-col space-y-5">
       <div class="flex items-center justify-between border-b border-slate-800 pb-2">
         <span class="text-xs font-bold text-amber-400 uppercase tracking-widest font-mono">02. The Existing Gap</span>
-        <span class="text-xs text-slate-500 font-mono">Why Cloud Defenses Fail</span>
+        <span class="text-xs text-slate-500 font-mono">Why Cloud Bank APIs Fail</span>
       </div>
 
-      <h2 class="text-2xl md:text-4xl font-black text-white">Why Cloud-Based Fraud Prevention is Inadequate</h2>
+      <h2 class="text-2xl md:text-4xl font-black text-white">Why Cloud-Based Fraud Prevention Fails in FinTech</h2>
 
       <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs">
         <div class="p-5 rounded-2xl glass-panel space-y-2">
           <div class="flex items-center gap-2 text-rose-400 font-bold text-sm">
             <i class="fa-solid fa-clock-rotate-left"></i>
-            <span>Latency Bottleneck (800ms – 2,500ms)</span>
+            <span>Latency Bottleneck (1,200ms – 3,000ms)</span>
           </div>
           <p class="text-slate-300 leading-relaxed">
-            Fraud happens in split-seconds. Roundtrips to cloud APIs cannot intercept user taps before money leaves the bank. Preventative defense must execute locally in &lt;15ms.
+            UPI transactions happen in split-seconds. Cloud API roundtrips cannot stop an impulsive victim tap before funds leave the bank. Preventative defense must execute locally in &lt;15ms.
           </p>
         </div>
 
         <div class="p-5 rounded-2xl glass-panel space-y-2">
           <div class="flex items-center gap-2 text-rose-400 font-bold text-sm">
             <i class="fa-solid fa-user-lock"></i>
-            <span>Data Privacy & DPDP Act Violations</span>
+            <span>Data Privacy (DPDP Act Compliance)</span>
           </div>
           <p class="text-slate-300 leading-relaxed">
-            Transmitting user SMS messages, OTPs, and personal VPA transaction histories to remote servers introduces serious data leakage and non-compliance risks.
+            Transmitting user SMS messages, OTPs, and personal VPA transaction histories to remote servers introduces serious financial data breach liabilities.
           </p>
         </div>
 
         <div class="p-5 rounded-2xl glass-panel space-y-2">
           <div class="flex items-center gap-2 text-rose-400 font-bold text-sm">
             <i class="fa-solid fa-plane-slash"></i>
-            <span>Offline & Rural Market Blindspot</span>
+            <span>Offline & Rural Commerce Blindspots</span>
           </div>
           <p class="text-slate-300 leading-relaxed">
-            Cloud fraud verification fails completely in basements, underground metro stations, rural fairs, and poor 2G/3G connectivity zones.
+            Cloud verification fails in basements, underground metro stations, rural fairs, and poor 2G/3G connectivity zones where millions of daily cash-to-UPI trades occur.
           </p>
         </div>
 
         <div class="p-5 rounded-2xl glass-panel space-y-2">
           <div class="flex items-center gap-2 text-rose-400 font-bold text-sm">
             <i class="fa-solid fa-ban"></i>
-            <span>Passive Warning Banners Are Ignored</span>
+            <span>Passive Text Warning Banners Are Ignored</span>
           </div>
           <p class="text-slate-300 leading-relaxed">
             Static text warning banners are systematically overlooked by victims under high emotional panic or urgency manipulation.
@@ -249,47 +237,42 @@
       </div>
     </div>
 
-    <!-- SLIDE 4: The Solution -->
+    <!-- SLIDE 4: The 4-Pillar FinTech Solution -->
     <div class="slide flex-col space-y-5">
       <div class="flex items-center justify-between border-b border-slate-800 pb-2">
         <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest font-mono">03. The Solution</span>
-        <span class="text-xs text-slate-500 font-mono">Three-Pillar Defensive Architecture</span>
+        <span class="text-xs text-slate-500 font-mono">360° UPI Payment Lifecycle Defense</span>
       </div>
 
-      <h2 class="text-2xl md:text-4xl font-black text-white">AegisPay: Autonomous On-Device Guardian</h2>
+      <h2 class="text-2xl md:text-4xl font-black text-white">AegisPay: 4-Pillar On-Device FinTech Guardian</h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-xs">
-        <div class="p-5 rounded-2xl glass-panel border-cyan-500/40 space-y-3 relative overflow-hidden">
-          <div class="text-cyan-400 text-2xl font-black font-mono">01</div>
-          <h3 class="font-bold text-cyan-300 text-sm">Dynamic QR & Quishing Shield</h3>
-          <ul class="space-y-1.5 text-slate-300 list-disc list-inside">
-            <li>Live optical AR camera viewfinder parser.</li>
-            <li>Detects Payee Name vs VPA entropy mismatches.</li>
-            <li>Blocks disguised <code class="text-rose-300">upi://collect</code> requests.</li>
-            <li>Flags amount surcharge injections in real time.</li>
-          </ul>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+        <div class="p-4 rounded-2xl glass-panel border-cyan-500/40 space-y-2">
+          <div class="text-cyan-400 font-bold font-mono text-sm">01. QR Ingress Shield</div>
+          <p class="text-slate-300 text-[11px] leading-relaxed">
+            3D optical parallax depth measuring +0.35mm sticker elevation & NPCI URI deep parser (`pa`, `pn`, `am`, `mc`).
+          </p>
         </div>
 
-        <div class="p-5 rounded-2xl glass-panel border-amber-500/40 space-y-3 relative overflow-hidden">
-          <div class="text-amber-400 text-2xl font-black font-mono">02</div>
-          <h3 class="font-bold text-amber-300 text-sm">Social Engineering Interceptor</h3>
-          <ul class="space-y-1.5 text-slate-300 list-disc list-inside">
-            <li>Quantized MobileBERT NLP model on NPU.</li>
-            <li>Extracts urgency & remote access triggers (AnyDesk).</li>
-            <li>Multi-lingual voice alarms (Tamil, Hindi, Telugu, Kannada).</li>
-            <li>Simulates Android touch barrier overlay lockdown.</li>
-          </ul>
+        <div class="p-4 rounded-2xl glass-panel border-rose-500/40 space-y-2">
+          <div class="text-rose-400 font-bold font-mono text-sm">02. Deepfake & Coercion</div>
+          <p class="text-slate-300 text-[11px] leading-relaxed">
+            Mel-spectrogram acoustic transformer on NPU catching AI voice clones demanding urgent emergency UPI transfers.
+          </p>
         </div>
 
-        <div class="p-5 rounded-2xl glass-panel border-emerald-500/40 space-y-3 relative overflow-hidden">
-          <div class="text-emerald-400 text-2xl font-black font-mono">03</div>
-          <h3 class="font-bold text-emerald-300 text-sm">Receipt & Soundbox Guard</h3>
-          <ul class="space-y-1.5 text-slate-300 list-disc list-inside">
-            <li>On-device CV font-kerning anomaly detection.</li>
-            <li>Luhn Mod-10 UTR checksum verification.</li>
-            <li>Validates dynamic payment animation hashes.</li>
-            <li>Catches counterfeit Paytm/GPay spoof apps offline.</li>
-          </ul>
+        <div class="p-4 rounded-2xl glass-panel border-amber-500/40 space-y-2">
+          <div class="text-amber-400 font-bold font-mono text-sm">03. ScamBait Honeypot</div>
+          <p class="text-slate-300 text-[11px] leading-relaxed">
+            Autonomous AI voice persona that stalls fraudsters, extracts real mule VPAs, and auto-compiles 1930 Cybercrime FIRs.
+          </p>
+        </div>
+
+        <div class="p-4 rounded-2xl glass-panel border-emerald-500/40 space-y-2">
+          <div class="text-emerald-400 font-bold font-mono text-sm">04. Kirana & Mandate</div>
+          <p class="text-slate-300 text-[11px] leading-relaxed">
+            Luhn Mod-10 UTR checksum, CV font kerning, and unmasking hidden ₹9,999/mo UPI AutoPay subscription traps.
+          </p>
         </div>
       </div>
     </div>
@@ -298,7 +281,7 @@
     <div class="slide flex-col space-y-5">
       <div class="flex items-center justify-between border-b border-slate-800 pb-2">
         <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest font-mono">04. Hardware Integration</span>
-        <span class="text-xs text-slate-500 font-mono">Why Mobile Hardware Matters</span>
+        <span class="text-xs text-slate-500 font-mono">Why Smartphone Hardware Matters</span>
       </div>
 
       <h2 class="text-2xl md:text-4xl font-black text-white">Why This Must Be a Phone-First Build</h2>
@@ -310,7 +293,7 @@
             <span>60 FPS Optical Stream & AR HUD</span>
           </div>
           <p class="text-slate-300 leading-relaxed">
-            Performs in-stream computer vision frame dissection of UPI parameters before handing control off to payment apps.
+            Directly intercepts camera video feed to inspect UPI parameters before handing control off to PhonePe/GPay.
           </p>
         </div>
 
@@ -320,7 +303,7 @@
             <span>Android Screen Barrier Overlay Service</span>
           </div>
           <p class="text-slate-300 leading-relaxed">
-            Draws an emergency system-level overlay barrier directly over PhonePe / GPay / Paytm to physically lock touch input during detected fraud attacks.
+            Draws an emergency system barrier directly over banking apps to physically lock touch input during detected fraud attacks.
           </p>
         </div>
 
@@ -330,7 +313,7 @@
             <span>Hardware Sensory Haptics</span>
           </div>
           <p class="text-slate-300 leading-relaxed">
-            High-frequency sensory vibration pulses snap victims out of emotional trance during active manipulative voice calls.
+            High-frequency sensory vibration pulses snap victims out of emotional panic during coercive scam calls.
           </p>
         </div>
 
@@ -340,13 +323,13 @@
             <span>Biometric Hardware Enclave</span>
           </div>
           <p class="text-slate-300 leading-relaxed">
-            Enforces physical Face/Fingerprint verification before allowing high-risk overrides, keeping funds secure inside the hardware enclave.
+            Enforces physical Face/Fingerprint verification before allowing overrides, keeping cryptographic keys locked in hardware.
           </p>
         </div>
       </div>
     </div>
 
-    <!-- SLIDE 6: Edge AI Core (Brownie Points) -->
+    <!-- SLIDE 6: On-Device Core AI (Brownie Points) -->
     <div class="slide flex-col space-y-5">
       <div class="flex items-center justify-between border-b border-slate-800 pb-2">
         <span class="text-xs font-bold text-emerald-400 uppercase tracking-widest font-mono">05. Core AI (Brownie Points)</span>
@@ -362,8 +345,8 @@
             <span class="text-cyan-300 font-mono font-bold text-sm">Google LiteRT / ONNX Mobile</span>
           </div>
           <div class="p-3.5 bg-slate-950/80 rounded-xl border border-slate-800">
-            <span class="text-slate-400 block font-sans text-[11px]">Quantized Core Model</span>
-            <span class="text-cyan-300 font-mono font-bold text-sm">MobileBERT-INT8 (18MB)</span>
+            <span class="text-slate-400 block font-sans text-[11px]">Quantized Models</span>
+            <span class="text-cyan-300 font-mono font-bold text-sm">MobileBERT + Mel-Transformer (18MB)</span>
           </div>
           <div class="p-3.5 bg-slate-950/80 rounded-xl border border-slate-800">
             <span class="text-slate-400 block font-sans text-[11px]">Edge Inference Latency</span>
@@ -373,12 +356,12 @@
 
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
           <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800/80">
-            <span class="font-bold text-slate-200 block mb-1">🔒 100% Zero-Knowledge Privacy</span>
-            <p class="text-slate-400 m-0">Zero telemetry sent to cloud. Strict compliance with India's Digital Personal Data Protection (DPDP) Act.</p>
+            <span class="font-bold text-slate-200 block mb-1">🔒 100% DPDP Act Compliant</span>
+            <p class="text-slate-400 m-0">Zero financial logs or SMS OTPs sent to cloud. 100% private on-device execution.</p>
           </div>
           <div class="p-3 bg-slate-950/60 rounded-xl border border-slate-800/80">
             <span class="font-bold text-slate-200 block mb-1">⚡ Airplane Mode Verified</span>
-            <p class="text-slate-400 m-0">Zero network dependencies. Operates flawlessly in basements, rural zones, and transit tunnels.</p>
+            <p class="text-slate-400 m-0">Zero network dependencies. Operates in retail basements and rural markets.</p>
           </div>
         </div>
       </div>
@@ -388,7 +371,7 @@
     <div class="slide flex-col space-y-5">
       <div class="flex items-center justify-between border-b border-slate-800 pb-2">
         <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest font-mono">06. System Flow</span>
-        <span class="text-xs text-slate-500 font-mono">End-to-End Interception</span>
+        <span class="text-xs text-slate-500 font-mono">End-to-End Payment Interception</span>
       </div>
 
       <h2 class="text-2xl md:text-4xl font-black text-white">Real-Time Threat Interception Pipeline</h2>
@@ -405,11 +388,11 @@
         <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-left">
           <div class="p-3.5 bg-emerald-950/40 rounded-xl border border-emerald-500/40 text-emerald-300">
             <span class="font-bold block mb-1">✅ Risk Score &lt; 25 (Clean)</span>
-            Fast-track standard UPI flow without friction.
+            Fast-track standard UPI payment flow without friction.
           </div>
           <div class="p-3.5 bg-rose-950/40 rounded-xl border border-rose-500/40 text-rose-300">
             <span class="font-bold block mb-1">🚨 Risk Score &gt; 70 (Critical Threat)</span>
-            Emergency Screen Overlay Barrier + Hardware Haptics + Multi-Lingual Voice Warning.
+            Emergency Screen Overlay Barrier + Hardware Haptics + Multi-Lingual Voice Alert.
           </div>
         </div>
       </div>
@@ -439,8 +422,8 @@
 
         <div class="p-5 rounded-2xl glass-panel space-y-2">
           <div class="font-mono text-cyan-400 font-bold text-base">Hours 18–24</div>
-          <div class="text-slate-200 font-bold">Defensive Lockdown UX</div>
-          <p class="text-slate-400 text-[11px]">Android barrier overlay, biometric gate, and multi-lingual voice alerts.</p>
+          <div class="text-slate-200 font-bold">Lockdown UX & ScamBait</div>
+          <p class="text-slate-400 text-[11px]">Android barrier overlay, ScamBait AI persona, and multi-lingual voice alerts.</p>
         </div>
 
         <div class="p-5 rounded-2xl glass-panel space-y-2">
@@ -455,10 +438,10 @@
     <div class="slide flex-col space-y-5">
       <div class="flex items-center justify-between border-b border-slate-800 pb-2">
         <span class="text-xs font-bold text-cyan-400 uppercase tracking-widest font-mono">08. Competitive Edge</span>
-        <span class="text-xs text-slate-500 font-mono">Market Benchmarks</span>
+        <span class="text-xs text-slate-500 font-mono">FinTech Benchmarks</span>
       </div>
 
-      <h2 class="text-2xl md:text-4xl font-black text-white">Why AegisPay Wins</h2>
+      <h2 class="text-2xl md:text-4xl font-black text-white">Why AegisPay Wins in FinTech</h2>
 
       <div class="overflow-x-auto text-xs glass-panel rounded-2xl p-4">
         <table class="w-full text-left border-collapse">
@@ -481,14 +464,14 @@
               <td class="py-3 px-3 text-emerald-400 font-bold">11.4ms (On-Device NPU)</td>
             </tr>
             <tr>
-              <td class="py-3 px-3 text-slate-200 font-sans font-semibold">Data Privacy</td>
-              <td class="py-3 px-3 text-rose-400">Transmits OTPs & logs to Cloud</td>
-              <td class="py-3 px-3 text-emerald-400 font-bold">100% Zero-Knowledge Local</td>
+              <td class="py-3 px-3 text-slate-200 font-sans font-semibold">Active Counter-Offense</td>
+              <td class="py-3 px-3 text-rose-400">None (Victims left helpless)</td>
+              <td class="py-3 px-3 text-emerald-400 font-bold">ScamBait AI Honeypot + 1930 FIR</td>
             </tr>
             <tr>
-              <td class="py-3 px-3 text-slate-200 font-sans font-semibold">Social Engineering Defense</td>
-              <td class="py-3 px-3 text-rose-400">Static warning text</td>
-              <td class="py-3 px-3 text-emerald-400 font-bold">Active Audio/SMS NLP Interceptor</td>
+              <td class="py-3 px-3 text-slate-200 font-sans font-semibold">Deepfake Voice Protection</td>
+              <td class="py-3 px-3 text-rose-400">None (Zero detection)</td>
+              <td class="py-3 px-3 text-emerald-400 font-bold">Real-Time Spectral AI Classifier</td>
             </tr>
             <tr>
               <td class="py-3 px-3 text-slate-200 font-sans font-semibold">Offline Availability</td>
@@ -508,10 +491,10 @@
 
       <div class="space-y-2">
         <h2 class="text-3xl md:text-5xl lg:text-6xl font-black text-white tracking-tight">
-          Protecting 300+ Million Digital Citizens
+          Securing India's 14+ Billion Monthly UPI Economy
         </h2>
         <p class="text-base md:text-lg text-slate-300 max-w-2xl mx-auto leading-relaxed">
-          Turning every smartphone into an autonomous, impenetrable personal security vault across India.
+          Protecting 300+ Million consumers and 50+ Million retail merchants with autonomous, on-device zero-trust payment security.
         </p>
       </div>
 
@@ -532,7 +515,6 @@
       <span>Previous</span>
     </button>
 
-    <!-- Thumbnail Dots -->
     <div class="flex items-center gap-1.5">
       <div id="dotsContainer" class="flex gap-1.5"></div>
     </div>
@@ -551,7 +533,6 @@
     let autoPlayInterval = null;
     let isAutoPlaying = false;
 
-    // Build dots
     slides.forEach((_, i) => {
       const dot = document.createElement('button');
       dot.className = `w-2 h-2 rounded-full transition cursor-pointer ${i === 0 ? 'bg-cyan-400 w-5' : 'bg-slate-700'}`;
@@ -573,7 +554,7 @@
       if (current < slides.length - 1) {
         current++;
       } else if (isAutoPlaying) {
-        current = 0; // Loop around in autoplay mode
+        current = 0;
       }
       update();
     }
@@ -600,7 +581,7 @@
         label.innerText = 'Auto Loop: ON';
         btn.classList.add('border-cyan-400', 'bg-cyan-500/10', 'text-cyan-300');
         icon.classList.add('animate-spin');
-        autoPlayInterval = setInterval(nextSlide, 5000); // 5 seconds per slide
+        autoPlayInterval = setInterval(nextSlide, 5000);
       } else {
         label.innerText = 'Auto Loop: Off';
         btn.classList.remove('border-cyan-400', 'bg-cyan-500/10', 'text-cyan-300');

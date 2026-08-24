@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
   X, ChevronLeft, ChevronRight, ShieldCheck, Zap, Cpu, 
-  FileText, Target, Award, Rocket, Repeat, Play, Pause, Download
+  FileText, Target, Award, Rocket, Repeat, Play, Pause, Download, Waves
 } from 'lucide-react';
 
 export default function PitchDeckModal({ isOpen, onClose }) {
@@ -24,15 +24,15 @@ export default function PitchDeckModal({ isOpen, onClose }) {
 
   const slides = [
     {
-      title: "🛡️ AegisPay — On-Device AI Fraud Guardian for UPI & QR",
+      title: "🛡️ AegisPay — Autonomous On-Device AI Guardian for UPI & Commerce",
       subtitle: "iQOO Hackathon 2026 | FinTech & Commerce Track",
-      tag: "01. OVERVIEW & HOOK",
+      tag: "01. OVERVIEW & FINTECH HOOK",
       content: (
         <div className="space-y-4">
           <div className="p-6 rounded-2xl bg-gradient-to-br from-cyan-950/40 to-slate-950 border border-cyan-500/30 text-center">
-            <h3 className="text-2xl font-black text-white mb-2">Stopping UPI Fraud Before the PIN is Entered</h3>
+            <h3 className="text-2xl font-black text-white mb-2">Protecting India's 14+ Billion Monthly UPI Payments</h3>
             <p className="text-sm text-slate-300 max-w-xl mx-auto leading-relaxed">
-              India processes <span className="text-cyan-400 font-bold">14+ Billion monthly UPI transactions</span>, but over <span className="text-rose-400 font-bold">₹1,750+ Crore</span> is lost annually to QR sticker quishing, disguised collect requests, and coercive social engineering scams.
+              India processes <span className="text-cyan-400 font-bold">14+ Billion monthly UPI transactions</span>, but over <span className="text-rose-400 font-bold">₹1,750+ Crore</span> is lost annually to QR quishing, deepfake emergency calls, and counterfeit Kirana payment screens.
             </p>
           </div>
           <div className="grid grid-cols-4 gap-3 text-center">
@@ -42,62 +42,62 @@ export default function PitchDeckModal({ isOpen, onClose }) {
             </div>
             <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
               <div className="text-lg font-black text-emerald-400 font-mono">100%</div>
-              <div className="text-[10px] uppercase font-bold text-slate-400">Zero Cloud Leak</div>
+              <div className="text-[10px] uppercase font-bold text-slate-400">DPDP Act (0 Cloud Leak)</div>
             </div>
             <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
               <div className="text-lg font-black text-amber-400 font-mono">5 Native</div>
-              <div className="text-[10px] uppercase font-bold text-slate-400">Voice Alerts</div>
+              <div className="text-[10px] uppercase font-bold text-slate-400">Voice Alarms</div>
             </div>
             <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
-              <div className="text-lg font-black text-purple-400 font-mono">3-Pillar</div>
-              <div className="text-[10px] uppercase font-bold text-slate-400">Active Shield</div>
+              <div className="text-lg font-black text-rose-400 font-mono">ScamBait</div>
+              <div className="text-[10px] uppercase font-bold text-slate-400">Mule VPA Sting & 1930 FIR</div>
             </div>
           </div>
         </div>
       )
     },
     {
-      title: "🚨 The Problem: The ₹1,750+ Cr Fraud Epidemic",
-      subtitle: "Why Traditional Antivirus & Banking Defenses Fail",
-      tag: "02. PROBLEM STATEMENT",
+      title: "🚨 The FinTech Problem: The ₹1,750+ Cr Payment Epidemic",
+      subtitle: "Why 98% of Fraud Happens at the Consumer-Merchant Interface",
+      tag: "02. FINTECH PROBLEM",
       content: (
         <div className="space-y-3 text-xs">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
             <div className="p-4 rounded-2xl bg-rose-950/30 border border-rose-800/40 space-y-2">
-              <span className="font-bold text-rose-300 block text-sm">1. QR Quishing Stickers</span>
-              <p className="text-slate-300 m-0">Fraudulent stickers pasted over genuine merchant QRs divert payments to disposable mule handles.</p>
+              <span className="font-bold text-rose-300 block text-sm">1. Retail QR Quishing</span>
+              <p className="text-slate-300 m-0">Fraudulent paper stickers pasted over authentic Kirana merchant QRs divert payments to mule accounts.</p>
             </div>
             <div className="p-4 rounded-2xl bg-amber-950/30 border border-amber-800/40 space-y-2">
-              <span className="font-bold text-amber-300 block text-sm">2. Reverse PIN Deceptions</span>
-              <p className="text-slate-300 m-0">Scammers trick users into entering their UPI PIN under the claim of "receiving" lottery or refund credits.</p>
+              <span className="font-bold text-amber-300 block text-sm">2. Reverse Collect & Mandates</span>
+              <p className="text-slate-300 m-0">Scammers trick users into entering PIN to "receive" refund credits, or approve deceptive ₹9,999/mo e-Mandates.</p>
             </div>
             <div className="p-4 rounded-2xl bg-purple-950/30 border border-purple-800/40 space-y-2">
-              <span className="font-bold text-purple-300 block text-sm">3. Counterfeit Receipt Apps</span>
-              <p className="text-slate-300 m-0">Spoofed payment confirmation apps display fake green checkmarks and soundbox chimes to dupe merchants.</p>
+              <span className="font-bold text-purple-300 block text-sm">3. Kirana Merchant Fraud</span>
+              <p className="text-slate-300 m-0">Spoofed payment confirmation apps display fake green checkmarks and soundbox chimes to steal retail goods.</p>
             </div>
           </div>
           <div className="p-3 rounded-xl bg-slate-950 border border-slate-800 text-slate-400">
-            <strong className="text-slate-200">The Victim Profile:</strong> 68% of victims are first-time digital users, elderly citizens, and rural vernacular speakers lacking cybersecurity defenses.
+            <strong className="text-slate-200">The Market Vulnerability:</strong> 68% of victims are first-time digital citizens, elderly users, and vernacular speakers in Tier-2/3 retail markets.
           </div>
         </div>
       )
     },
     {
-      title: "🛑 The Market Gap: Why Cloud Defenses Fail",
-      subtitle: "The Inherent Bottlenecks in Traditional Banking APIs",
-      tag: "03. MARKET GAP",
+      title: "🛑 The FinTech Gap: Why Cloud Banking APIs Fail",
+      subtitle: "The Inherent Bottlenecks in Traditional Cloud Fraud Prevention",
+      tag: "03. THE FINTECH GAP",
       content: (
         <div className="grid grid-cols-2 gap-3 text-xs">
           <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1.5">
-            <span className="font-bold text-rose-400 text-sm block">Cloud Latency (800ms – 2,500ms)</span>
-            <p className="text-slate-300 m-0">Fraud happens in milliseconds. Cloud roundtrips cannot stop an impulsive user tap before money leaves the bank.</p>
+            <span className="font-bold text-rose-400 text-sm block">Cloud Latency (1,200ms – 3,000ms)</span>
+            <p className="text-slate-300 m-0">UPI transactions happen in split-seconds. Cloud roundtrips cannot stop an impulsive user tap before money leaves the bank.</p>
           </div>
           <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1.5">
-            <span className="font-bold text-rose-400 text-sm block">Data Privacy (DPDP Act)</span>
-            <p className="text-slate-300 m-0">Transmitting SMS, OTPs, and personal VPA history to remote cloud servers creates severe breach liabilities.</p>
+            <span className="font-bold text-rose-400 text-sm block">DPDP Act Privacy Violations</span>
+            <p className="text-slate-300 m-0">Transmitting user SMS messages, OTPs, and personal VPA history to remote cloud servers creates severe breach liabilities.</p>
           </div>
           <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1.5">
-            <span className="font-bold text-rose-400 text-sm block">Offline Blindspots</span>
+            <span className="font-bold text-rose-400 text-sm block">Offline & Rural Blindspots</span>
             <p className="text-slate-300 m-0">Cloud verification fails completely in basements, rural markets, and poor connectivity zones.</p>
           </div>
           <div className="p-4 rounded-2xl bg-slate-950 border border-slate-800 space-y-1.5">
@@ -108,31 +108,26 @@ export default function PitchDeckModal({ isOpen, onClose }) {
       )
     },
     {
-      title: "🛡️ The Solution: Three-Pillar On-Device Shield",
-      subtitle: "Autonomous Real-Time Protection at the Edge",
-      tag: "04. THE SOLUTION",
+      title: "🛡️ The Solution: 4-Pillar On-Device FinTech Guardian",
+      subtitle: "Autonomous Real-Time Protection Across the Entire Payment Lifecycle",
+      tag: "04. 4-PILLAR SOLUTION",
       content: (
-        <div className="space-y-3 text-xs">
-          <div className="p-3.5 rounded-xl bg-slate-950 border border-cyan-500/40 flex items-start gap-3">
-            <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center font-bold shrink-0">1</div>
-            <div>
-              <h4 className="text-sm font-bold text-cyan-300 m-0">Dynamic QR & Quishing Shield</h4>
-              <p className="text-slate-300 mt-1 m-0">Live optical AR camera parser verifying UPI deep-links, VPA entropy, and blocking disguised collect requests.</p>
-            </div>
+        <div className="grid grid-cols-2 gap-3 text-xs">
+          <div className="p-3.5 rounded-xl bg-slate-950 border border-cyan-500/40 space-y-1">
+            <span className="font-bold text-cyan-300 block">1. 3D QR Parallax Shield</span>
+            <p className="text-slate-300 m-0">Optical depth measuring +0.35mm sticker elevation & NPCI URI deep parser (pa, pn, am).</p>
           </div>
-          <div className="p-3.5 rounded-xl bg-slate-950 border border-amber-500/40 flex items-start gap-3">
-            <div className="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 flex items-center justify-center font-bold shrink-0">2</div>
-            <div>
-              <h4 className="text-sm font-bold text-amber-300 m-0">Social Engineering Interceptor</h4>
-              <p className="text-slate-300 mt-1 m-0">Quantized MobileBERT analyzing calls/SMS with multi-lingual voice alerts (Tamil, Hindi, Telugu, Kannada) & Android barrier overlay lock.</p>
-            </div>
+          <div className="p-3.5 rounded-xl bg-slate-950 border border-rose-500/40 space-y-1">
+            <span className="font-bold text-rose-300 block">2. Deepfake & Coercion</span>
+            <p className="text-slate-300 m-0">Mel-spectrogram acoustic transformer on NPU catching AI voice clones demanding urgent transfers.</p>
           </div>
-          <div className="p-3.5 rounded-xl bg-slate-950 border border-emerald-500/40 flex items-start gap-3">
-            <div className="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 flex items-center justify-center font-bold shrink-0">3</div>
-            <div>
-              <h4 className="text-sm font-bold text-emerald-300 m-0">Receipt & Soundbox Guard</h4>
-              <p className="text-slate-300 mt-1 m-0">Instant CV font-kerning, Luhn mod-10 UTR checksum, and audio-tone verification for Kirana store cashiers.</p>
-            </div>
+          <div className="p-3.5 rounded-xl bg-slate-950 border border-amber-500/40 space-y-1">
+            <span className="font-bold text-amber-300 block">3. ScamBait Honeypot</span>
+            <p className="text-slate-300 m-0">Autonomous AI voice persona that stalls fraudsters, extracts real mule VPAs, and auto-compiles 1930 FIRs.</p>
+          </div>
+          <div className="p-3.5 rounded-xl bg-slate-950 border border-emerald-500/40 space-y-1">
+            <span className="font-bold text-emerald-300 block">4. Kirana & Mandate Guard</span>
+            <p className="text-slate-300 m-0">Luhn Mod-10 UTR checksum, CV font kerning, and unmasking hidden ₹9,999/mo UPI AutoPay traps.</p>
           </div>
         </div>
       )
@@ -172,8 +167,8 @@ export default function PitchDeckModal({ isOpen, onClose }) {
               <span className="text-cyan-300 font-mono font-bold">Google LiteRT / ONNX</span>
             </div>
             <div className="p-3 bg-slate-950 rounded-xl">
-              <span className="text-slate-400 block text-[10px]">Quantized Model</span>
-              <span className="text-cyan-300 font-mono font-bold">MobileBERT (18MB)</span>
+              <span className="text-slate-400 block text-[10px]">Quantized Models</span>
+              <span className="text-cyan-300 font-mono font-bold">MobileBERT + Mel-Audio</span>
             </div>
             <div className="p-3 bg-slate-950 rounded-xl">
               <span className="text-slate-400 block text-[10px]">Edge Latency</span>
@@ -217,17 +212,17 @@ export default function PitchDeckModal({ isOpen, onClose }) {
           </div>
           <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
             <div className="font-mono text-cyan-400 font-bold">Hours 18–24</div>
-            <div className="text-slate-300 mt-1 font-semibold">Android Barrier & Voice Lockdown</div>
+            <div className="text-slate-300 mt-1 font-semibold">Android Barrier & ScamBait Honeypot</div>
           </div>
           <div className="p-3 rounded-xl bg-slate-950 border border-slate-800">
             <div className="font-mono text-cyan-400 font-bold">Hours 24–30</div>
-            <div className="text-slate-300 mt-1 font-semibold">Live Attack Injection & Final Polish</div>
+            <div className="text-slate-300 mt-1 font-semibold">Live Attack Injection & 1930 FIR Polish</div>
           </div>
         </div>
       )
     },
     {
-      title: "🏆 Market Benchmark & Competitive Edge",
+      title: "🏆 FinTech Benchmark & Competitive Edge",
       subtitle: "Why AegisPay Outperforms Existing Solutions",
       tag: "09. COMPETITIVE ADVANTAGE",
       content: (
@@ -252,9 +247,9 @@ export default function PitchDeckModal({ isOpen, onClose }) {
                 <td className="py-2 px-2 text-emerald-400 font-bold">11.4ms (On-Device NPU)</td>
               </tr>
               <tr>
-                <td className="py-2 px-2 text-slate-300 font-sans">Privacy</td>
-                <td className="py-2 px-2 text-rose-400">Cloud telemetry</td>
-                <td className="py-2 px-2 text-emerald-400 font-bold">100% Zero-Knowledge Local</td>
+                <td className="py-2 px-2 text-slate-300 font-sans">Counter-Offense</td>
+                <td className="py-2 px-2 text-rose-400">None (Passive)</td>
+                <td className="py-2 px-2 text-emerald-400 font-bold">ScamBait AI + 1930 FIR</td>
               </tr>
             </tbody>
           </table>
@@ -262,15 +257,15 @@ export default function PitchDeckModal({ isOpen, onClose }) {
       )
     },
     {
-      title: "🚀 Protecting 300+ Million Digital Citizens",
+      title: "🚀 Securing India's 14+ Billion Monthly UPI Economy",
       subtitle: "Autonomous Financial Defense in the Palm of Every Citizen",
       tag: "10. CONCLUSION & VISION",
       content: (
         <div className="space-y-4 text-center">
           <div className="p-6 rounded-2xl bg-gradient-to-r from-cyan-950/40 to-blue-950/40 border border-cyan-500/30">
-            <h3 className="text-xl font-bold text-white mb-1">Empowering Bharat with Zero-Trust Security</h3>
+            <h3 className="text-xl font-bold text-white mb-1">Empowering Bharat with Zero-Trust Financial Security</h3>
             <p className="text-slate-300 text-xs max-w-lg mx-auto m-0 leading-relaxed">
-              AegisPay establishes a new standard for on-device, zero-trust financial protection, turning every smartphone into an impenetrable personal security vault.
+              Protecting 300+ Million consumers and 50+ Million retail merchants with autonomous, on-device zero-trust payment security.
             </p>
           </div>
           <div className="text-xs font-mono text-cyan-400">
@@ -305,7 +300,6 @@ export default function PitchDeckModal({ isOpen, onClose }) {
           </div>
 
           <div className="flex items-center gap-2">
-            {/* Auto Loop Mode Button */}
             <button
               onClick={() => setIsAutoPlaying(!isAutoPlaying)}
               className={`px-3 py-1 rounded-lg text-xs font-semibold flex items-center gap-1.5 cursor-pointer border transition ${
@@ -349,7 +343,6 @@ export default function PitchDeckModal({ isOpen, onClose }) {
             <span>Previous</span>
           </button>
 
-          {/* Dots Indicator */}
           <div className="flex gap-1.5">
             {slides.map((_, i) => (
               <button
