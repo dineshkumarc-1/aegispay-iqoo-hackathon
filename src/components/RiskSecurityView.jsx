@@ -22,15 +22,15 @@ export default function RiskSecurityView({ activeEngine = 'qr-shield', onSelectE
   ];
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5 sm:space-y-6">
       
       {/* Top Level Risk Health Summary Card */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 card-shadow space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-4">
+      <div className="bg-white border border-slate-200 rounded-2xl p-4 sm:p-5 card-shadow space-y-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-100 pb-3 sm:pb-4">
           <div>
             <div className="flex items-center gap-2">
-              <ShieldAlert className="w-5 h-5 text-blue-600" />
-              <h2 className="text-base font-bold text-slate-900 m-0">
+              <ShieldAlert className="w-5 h-5 text-blue-600 shrink-0" />
+              <h2 className="text-sm sm:text-base font-bold text-slate-900 m-0">
                 Enterprise Risk & Threat Intelligence Center
               </h2>
             </div>
@@ -39,23 +39,24 @@ export default function RiskSecurityView({ activeEngine = 'qr-shield', onSelectE
             </p>
           </div>
 
-          <div className="flex items-center gap-3">
-            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-center">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">Overall Risk Index</span>
-              <span className="text-xl font-bold font-mono text-emerald-600">18 / 100</span>
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="p-2 sm:p-3 rounded-xl bg-slate-50 border border-slate-200 text-center flex-1 sm:flex-none">
+              <span className="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block">Overall Risk Index</span>
+              <span className="text-lg sm:text-xl font-bold font-mono text-emerald-600">18 / 100</span>
             </div>
-            <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-center">
-              <span className="text-[10px] uppercase font-bold text-slate-400 block">Edge NPU Latency</span>
-              <span className="text-xl font-bold font-mono text-blue-600">11.4 ms</span>
+            <div className="p-2 sm:p-3 rounded-xl bg-slate-50 border border-slate-200 text-center flex-1 sm:flex-none">
+              <span className="text-[9px] sm:text-[10px] uppercase font-bold text-slate-400 block">Edge NPU Latency</span>
+              <span className="text-lg sm:text-xl font-bold font-mono text-blue-600">11.4 ms</span>
             </div>
           </div>
         </div>
 
         {/* Engine Switcher Tabs */}
-        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2.5">
-          {engines.map((eng) => {
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-2 sm:gap-2.5">
+          {engines.map((eng, index) => {
             const Icon = eng.icon;
             const isSelected = currentEngine === eng.id;
+            const isLast = index === engines.length - 1;
             return (
               <button
                 key={eng.id}
@@ -63,7 +64,9 @@ export default function RiskSecurityView({ activeEngine = 'qr-shield', onSelectE
                   setCurrentEngine(eng.id);
                   if (onSelectEngine) onSelectEngine(eng.id);
                 }}
-                className={`p-3 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between gap-2 ${
+                className={`p-2.5 sm:p-3 rounded-xl border text-left transition cursor-pointer flex flex-col justify-between gap-1.5 sm:gap-2 ${
+                  isLast ? 'col-span-2 sm:col-span-1 lg:col-span-1' : ''
+                } ${
                   isSelected
                     ? 'bg-blue-50/70 border-blue-500 text-blue-900 shadow-xs'
                     : 'bg-slate-50/60 border-slate-200 text-slate-600 hover:bg-slate-100/80'
@@ -80,7 +83,7 @@ export default function RiskSecurityView({ activeEngine = 'qr-shield', onSelectE
 
                 <div>
                   <div className="text-xs font-bold text-slate-900 truncate">{eng.label}</div>
-                  <div className="text-[10px] text-slate-500 truncate">{eng.desc}</div>
+                  <div className="text-[10px] text-slate-500 truncate hidden sm:block">{eng.desc}</div>
                 </div>
               </button>
             );

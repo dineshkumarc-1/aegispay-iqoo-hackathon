@@ -3,10 +3,16 @@ import {
   LayoutDashboard, CreditCard, ArrowLeftRight, ShoppingBag, 
   Package, Users, Warehouse, ShieldAlert, QrCode, Waves, 
   MessageSquareWarning, Bot, Receipt, FileCheck, ChevronDown, 
-  Building2, Sparkles, ShieldCheck, CheckCircle2, AlertTriangle
+  Building2, Sparkles, ShieldCheck, CheckCircle2, AlertTriangle, X
 } from 'lucide-react';
 
-export default function Sidebar({ currentView, setCurrentView, riskAlertsCount = 4 }) {
+export default function Sidebar({ 
+  currentView, 
+  setCurrentView, 
+  riskAlertsCount = 4,
+  isMobileOpen = false,
+  onCloseMobile
+}) {
   
   const navSections = [
     {
@@ -45,25 +51,42 @@ export default function Sidebar({ currentView, setCurrentView, riskAlertsCount =
     }
   ];
 
-  return (
-    <aside className="w-64 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 h-screen sticky top-0 select-none overflow-y-auto">
+  const handleItemClick = (id) => {
+    setCurrentView(id);
+    if (onCloseMobile) onCloseMobile();
+  };
+
+  const sidebarContent = (
+    <div className="flex flex-col justify-between h-full overflow-y-auto select-none">
       
       {/* Top Header: Brand + Store Switcher */}
       <div className="p-4 border-b border-slate-200 space-y-3">
         {/* Brand Logo & Name */}
-        <div className="flex items-center gap-2.5">
-          <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-sm ring-1 ring-blue-700/20">
-            <ShieldCheck className="w-5 h-5 text-white" />
-          </div>
-          <div>
-            <div className="flex items-center gap-1.5">
-              <span className="font-bold text-slate-900 tracking-tight text-base">Aegis<span className="text-blue-600">Pay</span></span>
-              <span className="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
-                Commerce
-              </span>
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white shadow-xs ring-1 ring-blue-700/20">
+              <ShieldCheck className="w-5 h-5 text-white" />
             </div>
-            <p className="text-[11px] text-slate-500 font-medium">FinTech & Retail Suite</p>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <span className="font-bold text-slate-900 tracking-tight text-base">Aegis<span className="text-blue-600">Pay</span></span>
+                <span className="text-[10px] font-semibold uppercase px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
+                  Commerce
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-500 font-medium m-0">FinTech & Retail Suite</p>
+            </div>
           </div>
+
+          {/* Close Mobile Button */}
+          {onCloseMobile && (
+            <button
+              onClick={onCloseMobile}
+              className="lg:hidden w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 flex items-center justify-center text-slate-500 hover:text-slate-900 transition cursor-pointer"
+            >
+              <X className="w-4 h-4" />
+            </button>
+          )}
         </div>
 
         {/* Store Selector Pill */}
@@ -82,7 +105,7 @@ export default function Sidebar({ currentView, setCurrentView, riskAlertsCount =
       </div>
 
       {/* Navigation Sections */}
-      <div className="p-3 space-y-6 flex-1 overflow-y-auto">
+      <div className="p-3 space-y-5 flex-1 overflow-y-auto">
         {navSections.map((section, idx) => (
           <div key={idx} className="space-y-1">
             <div className="px-3 text-[10px] font-bold uppercase tracking-wider text-slate-400">
@@ -95,7 +118,7 @@ export default function Sidebar({ currentView, setCurrentView, riskAlertsCount =
                 return (
                   <button
                     key={item.id}
-                    onClick={() => setCurrentView(item.id)}
+                    onClick={() => handleItemClick(item.id)}
                     className={`w-full flex items-center justify-between px-3 py-2 rounded-lg text-xs font-medium transition cursor-pointer ${
                       isActive
                         ? 'bg-blue-50 text-blue-700 font-semibold shadow-xs'
@@ -142,6 +165,31 @@ export default function Sidebar({ currentView, setCurrentView, riskAlertsCount =
         </div>
       </div>
 
-    </aside>
+    </div>
+  );
+
+  return (
+    <>
+      {/* 1. Desktop Fixed Sidebar */}
+      <aside className="hidden lg:flex w-64 bg-white border-r border-slate-200 flex-col justify-between shrink-0 h-screen sticky top-0">
+        {sidebarContent}
+      </aside>
+
+      {/* 2. Mobile Slide-Over Drawer */}
+      {isMobileOpen && (
+        <div className="fixed inset-0 z-50 lg:hidden flex">
+          {/* Overlay Backdrop */}
+          <div 
+            className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity"
+            onClick={onCloseMobile}
+          />
+          
+          {/* Drawer Container */}
+          <div className="relative w-72 max-w-[85vw] bg-white h-full shadow-2xl flex flex-col z-10 animate-in slide-in-from-left duration-200">
+            {sidebarContent}
+          </div>
+        </div>
+      )}
+    </>
   );
 }

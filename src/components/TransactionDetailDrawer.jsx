@@ -9,11 +9,17 @@ export default function TransactionDetailDrawer({ transaction, onClose }) {
   if (!transaction) return null;
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden flex justify-end bg-slate-900/30 backdrop-blur-xs">
-      <div className="w-full max-w-xl bg-white h-full shadow-2xl border-l border-slate-200 flex flex-col justify-between overflow-y-auto animate-in slide-in-from-right duration-200">
+    <div className="fixed inset-0 z-50 overflow-hidden flex justify-end">
+      {/* Backdrop */}
+      <div 
+        className="fixed inset-0 bg-slate-900/40 backdrop-blur-xs transition-opacity"
+        onClick={onClose}
+      />
+
+      <div className="relative w-full max-w-xl bg-white h-full shadow-2xl border-l border-slate-200 flex flex-col justify-between overflow-y-auto z-10 animate-in slide-in-from-right duration-200">
         
         {/* Drawer Header */}
-        <div className="p-6 border-b border-slate-200 space-y-3 bg-slate-50/50">
+        <div className="p-4 sm:p-6 border-b border-slate-200 space-y-2.5 sm:space-y-3 bg-slate-50/50">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="text-xs font-mono font-bold text-slate-500">
@@ -41,10 +47,10 @@ export default function TransactionDetailDrawer({ transaction, onClose }) {
           </div>
 
           <div>
-            <div className="text-3xl font-bold text-slate-900 font-mono tracking-tight">
+            <div className="text-2xl sm:text-3xl font-bold text-slate-900 font-mono tracking-tight">
               ₹{transaction.amount.toLocaleString('en-IN', { minimumFractionDigits: 2 })}
             </div>
-            <div className="text-xs text-slate-500 mt-1 flex items-center gap-2">
+            <div className="text-xs text-slate-500 mt-1 flex flex-wrap items-center gap-2">
               <span>{transaction.date}</span>
               <span>•</span>
               <span>UTR: <strong className="font-mono text-slate-700">{transaction.utr}</strong></span>
@@ -53,14 +59,14 @@ export default function TransactionDetailDrawer({ transaction, onClose }) {
         </div>
 
         {/* Drawer Body Content */}
-        <div className="p-6 space-y-6 flex-1 overflow-y-auto text-xs">
+        <div className="p-4 sm:p-6 space-y-5 sm:space-y-6 flex-1 overflow-y-auto text-xs">
           
           {/* Section 1: Customer & Payment Details */}
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             <div className="font-bold text-slate-900 uppercase text-[10px] tracking-wider text-slate-400">
               Payment & Customer Details
             </div>
-            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2 font-medium">
+            <div className="p-3.5 sm:p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2 font-medium">
               <div className="flex justify-between">
                 <span className="text-slate-500">Customer Name:</span>
                 <span className="text-slate-900 font-semibold">{transaction.customer}</span>
@@ -81,7 +87,7 @@ export default function TransactionDetailDrawer({ transaction, onClose }) {
           </div>
 
           {/* Section 2: Items Purchased */}
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             <div className="font-bold text-slate-900 uppercase text-[10px] tracking-wider text-slate-400">
               Items Purchased
             </div>
@@ -101,7 +107,7 @@ export default function TransactionDetailDrawer({ transaction, onClose }) {
           </div>
 
           {/* Section 3: On-Device AI Risk Assessment */}
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             <div className="flex items-center justify-between">
               <div className="font-bold text-slate-900 uppercase text-[10px] tracking-wider text-slate-400">
                 On-Device Risk Diagnostics
@@ -113,28 +119,28 @@ export default function TransactionDetailDrawer({ transaction, onClose }) {
               </span>
             </div>
 
-            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
+            <div className="p-3.5 sm:p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-2">
               <div className="flex justify-between items-center">
                 <span className="text-slate-600">Quishing Verification:</span>
-                <span className="font-mono font-semibold text-slate-800">{transaction.riskDetails?.quishingCheck}</span>
+                <span className="font-mono font-semibold text-slate-800 text-right text-[11px]">{transaction.riskDetails?.quishingCheck}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-600">VPA Entropy Status:</span>
-                <span className="font-mono font-semibold text-slate-800">{transaction.riskDetails?.vpaEntropy}</span>
+                <span className="font-mono font-semibold text-slate-800 text-right text-[11px]">{transaction.riskDetails?.vpaEntropy}</span>
               </div>
               <div className="flex justify-between items-center">
                 <span className="text-slate-600">Bank Settlement:</span>
-                <span className="font-semibold text-emerald-700">{transaction.riskDetails?.settlementStatus}</span>
+                <span className="font-semibold text-emerald-700 text-right text-[11px]">{transaction.riskDetails?.settlementStatus}</span>
               </div>
             </div>
           </div>
 
           {/* Section 4: Transaction Lifecycle Timeline */}
-          <div className="space-y-2.5">
+          <div className="space-y-2">
             <div className="font-bold text-slate-900 uppercase text-[10px] tracking-wider text-slate-400">
               Activity Lifecycle
             </div>
-            <div className="p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3 font-medium text-slate-700">
+            <div className="p-3.5 sm:p-4 rounded-xl bg-slate-50 border border-slate-200 space-y-3 font-medium text-slate-700">
               <div className="flex items-start gap-2.5">
                 <div className="w-2 h-2 rounded-full bg-blue-600 mt-1 shrink-0"></div>
                 <div className="flex-1">
