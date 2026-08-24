@@ -5,8 +5,10 @@
 [![Edge AI](https://img.shields.io/badge/Core_AI-LiteRT_MobileBERT_(INT8)-emerald.svg)](#)
 [![Privacy](https://img.shields.io/badge/Privacy-100%25_Zero_Cloud_Leakage-purple.svg)](#)
 
-> **Live Prototype:** [https://temporary-speedy-birch-68h8nej.vercel.app/](https://temporary-speedy-birch-68h8nej.vercel.app/)  
-> **Pitch Slides:** [`presentation.html`](./presentation.html) | [`AEGISPAY_PITCH_DECK_SLIDES.md`](../AEGISPAY_PITCH_DECK_SLIDES.md)
+> 🌐 **Live Demo:** [https://temporary-speedy-birch-68h8nej.vercel.app/](https://temporary-speedy-birch-68h8nej.vercel.app/)  
+> 📦 **GitHub Repository:** [https://github.com/dineshkumarc-1/aegispay-iqoo-hackathon](https://github.com/dineshkumarc-1/aegispay-iqoo-hackathon)  
+> 📊 **Interactive Slide Deck:** [`presentation.html`](./presentation.html) | [`AEGISPAY_PITCH_DECK_SLIDES.md`](./AEGISPAY_PITCH_DECK_SLIDES.md)  
+> 📄 **Idea Submission Document:** [`AEGISPAY_SUBMISSION_DOC.md`](./AEGISPAY_SUBMISSION_DOC.md)
 
 ---
 
@@ -61,8 +63,8 @@ Digital payments via UPI process **over 14+ Billion transactions monthly** in In
 
 ```bash
 # Clone the repository
-git clone <repo-url>
-cd aegispay-app
+git clone https://github.com/dineshkumarc-1/aegispay-iqoo-hackathon.git
+cd aegispay-iqoo-hackathon
 
 # Install dependencies
 npm install
