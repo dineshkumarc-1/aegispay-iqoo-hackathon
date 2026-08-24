@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ShieldCheck, Cpu, Wifi, WifiOff, Zap, FileText, Layers } from 'lucide-react';
+import { ShieldCheck, Cpu, Wifi, WifiOff, Zap, FileText, Layers, Bot } from 'lucide-react';
 
 export default function Header({ activeTab, setActiveTab, onOpenDeck, onOpenArch }) {
   const [isOnline, setIsOnline] = useState(navigator.onLine);
@@ -117,7 +117,19 @@ export default function Header({ activeTab, setActiveTab, onOpenDeck, onOpenArch
           }`}
         >
           <Layers className="w-4 h-4" />
-          <span>3. Spoofed Receipt & Soundbox Verifier</span>
+          <span>3. Spoofed Receipt Guard</span>
+        </button>
+
+        <button
+          onClick={() => setActiveTab('scambait')}
+          className={`px-4 py-2.5 text-xs font-semibold tracking-wide border-b-2 transition flex items-center gap-2 whitespace-nowrap cursor-pointer ${
+            activeTab === 'scambait'
+              ? 'border-rose-400 text-rose-300 bg-rose-500/10 font-bold'
+              : 'border-transparent text-rose-400 hover:text-rose-200'
+          }`}
+        >
+          <Bot className="w-4 h-4 text-rose-400 animate-pulse" />
+          <span>4. 🤖 ScamBait Honeypot</span>
         </button>
       </div>
     </header>

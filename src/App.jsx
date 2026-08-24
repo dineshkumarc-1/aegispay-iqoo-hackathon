@@ -3,9 +3,10 @@ import Header from './components/Header';
 import QRScannerView from './components/QRScannerView';
 import SocialEngineeringInterceptor from './components/SocialEngineeringInterceptor';
 import ReceiptVerifier from './components/ReceiptVerifier';
+import ScamBaitHoneypot from './components/ScamBaitHoneypot';
 import ArchitectureModal from './components/ArchitectureModal';
 import PitchDeckModal from './components/PitchDeckModal';
-import { ShieldCheck, Cpu, WifiOff, Sparkles, HelpCircle, FileText, CheckCircle2, ChevronRight, X } from 'lucide-react';
+import { ShieldCheck, Cpu, WifiOff, Sparkles, HelpCircle, FileText, CheckCircle2, ChevronRight, X, Bot } from 'lucide-react';
 
 export default function App() {
   const [activeTab, setActiveTab] = useState('qr-shield');
@@ -32,7 +33,7 @@ export default function App() {
                 Judge Quick Tour
               </span>
               <span className="text-slate-300">
-                1. Test <strong>Quishing QR & Voice Alert</strong> ➔ 2. Try <strong>Scam Call Interceptor</strong> ➔ 3. Inspect <strong>Receipt Guard</strong>
+                1. Test <strong>Quishing QR</strong> ➔ 2. Try <strong>Call Interceptor</strong> ➔ 3. <strong>Receipt Guard</strong> ➔ 4. <strong>🤖 ScamBait Honeypot</strong>
               </span>
             </div>
             <div className="flex items-center gap-3">
@@ -60,6 +61,7 @@ export default function App() {
         {activeTab === 'qr-shield' && <QRScannerView />}
         {activeTab === 'social-eng' && <SocialEngineeringInterceptor />}
         {activeTab === 'receipt-guard' && <ReceiptVerifier />}
+        {activeTab === 'scambait' && <ScamBaitHoneypot />}
       </main>
 
       {/* Edge AI Telemetry Footer Bar */}
