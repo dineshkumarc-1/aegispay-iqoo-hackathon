@@ -1,10 +1,10 @@
 import React from 'react';
 import { 
   FileCheck, Download, ShieldCheck, FileText, CheckCircle2, 
-  Lock, AlertTriangle, Building2, Printer
+  Lock, AlertTriangle, Layers, Printer, ExternalLink
 } from 'lucide-react';
 
-export default function ReportsView() {
+export default function ReportsView({ onOpenDeck, onOpenArch }) {
   const downloadDPDPAudit = () => {
     const auditText = `
 ================================================================================
@@ -41,9 +41,9 @@ local smartphone processor (NPU/CPU).
   const download1930Log = () => {
     const logText = `
 ================================================================================
-1930 NATIONAL CYBERCRIME REPORTING PORTAL — INCIDENT LOG
+1930 NATIONAL CYBERCRIME REPORTING PORTAL — INCIDENT EVIDENCE DOSSIER
 ================================================================================
-TOTAL INCIDENTS INTERCEPTED (LAST 30 DAYS): 24
+TOTAL INCIDENTS INTERCEPTED: 24
 TOTAL FINANCIAL LOSS PREVENTED: ₹1,42,800.00
 
 1. INCIDENT #AGY-FIR-9012 (2026-08-24 22:31)
@@ -68,111 +68,86 @@ TOTAL FINANCIAL LOSS PREVENTED: ₹1,42,800.00
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 max-w-lg mx-auto pb-6">
       
       {/* Top Banner */}
-      <div className="bg-white border border-slate-200 rounded-2xl p-5 card-shadow flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
-        <div>
-          <div className="flex items-center gap-2">
-            <FileCheck className="w-5 h-5 text-blue-600" />
-            <h2 className="text-base font-bold text-slate-900 m-0">
-              Regulatory Compliance & Audit Reports
-            </h2>
-          </div>
-          <p className="text-xs text-slate-500 mt-1 max-w-2xl">
-            Official compliance certificates and exportable evidence packs for management, internal auditors, and law enforcement.
-          </p>
-        </div>
-
+      <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-2">
         <div className="flex items-center gap-2">
-          <button 
-            onClick={() => window.print()}
-            className="px-3 py-1.5 rounded-lg bg-slate-50 hover:bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold flex items-center gap-1.5 transition cursor-pointer"
-          >
-            <Printer className="w-3.5 h-3.5" />
-            <span>Print Report</span>
-          </button>
+          <FileCheck className="w-5 h-5 text-blue-600" />
+          <h2 className="text-base font-bold text-slate-900 m-0">
+            1930 Police Hub & Compliance Vault
+          </h2>
         </div>
+        <p className="text-xs text-slate-500 m-0 leading-relaxed">
+          Official exportable evidence files and compliance certificates for law enforcement and hackathon evaluation.
+        </p>
       </div>
 
-      {/* 3 Core Compliance Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-        
-        {/* Card 1: 1930 Cybercrime Hub */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 card-shadow space-y-4 flex flex-col justify-between">
-          <div className="space-y-2">
-            <div className="w-9 h-9 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600">
-              <AlertTriangle className="w-5 h-5" />
-            </div>
-            <h3 className="text-sm font-bold text-slate-900 m-0">National Cybercrime (1930) Hub</h3>
-            <p className="text-xs text-slate-500 m-0 leading-relaxed">
-              Timestamped, tamper-proof police evidence dossiers compiled automatically from blocked fraud attempts and ScamBait honeypot sessions.
-            </p>
-            <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-100 text-[11px] font-mono text-slate-600">
-              • 24 Interceptions Logged<br />
-              • ₹1,42,800 Loss Prevented
-            </div>
+      {/* 1. National Cybercrime 1930 Dossier */}
+      <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-rose-50 border border-rose-200 flex items-center justify-center text-rose-600 shrink-0">
+            <AlertTriangle className="w-5 h-5" />
           </div>
-
-          <button
-            onClick={download1930Log}
-            className="w-full py-2 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs transition cursor-pointer flex items-center justify-center gap-1.5"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>Download 1930 Incident Log</span>
-          </button>
+          <div>
+            <h3 className="text-sm font-bold text-slate-900 m-0">1930 Cybercrime Police Dossier</h3>
+            <p className="text-[11px] text-slate-500 m-0 mt-0.5">
+              Contains extracted mule accounts, caller IDs, and fraud transcripts.
+            </p>
+          </div>
         </div>
 
-        {/* Card 2: DPDP Act Privacy */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 card-shadow space-y-4 flex flex-col justify-between">
-          <div className="space-y-2">
-            <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
+        <button
+          onClick={download1930Log}
+          className="w-full py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs transition cursor-pointer flex items-center justify-center gap-2 shadow-xs"
+        >
+          <Download className="w-4 h-4" />
+          <span>Download 1930 Police FIR Evidence File</span>
+        </button>
+      </div>
+
+      {/* 2. DPDP Act Zero-Knowledge Audit */}
+      <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs space-y-3">
+        <div className="flex items-center gap-3">
+          <div className="w-9 h-9 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-600 shrink-0">
+            <ShieldCheck className="w-5 h-5" />
+          </div>
+          <div>
             <h3 className="text-sm font-bold text-slate-900 m-0">DPDP Act 2023 Privacy Audit</h3>
-            <p className="text-xs text-slate-500 m-0 leading-relaxed">
-              Formal verification that all financial AI models run locally on the smartphone NPU with 0 bytes of sensitive customer OTP/VPA data transmitted.
+            <p className="text-[11px] text-slate-500 m-0 mt-0.5">
+              Verified proof of 0 bytes cloud leakage (100% on-device NPU).
             </p>
-            <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-100 text-[11px] font-mono text-slate-600">
-              • Zero Cloud Telemetry<br />
-              • Airplane Mode Verified
-            </div>
           </div>
-
-          <button
-            onClick={downloadDPDPAudit}
-            className="w-full py-2 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-semibold text-xs transition cursor-pointer flex items-center justify-center gap-1.5"
-          >
-            <Download className="w-3.5 h-3.5" />
-            <span>Export DPDP Audit Certificate</span>
-          </button>
         </div>
 
-        {/* Card 3: NPCI Terminal Security */}
-        <div className="bg-white border border-slate-200 rounded-2xl p-5 card-shadow space-y-4 flex flex-col justify-between">
-          <div className="space-y-2">
-            <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-600">
-              <FileText className="w-5 h-5" />
-            </div>
-            <h3 className="text-sm font-bold text-slate-900 m-0">NPCI Terminal Security Report</h3>
-            <p className="text-xs text-slate-500 m-0 leading-relaxed">
-              Cryptographic parameter integrity checks for UPI QR terminals, merchant category codes (MCC), and UTR checksum validation status.
-            </p>
-            <div className="p-2.5 rounded-lg bg-slate-50 border border-slate-100 text-[11px] font-mono text-slate-600">
-              • Specification: UPI v2.0<br />
-              • Terminal Integrity: 100%
-            </div>
-          </div>
+        <button
+          onClick={downloadDPDPAudit}
+          className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition cursor-pointer flex items-center justify-center gap-2 shadow-xs"
+        >
+          <Download className="w-4 h-4" />
+          <span>Download DPDP Privacy Certificate</span>
+        </button>
+      </div>
 
-          <button
-            onClick={() => window.print()}
-            className="w-full py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-800 font-semibold text-xs transition cursor-pointer flex items-center justify-center gap-1.5"
-          >
-            <Printer className="w-3.5 h-3.5" />
-            <span>Print Terminal Audit</span>
-          </button>
-        </div>
+      {/* 3. Pitch Deck & Architecture Launchers */}
+      <div className="grid grid-cols-2 gap-3 pt-1">
+        <button
+          onClick={onOpenDeck}
+          className="p-3.5 rounded-2xl bg-white border border-blue-200 hover:bg-blue-50 transition text-center cursor-pointer space-y-1.5 shadow-2xs"
+        >
+          <FileText className="w-5 h-5 text-blue-600 mx-auto" />
+          <div className="text-xs font-bold text-slate-900">10-Slide Pitch Deck</div>
+          <div className="text-[10px] text-blue-600 font-semibold">Open Presentation</div>
+        </button>
 
+        <button
+          onClick={onOpenArch}
+          className="p-3.5 rounded-2xl bg-white border border-slate-200 hover:bg-slate-50 transition text-center cursor-pointer space-y-1.5 shadow-2xs"
+        >
+          <Layers className="w-5 h-5 text-slate-600 mx-auto" />
+          <div className="text-xs font-bold text-slate-900">Technical Architecture</div>
+          <div className="text-[10px] text-slate-500 font-semibold">View System Spec</div>
+        </button>
       </div>
 
     </div>
